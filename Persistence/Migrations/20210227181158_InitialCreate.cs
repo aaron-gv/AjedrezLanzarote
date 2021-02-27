@@ -8,11 +8,11 @@ namespace Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Activities",
+                name: "Eventos",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
                     Url = table.Column<string>(type: "TEXT", nullable: false),
                     StartDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndDate = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -23,16 +23,34 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    
-                    table.PrimaryKey("PK_Activities", x => x.Id);
-                    table.UniqueConstraint("UC_Url", x => x.Url);
+                    table.PrimaryKey("PK_Eventos", x => x.Id);
+                    table.UniqueConstraint("UC_Url", x=> x.Url);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Noticias",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Url = table.Column<string>(type: "TEXT", nullable: false),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Body = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Noticias", x => x.Id);
+                    table.UniqueConstraint("UC_Url", x=> x.Url);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Activities");
+                name: "Eventos");
+
+            migrationBuilder.DropTable(
+                name: "Noticias");
         }
     }
 }
