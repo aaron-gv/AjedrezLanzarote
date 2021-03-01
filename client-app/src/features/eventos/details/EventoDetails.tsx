@@ -1,15 +1,14 @@
 import React from "react";
 import { Button, Card, Image } from "semantic-ui-react";
-import { Evento } from "../../../app/models/evento";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
+import { useStore } from "../../../app/stores/store";
 
-interface Props {
-    evento: Evento
-    selectEvento: (id: string) => void;
-    cancelSelectEvento: () => void;
-    openForm: (id? : string) => void;
-}
+export default function EventoDetails() {
+    const {eventoStore} = useStore();
+    const {selectedEvento: evento} = eventoStore;
 
-export default function EventoDetails({evento, selectEvento, cancelSelectEvento, openForm} : Props) {
+    if (!evento) return <LoadingComponent />;
+
   return (
     <Card fluid>
       <Image
@@ -27,8 +26,8 @@ export default function EventoDetails({evento, selectEvento, cancelSelectEvento,
         </Card.Description>
       </Card.Content>
       <Card.Content extra>
-        <Button basic color='blue' content='Edit' onClick={() => openForm(evento.id)} />
-        <Button basic onClick={cancelSelectEvento} color='grey' content='Cancel' />
+        <Button basic color='blue' content='Edit' onClick={() => eventoStore.openForm(evento.id)} />
+        <Button basic onClick={eventoStore.cancelSelectedEvento} color='grey' content='Cancel' />
       </Card.Content>
     </Card>
   );

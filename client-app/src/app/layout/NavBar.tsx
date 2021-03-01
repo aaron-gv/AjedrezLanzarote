@@ -1,13 +1,11 @@
 import React from 'react';
 import Media from 'react-media';
 import { Button, Container, Menu } from 'semantic-ui-react';
+import { useStore } from '../stores/store';
 
-interface Props {
-    openForm: () => void;
-}
 
-export default function NavBar({openForm} : Props) {
-    
+export default function NavBar() {
+    const {eventoStore} = useStore();
     return (
         <>
         <Media query='(max-width: 599px)'>
@@ -35,7 +33,7 @@ export default function NavBar({openForm} : Props) {
                         <Menu.Item name="Noticias" />
                         <Menu.Item name="Patrocinadores" />
                         <Menu.Item>
-                            <Button positive content='Crear Evento' onClick={openForm} />
+                            <Button positive content='Crear Evento' onClick={() => eventoStore.openForm()} />
                         </Menu.Item>
                     </Container>
                 </Menu>

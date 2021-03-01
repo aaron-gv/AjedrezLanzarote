@@ -1,17 +1,19 @@
+import { observer } from "mobx-react-lite";
 import React, { SyntheticEvent } from "react";
 import { Button, Icon, Item, Segment } from "semantic-ui-react";
 import { Evento } from "../../../app/models/evento";
+import { useStore } from "../../../app/stores/store";
 
 interface Props {
   evento: Evento;
-  selectEvento: (id: string) => void;
-  deleteEvento: (id: string) => void;
-  submitting: boolean;
   target: string;
   setTarget: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function EventoListItem({evento, target, setTarget, selectEvento, deleteEvento, submitting} : Props) {
+export default observer(function EventoListItem({ evento, target, setTarget} : Props) {
+    const {eventoStore} = useStore();
+    const {deleteEvento, loading, selectEvento} = eventoStore;
+
     function handleEventoDelete(e: SyntheticEvent<HTMLButtonElement>, id: string) {
         setTarget(e.currentTarget.name)
         deleteEvento(id);
@@ -42,9 +44,9 @@ export default function EventoListItem({evento, target, setTarget, selectEvento,
         </Segment>
         <Segment clearing>
             <Button onClick={() => selectEvento(evento.id)} color='teal' floated='right' content='info' />
-            <Button name={evento.id} loading={submitting && target===evento.id} onClick={(e) => handleEventoDelete(e, evento.id)} color='red' floated='right' content='borrar' />
+            <Button name={evento.id} loading={loading && target===evento.id} onClick={(e) => handleEventoDelete(e, evento.id)} color='red' floated='right' content='borrar' />
         </Segment>
     </Segment.Group>
 
   );
-}
+})

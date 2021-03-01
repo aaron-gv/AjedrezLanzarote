@@ -12,7 +12,7 @@ interface Props {
 export default function Dashboard({eventos, submitting, selectEvento, deleteEvento} : Props) {
     return (
         <>
-            <EventoList eventos={eventos} submitting={submitting} selectEvento={selectEvento} deleteEvento={deleteEvento} />
+            <EventoList />
         </>
     )
 }
