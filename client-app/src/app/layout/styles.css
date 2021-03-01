@@ -1,0 +1,6 @@
+body {
+  background-color: #EAEAEA !important;
+}
+.ui.top.fixed.menu {
+  linear-gradient : (90deg, rgba(231,231,231,1) 0%, rgba(255,255,255,1) 35%, rgba(255,255,255,1) 65%, rgba(231,231,231,1) 100%);
+}
