@@ -27,8 +27,7 @@ namespace Application.Eventos
 
             public async Task<Result<Evento>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var evento = new Evento();
-                evento = await _context.Eventos.Where(x => x.Url == request.Url).FirstOrDefaultAsync();
+                var evento = await _context.Eventos.Where(x => x.Url == request.Url).FirstOrDefaultAsync();
                 return Result<Evento>.Success(evento);
             }
         }

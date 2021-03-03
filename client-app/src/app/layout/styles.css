@@ -4,3 +4,11 @@ body {
 .ui.top.fixed.menu {
   linear-gradient : (90deg, rgba(231,231,231,1) 0%, rgba(255,255,255,1) 35%, rgba(255,255,255,1) 65%, rgba(231,231,231,1) 100%);
 }
+
+.Calendar {
+  width: 100% !important;
+  box-shadow:  1px 2px 0 rgb(34 36 38 / 15%) !important;
+  border: 1px solid rgba(34,36,38,.15) !important;
+  border-radius: 0% !important;
+  
+}

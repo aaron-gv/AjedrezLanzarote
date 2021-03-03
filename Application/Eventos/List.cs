@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,12 @@ namespace Application.Eventos
 {
     public class List
     {
-        public class Query : IRequest<List<Evento>>
+        public class Query : IRequest<Result<List<Evento>>>
         {
 
         }
 
-        public class Handler : IRequestHandler<Query, List<Evento>>
+        public class Handler : IRequestHandler<Query, Result<List<Evento>>>
         {
             private readonly DataContext _context;
             private readonly ILogger<List> _logger;
@@ -28,13 +29,12 @@ namespace Application.Eventos
 
             }
 
-            public async Task<List<Evento>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<Evento>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 
                 try
                 {
-                    var eventos = await _context.Eventos.ToListAsync(cancellationToken);
-                    return eventos;
+                    return Result<List<Evento>>.Success(await _context.Eventos.ToListAsync(cancellationToken));
                 }
                 catch (Exception ex) when (ex is TaskCanceledException)
                 {

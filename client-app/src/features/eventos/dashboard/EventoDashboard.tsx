@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
+import EventoFilters from "./EventoFilters";
 import EventoList from "./EventoList";
 
 export default observer(function DashboardExtended() {
@@ -23,7 +24,7 @@ export default observer(function DashboardExtended() {
         <EventoList />
       </Grid.Column>
       <Grid.Column width='6'>
-        <h2>Filtro de eventos</h2>
+        <EventoFilters />
       </Grid.Column>
     </Grid>
   );

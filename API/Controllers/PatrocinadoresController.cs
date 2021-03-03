@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Application.Patrocinadores;
 using Domain;
@@ -19,31 +20,32 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Patrocinador>>> GetPatrocinadores()
+        public async Task<IActionResult> GetPatrocinadores(CancellationToken ct)
         {
-            return await _context.Patrocinadores.ToListAsync();
+            return HandleResult(await Mediator.Send(new List.Query(), ct));
         }
         [HttpGet("{url}")]
-        public async Task<ActionResult<Patrocinador>> GetPatrocinador(string url)
+        public async Task<IActionResult> GetPatrocinador(string url)
         {
-            return await _context.Patrocinadores.Where(b => b.Url == url).FirstOrDefaultAsync();
+            return HandleResult(await Mediator.Send(new Details.Query{Url = url}));
         }
-                [HttpPost]
+
+        [HttpPost]
         public async Task<IActionResult> CreatePatrocinador(Patrocinador patrocinador)
         {
-            return Ok(await Mediator.Send(new Create.Command {Patrocinador = patrocinador}));
+            return HandleResult(await Mediator.Send(new Create.Command {Patrocinador = patrocinador}));
         }
         
         [HttpPut("{id}")]
         public async Task<IActionResult> EditPatrocinador(Guid id, Patrocinador patrocinador)
         {
             patrocinador.Id = id;
-            return Ok(await Mediator.Send(new Edit.Command{Patrocinador = patrocinador}));
+            return HandleResult(await Mediator.Send(new Edit.Command{Patrocinador = patrocinador}));
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatrocinador(Guid id)
         {
-            return Ok(await Mediator.Send(new Delete.Command{Id = id}));
+            return HandleResult(await Mediator.Send(new Delete.Command{Id = id}));
         }
     }
 }

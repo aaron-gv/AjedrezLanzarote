@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using AutoMapper;
 using Domain;
 using MediatR;
@@ -9,13 +10,13 @@ namespace Application.Patrocinadores
 {
     public class Edit
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
             public Patrocinador Patrocinador { get; set; }
 
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -26,12 +27,15 @@ namespace Application.Patrocinadores
 
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var patrocinador = await _context.Patrocinadores.FindAsync(request.Patrocinador.Id);
                 _mapper.Map(request.Patrocinador, patrocinador);
-                await _context.SaveChangesAsync();
-                return Unit.Value;
+                var result = await _context.SaveChangesAsync() > 0;
+                
+                if (!result) return Result<Unit>.Failure("Fallo al editar patrocinador");
+                
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

@@ -31,6 +31,7 @@ export default function NavBar() {
                         <Menu.Item name="Eventos" as={NavLink} to={'/eventos'} />
                         <Menu.Item name="Noticias" as={NavLink} to={'/noticias'} />
                         <Menu.Item name="Patrocinadores" as={NavLink} to={'/patrocinadores'} />
+                        <Menu.Item name="Errors" as={NavLink} to={'/errors'} />
                         <Menu.Item>
                             <Button as={NavLink} to={'/crearEvento'} positive content='Crear Evento' />
                         </Menu.Item>
