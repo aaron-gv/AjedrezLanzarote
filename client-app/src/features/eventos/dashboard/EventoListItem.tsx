@@ -12,7 +12,7 @@ interface Props {
 
 export default observer(function EventoListItem({ evento, target, setTarget} : Props) {
     const {eventoStore} = useStore();
-    const {deleteEvento, loading, selectEvento} = eventoStore;
+    const {deleteEvento, loading} = eventoStore;
 
     function handleEventoDelete(e: SyntheticEvent<HTMLButtonElement>, id: string) {
         setTarget(e.currentTarget.name)
@@ -43,7 +43,7 @@ export default observer(function EventoListItem({ evento, target, setTarget} : P
             {evento.description}
         </Segment>
         <Segment clearing>
-            <Button onClick={() => selectEvento(evento.id)} color='teal' floated='right' content='info' />
+            <Button  color='teal' floated='right' content='info' />
             <Button name={evento.id} loading={loading && target===evento.id} onClick={(e) => handleEventoDelete(e, evento.id)} color='red' floated='right' content='borrar' />
         </Segment>
     </Segment.Group>

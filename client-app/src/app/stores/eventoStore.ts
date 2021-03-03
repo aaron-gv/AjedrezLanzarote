@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Evento } from "../models/evento";
-import { v4 as uuid } from "uuid";
 
 export default class EventoStore {
   eventosRegistry = new Map<string, Evento>();
@@ -20,16 +19,14 @@ export default class EventoStore {
     );
   }
 
+  
+
   loadEventos = async () => {
+    this.loadingInitial = true;
     try {
       const eventos = await agent.Eventos.list();
       eventos.forEach((evento) => {
-        evento.startDate = evento.startDate.split("T")[0];
-        evento.endDate = evento.endDate.split("T")[0];
-        runInAction(() => {
-            this.eventosRegistry.set(evento.id, evento);
-        })
-        
+        this.setEvento(evento);
       });
       this.setLoadingInitial(false);
     } catch (error) {
@@ -38,30 +35,57 @@ export default class EventoStore {
     }
   };
 
+  private getEventoByUrl(url: string) {
+    let evento = undefined;
+    Array.from(this.eventosRegistry.entries()).forEach(e => {
+      if (e[1].url === url) {
+        evento = e[1];
+      }
+    });
+    return evento;
+  }
+  loadEventoByUrl = async (url: string) => {
+
+    let evento = this.getEventoByUrl(url);
+    if (evento) {
+      this.selectedEvento = evento;
+      return evento;
+    } else {
+      this.loadingInitial = true;
+      try {
+        let evento = await agent.Eventos.details(url);
+        this.setEvento(evento);
+        runInAction(() => {
+          this.selectedEvento = evento;
+          this.loadingInitial = false;
+        })
+        return evento;
+      } catch (error) {
+        console.log(error);
+        runInAction(() => {
+          this.loadingInitial = false;
+        })
+      }
+    }
+  }
+
+  private setEvento = (evento: Evento) => {
+    evento.startDate = evento.startDate.split("T")[0];
+    evento.endDate = evento.endDate.split("T")[0];
+    this.eventosRegistry.set(evento.id, evento);
+  }
+
+  private getEvento = (id: string) => {
+    return this.eventosRegistry.get(id);
+  }
+
   setLoadingInitial = (state: boolean) => {
     this.loadingInitial = state;
   };
 
-  selectEvento = (id: string) => {
-    this.selectedEvento = this.eventosRegistry.get(id);
-  };
-
-  cancelSelectedEvento = () => {
-    this.selectedEvento = undefined;
-  };
-
-  openForm = (id?: string) => {
-    id ? this.selectEvento(id) : this.cancelSelectedEvento();
-    this.editMode = true;
-  };
-
-  closeForm = () => {
-    this.editMode = false;
-  };
-
+  
   createEvento = async (evento: Evento) => {
     this.loading = true;
-    evento.id = uuid();
     try {
       await agent.Eventos.create(evento);
       runInAction(() => {
@@ -102,7 +126,6 @@ export default class EventoStore {
       await agent.Eventos.delete(id);
       runInAction(() => {
         this.eventosRegistry.delete(id);
-        if (this.selectedEvento?.id === id) this.cancelSelectedEvento();
         this.loading = false;
       });
     } catch (error) {

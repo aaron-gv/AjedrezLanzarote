@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { SyntheticEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Icon, Item, Segment } from 'semantic-ui-react';
 import { useStore } from '../../../app/stores/store';
 
@@ -7,7 +8,7 @@ import { useStore } from '../../../app/stores/store';
 
 export default observer(function EventoList(){
     const {eventoStore} = useStore();
-    const {eventosByDate, selectEvento, deleteEvento, loading} = eventoStore;
+    const {eventosByDate,  deleteEvento, loading} = eventoStore;
     const [target, setTarget] = useState('');
 
     function handleEventoDelete(e: SyntheticEvent<HTMLButtonElement>, id: string) {
@@ -42,7 +43,7 @@ export default observer(function EventoList(){
                         {evento.description}
                     </Segment>
                     <Segment clearing>
-                        <Button onClick={() => selectEvento(evento.id)} color='teal' floated='right' content='info' />
+                        <Button as={Link} to={`/eventos/${evento.url}`} color='teal' floated='right' content='info' />
                         <Button name={evento.id} loading={loading && target===evento.id} onClick={(e) => handleEventoDelete(e, evento.id)} color='red' floated='right' content='borrar' />
                     </Segment>
                 </Segment.Group>

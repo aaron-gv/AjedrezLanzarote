@@ -1,27 +1,29 @@
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect } from "react";
 import { Grid } from "semantic-ui-react";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
-import EventoDetails from "../details/EventoDetails";
-import EventoForm from "../form/EventoForm";
 import EventoList from "./EventoList";
 
 export default observer(function DashboardExtended() {
-    const {eventoStore} = useStore();
-    const {selectedEvento, editMode} = eventoStore;
+  const {eventoStore} = useStore();
+  const {loading, loadingInitial, eventosRegistry, loadEventos} = eventoStore;
+
+
+
+  useEffect(() => {
+    if (eventosRegistry.size <= 1)  loadEventos();
+  }, [eventosRegistry.size, loadEventos]);
+
+  if (loadingInitial || loading) return <LoadingComponent content='Cargando app...' />;
+
   return (
     <Grid>
       <Grid.Column width='10'>
         <EventoList />
       </Grid.Column>
       <Grid.Column width='6'>
-        {selectedEvento && !editMode && (
-          <EventoDetails />
-        )}
-        {editMode && 
-            <EventoForm />
-        }
-        
+        <h2>Filtro de eventos</h2>
       </Grid.Column>
     </Grid>
   );
