@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import React from 'react'
 import {Segment, Grid, Icon} from 'semantic-ui-react'
@@ -27,7 +28,7 @@ export default observer(function EventoDetailedInfo({evento}: Props) {
                     </Grid.Column>
                     <Grid.Column width={15}>
             <span>
-              {evento.startDate} - {evento.endDate}
+            {format(evento.startDate!, 'dd MMM yyyy h:mm aa')} - {format(evento.endDate!, 'dd MMM yyyy h:mm aa')}
             </span>
                     </Grid.Column>
                 </Grid>

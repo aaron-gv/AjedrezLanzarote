@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import React, { SyntheticEvent, useState } from "react";
 import { Link } from "react-router-dom";
@@ -40,7 +41,7 @@ export default observer(function EventoListItem({
       </Segment>
       <Segment>
         <span>
-          <Icon name='clock' /> {evento.startDate} - {evento.endDate}
+          <Icon name='clock' /> {format(evento.startDate!, 'dd MMM yyyy h:mm aa')} - {format(evento.endDate!, 'dd MMM yyyy h:mm aa')}
           <Icon name='marker' /> {evento.venue}
         </span>
       </Segment>

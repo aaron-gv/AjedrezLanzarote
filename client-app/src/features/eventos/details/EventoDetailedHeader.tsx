@@ -1,5 +1,7 @@
+import { format } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import React from 'react'
+import { Link } from 'react-router-dom';
 import {Button, Header, Item, Segment, Image} from 'semantic-ui-react'
 import { Evento } from '../../../app/models/evento';
 
@@ -34,10 +36,10 @@ export default observer (function EventoDetailedHeader({evento}: Props) {
                                     content={evento.title}
                                     style={{color: 'white'}}
                                 />
-                                <p>{evento.startDate} - {evento.endDate}</p>
+                                <p>{format(evento.startDate!, 'dd MMM yyyy h:mm aa')} - {format(evento.endDate!, 'dd MMM yyyy h:mm aa')}</p>
                                 
                                 <p>
-                                    Hosted by <strong>Bob</strong>
+                                    Organizado por <strong>Bob</strong>
                                 </p>
                             </Item.Content>
                         </Item>
@@ -45,10 +47,10 @@ export default observer (function EventoDetailedHeader({evento}: Props) {
                 </Segment>
             </Segment>
             <Segment clearing attached='bottom'>
-                <Button color='teal'>Join evento</Button>
-                <Button>Cancel attendance</Button>
-                <Button color='orange' floated='right'>
-                    Manage Event
+                <Button color='teal'>Asistir</Button>
+                <Button>No ir</Button>
+                <Button as={Link} to={`/editar/${evento.url}`} color='orange' floated='right'>
+                    Editar evento
                 </Button>
             </Segment>
         </Segment.Group>

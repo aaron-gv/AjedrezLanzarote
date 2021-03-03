@@ -12,3 +12,10 @@ body {
   border-radius: 0% !important;
   
 }
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+.ui.vertical.menu .item:before{
+  display: none;
+}

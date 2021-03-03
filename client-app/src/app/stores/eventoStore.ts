@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Evento } from "../models/evento";
@@ -7,7 +8,7 @@ export default class EventoStore {
   selectedEvento: Evento | undefined = undefined;
   editMode = false;
   loading = false;
-  loadingInitial = true;
+  loadingInitial = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -15,8 +16,18 @@ export default class EventoStore {
 
   get eventosByDate() {
     return Array.from(this.eventosRegistry.values()).sort(
-      (a, b) => Date.parse(b.startDate) - Date.parse(a.startDate)
+      (a, b) => b.startDate!.getTime() - a.startDate!.getTime()
     );
+  }
+
+  get groupedEventos() {
+    return Object.entries(
+      this.eventosByDate.reduce((eventos, evento) => {
+        const startDate = format(evento.startDate!,'dd MMM yyyy');
+        eventos[startDate] = eventos[startDate] ? [...eventos[startDate], evento] : [evento];
+        return eventos;
+      }, {} as {[key: string]: Evento[]})
+    )
   }
 
   
@@ -70,8 +81,8 @@ export default class EventoStore {
   }
 
   private setEvento = (evento: Evento) => {
-    evento.startDate = evento.startDate.split("T")[0];
-    evento.endDate = evento.endDate.split("T")[0];
+    evento.startDate = new Date(evento.startDate!);
+    evento.endDate = new Date(evento.endDate!);
     this.eventosRegistry.set(evento.id, evento);
   }
 

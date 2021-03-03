@@ -11,11 +11,17 @@ export default function EventoFilters() {
         <Header icon='filter' attached color='grey' content='Filtros' />
         <Menu.Item content='Finalizados' />
         <Menu.Item content='Abiertos' />
-        <Menu.Item content='Modalidad on-line'>
-          <Segment clearing style={{border:'none', padding:'2px', margin:'2px', boxShadow:'none'}}><Checkbox style={{float: 'left'}} fitted value='online' defaultChecked={false} /><Label content="online" style={{float: 'left'}} />  </Segment>
-          <Segment clearing style={{border:'none', padding:'2px', margin:'2px', boxShadow:'none'}} ><Checkbox value='presencial' defaultChecked={true} style={{float: 'left'}} /> <Label style={{float: 'left'}} content="presencial" /></Segment>
-        </Menu.Item>
         
+        <Segment clearing>
+            <>
+            <Label content="online" style={{float: 'left'}} />
+            <Checkbox style={{float: 'left'}} fitted value='online' defaultChecked={false} />
+            </>
+            <>
+            <Label  content="presencial" style={{float: 'left', border:'none'}} />
+            <Checkbox style={{float: 'left', border:'none'}} fitted value='presencial' defaultChecked={false} />
+            </>
+        </Segment>
       </Menu>
       <Calendar locale={locale.es} />
     </>
