@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Noticias;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -13,13 +14,13 @@ namespace API.Controllers
 {
     public class NoticiasController : BaseApiController
     {
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetNoticias(CancellationToken ct)
         {
             return HandleResult(await Mediator.Send(new List.Query(), ct));
         }
-
+        [AllowAnonymous]
         [HttpGet("{url}")]
         public async Task<IActionResult> GetNoticia(string url)
         {

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Application.Core;
 using AutoMapper;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -15,7 +16,13 @@ namespace Application.Patrocinadores
             public Patrocinador Patrocinador { get; set; }
 
         }
-
+        public class CommandValidator : AbstractValidator<Command>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.Patrocinador).SetValidator(new PatrocinadorValidator());
+            }
+        }
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;

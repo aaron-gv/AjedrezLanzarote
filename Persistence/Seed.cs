@@ -3,13 +3,74 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence
 {
     public class Seed
     {
-        public static async Task SeedData(DataContext context)
+        public static async Task SeedData(DataContext context, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
         {
+            var roles = new List<AppRole>
+                {
+                    new AppRole{
+                        Name = "Administrador",
+                        Level = 5
+                    },
+                    new AppRole{
+                        Name = "Usuario",
+                        Level = 0
+                    },
+                    new AppRole{
+                        Name = "Desarrollador",
+                        Level = 6
+                    }
+                };
+            if (!roleManager.Roles.Any())
+            {
+                
+                foreach (var role in roles)
+                {
+                    await roleManager.CreateAsync(role);
+                }
+            }
+            if (!userManager.Users.Any())
+            {
+                var users = new List<AppUser>
+                {
+                    new AppUser{
+                        DisplayName = "aaron",
+                        UserName = "aaron",
+                        Email = "agvinbox@gmail.com"
+                    },
+                    new AppUser{
+                        DisplayName = "miguel",
+                        UserName = "miguel",
+                        Email = "lztuba@gmail.com"
+                    },
+                    new AppUser{
+                        DisplayName = "bob",
+                        UserName = "bob",
+                        Email = "bob@test.com"
+                    }
+                };
+
+                foreach (var user in users)
+                {
+                    await userManager.CreateAsync(user, "Pa$$w0rd122");
+                    if (user.UserName=="miguel"){
+                        await userManager.AddToRoleAsync(user,"Administrador");
+                    }                      
+                    else if (user.UserName == "aaron") {
+                        await userManager.AddToRoleAsync(user,"Desarrollador");
+                    }
+                    else
+                    {
+                        await userManager.AddToRoleAsync(user,"Usuario");
+                    }
+                }
+            }
+            
             var doWork = false;
             if (!context.Eventos.Any())
             {
