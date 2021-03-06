@@ -16,21 +16,21 @@ namespace Persistence
         public DbSet<Patrocinador> Patrocinadores { get; set; }
         public DbSet<AppRole> Role { get; set; }
 
-        public DbSet<EventoAttendee> EventoAttendees {get; set;}
+        public DbSet<EventoAsistente> EventoAsistentes {get; set;}
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<EventoAttendee>(x => x.HasKey(aa => new {aa.AppUserId, aa.EventoId}));
+            builder.Entity<EventoAsistente>(x => x.HasKey(aa => new {aa.AppUserId, aa.EventoId}));
 
-            builder.Entity<EventoAttendee>()
+            builder.Entity<EventoAsistente>()
                 .HasOne(u => u.AppUser)
                 .WithMany(a => a.Eventos)
                 .HasForeignKey(aa => aa.AppUserId);
-            builder.Entity<EventoAttendee>()
+            builder.Entity<EventoAsistente>()
                 .HasOne(u => u.Evento)
-                .WithMany(a => a.Attendees)
+                .WithMany(a => a.Asistentes)
                 .HasForeignKey(aa => aa.EventoId);
         }
     }

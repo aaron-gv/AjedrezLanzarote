@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210306122603_EventoAsistente")]
+    partial class EventoAsistente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,9 +105,6 @@ namespace Persistence.Migrations
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsCancelled")
-                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
@@ -329,13 +328,8 @@ namespace Persistence.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
-
-                    b.HasIndex("AppUserId");
 
                     b.HasDiscriminator().HasValue("AppRole");
                 });
@@ -410,18 +404,9 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.AppRole", b =>
-                {
-                    b.HasOne("Domain.AppUser", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("AppUserId");
-                });
-
             modelBuilder.Entity("Domain.AppUser", b =>
                 {
                     b.Navigation("Eventos");
-
-                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("Domain.Evento", b =>

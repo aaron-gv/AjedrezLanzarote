@@ -34,9 +34,7 @@ namespace Persistence
                     await roleManager.CreateAsync(role);
                 }
             }
-            if (!userManager.Users.Any())
-            {
-                var users = new List<AppUser>
+            var users = new List<AppUser>
                 {
                     new AppUser{
                         DisplayName = "aaron",
@@ -54,6 +52,9 @@ namespace Persistence
                         Email = "bob@test.com"
                     }
                 };
+            if (!userManager.Users.Any())
+            {
+                
 
                 foreach (var user in users)
                 {
@@ -87,6 +88,18 @@ namespace Persistence
                     Category = "online",
                     City = "London",
                     Venue = "Pub",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[0],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[2],
+                            IsHost = false
+                        },
+                    }
                 },
                 new Evento
                 {
@@ -98,6 +111,18 @@ namespace Persistence
                     Category = "online",
                     City = "Paris",
                     Venue = "Louvre",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[1],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[2],
+                            IsHost = false
+                        },
+                    }
                 },
                 new Evento
                 {
@@ -109,6 +134,18 @@ namespace Persistence
                     Category = "online",
                     City = "London",
                     Venue = "Natural History Museum",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[1],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[0],
+                            IsHost = false
+                        },
+                    }
                 },
                 new Evento
                 {
@@ -120,6 +157,18 @@ namespace Persistence
                     Category = "online",
                     City = "London",
                     Venue = "O2 Arena",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[0],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[1],
+                            IsHost = false
+                        },
+                    }
                 },
                 new Evento
                 {
@@ -131,6 +180,23 @@ namespace Persistence
                     Category = "online",
                     City = "London",
                     Venue = "Another pub",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[0],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[1],
+                            IsHost = false
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[2],
+                            IsHost = false
+                        },
+                    }
                 },
                 new Evento
                 {
@@ -142,6 +208,18 @@ namespace Persistence
                     Category = "online",
                     City = "London",
                     Venue = "Yet another pub",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[0],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[1],
+                            IsHost = false
+                        },
+                    }
                 },
                 new Evento
                 {
@@ -153,6 +231,18 @@ namespace Persistence
                     Category = "presencial",
                     City = "London",
                     Venue = "Just another pub",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[0],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[1],
+                            IsHost = false
+                        },
+                    }
                 },
                 new Evento
                 {
@@ -164,6 +254,18 @@ namespace Persistence
                     Category = "presencial",
                     City = "London",
                     Venue = "Roundhouse Camden",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[1],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[0],
+                            IsHost = false
+                        },
+                    }
                 },
                 new Evento
                 {
@@ -175,6 +277,18 @@ namespace Persistence
                     Category = "presencial",
                     City = "London",
                     Venue = "Somewhere on the Thames",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[1],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[0],
+                            IsHost = false
+                        },
+                    }
                 },
                 new Evento
                 {
@@ -186,6 +300,18 @@ namespace Persistence
                     Category = "presencial",
                     City = "London",
                     Venue = "Cinema",
+                    Asistentes = {
+                        new EventoAsistente
+                        {
+                            AppUser = users[0],
+                            IsHost = true
+                        },
+                        new EventoAsistente
+                        {
+                            AppUser = users[1],
+                            IsHost = false
+                        },
+                    }
                 }
             };
                 await context.Eventos.AddRangeAsync(eventos);

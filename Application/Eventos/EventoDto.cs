@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Application.Eventos.Profiles;
 
-namespace Domain
+namespace Application.Eventos
 {
-    public class Evento
+    public class EventoDto
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -14,9 +15,8 @@ namespace Domain
         public string Category { get; set; }
         public string City { get; set; }
         public string Venue { get; set; }
-
+        public string HostUsername { get; set; }
         public bool IsCancelled {get; set;}
-        
-        public ICollection<EventoAsistente> Asistentes { get; set; } = new List<EventoAsistente>();
+        public ICollection<Profile> Asistentes {get; set;}
     }
 }

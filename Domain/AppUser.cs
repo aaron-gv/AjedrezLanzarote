@@ -7,6 +7,7 @@ namespace Domain
     {
         public string DisplayName { get; set; }
         public string Bio { get; set; }
-        public ICollection<EventoAttendee> Eventos { get; set; }
+        public ICollection<EventoAsistente> Eventos { get; set; }
+        public IList<AppRole> Roles {get; set;} = new List<AppRole>();
     }
 }

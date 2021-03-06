@@ -9,8 +9,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210306100241_EventoAttendee")]
-    partial class EventoAttendee
+    [Migration("20210306124800_AddCancelledProperty")]
+    partial class AddCancelledProperty
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -106,6 +106,9 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
@@ -123,7 +126,7 @@ namespace Persistence.Migrations
                     b.ToTable("Eventos");
                 });
 
-            modelBuilder.Entity("Domain.EventoAttendee", b =>
+            modelBuilder.Entity("Domain.EventoAsistente", b =>
                 {
                     b.Property<string>("AppUserId")
                         .HasColumnType("TEXT");
@@ -138,7 +141,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("EventoId");
 
-                    b.ToTable("EventoAttendees");
+                    b.ToTable("EventoAsistentes");
                 });
 
             modelBuilder.Entity("Domain.Noticia", b =>
@@ -334,7 +337,7 @@ namespace Persistence.Migrations
                     b.HasDiscriminator().HasValue("AppRole");
                 });
 
-            modelBuilder.Entity("Domain.EventoAttendee", b =>
+            modelBuilder.Entity("Domain.EventoAsistente", b =>
                 {
                     b.HasOne("Domain.AppUser", "AppUser")
                         .WithMany("Eventos")
@@ -343,7 +346,7 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Evento", "Evento")
-                        .WithMany("Attendees")
+                        .WithMany("Asistentes")
                         .HasForeignKey("EventoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -411,7 +414,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Evento", b =>
                 {
-                    b.Navigation("Attendees");
+                    b.Navigation("Asistentes");
                 });
 #pragma warning restore 612, 618
         }
