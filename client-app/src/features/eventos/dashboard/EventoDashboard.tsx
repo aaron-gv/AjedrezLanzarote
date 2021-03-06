@@ -16,7 +16,7 @@ export default observer(function DashboardExtended() {
     if (eventosRegistry.size <= 1)  loadEventos();
   }, [eventosRegistry.size, loadEventos]);
 
-  if (loadingInitial || loading) return <LoadingComponent content='Cargando app...' />;
+  if (loadingInitial || loading) return <LoadingComponent content='Cargando eventos...' />;
 
   return (
     <Grid>

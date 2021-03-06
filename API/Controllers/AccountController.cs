@@ -50,13 +50,15 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+            if (await _userManager.Users.AnyAsync(x => x.Email.ToUpper() == registerDto.Email.ToUpper()))
             {
-                return BadRequest("Email taken");   
+                ModelState.AddModelError("email", "Email Taken");
+                return ValidationProblem(ModelState);
             }
-            if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
+            if (await _userManager.Users.AnyAsync(x => x.UserName.ToUpper() == registerDto.Username.ToUpper()))
             {
-                return BadRequest("Username taken");   
+                ModelState.AddModelError("username", "Username Taken");
+                return ValidationProblem(ModelState);
             }
              
             var user = new AppUser 
@@ -70,13 +72,13 @@ namespace API.Controllers
             
             if (result.Succeeded)
             {
-                var addRoles = await _userManager.AddToRoleAsync(user, "Usuario");
+                await _userManager.AddToRoleAsync(user, "Usuario");
                 
                 var roles = await _userManager.GetRolesAsync(user);
                 return CreateUserObject(user, roles);
             }
-
-            return BadRequest("Problem registering the user");
+            ModelState.AddModelError("user", "Problem registering the user");
+            return ValidationProblem(ModelState);
         }
 
         [Authorize]
