@@ -4,6 +4,7 @@ using Application.Core;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Patrocinadores
@@ -32,6 +33,21 @@ namespace Application.Patrocinadores
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+                var uniquePatrocinador = await _context.Patrocinadores.FirstOrDefaultAsync(x => x.Url == request.Patrocinador.Url);    
+                if (uniquePatrocinador != null)
+                {
+                    return Result<Unit>.Failure("La URL '"+request.Patrocinador.Url+"' ya existe, y debe ser única. Por favor prueba otra diferente.");
+                }
+                
+                if (request.Patrocinador.Url.Length > 90)
+                {
+                    return Result<Unit>.Failure("La URL '"+request.Patrocinador.Url+"' es demasiado larga, no debe superar los 90 caracteres.");
+                }
+                
+                if (request.Patrocinador.Title.Length > 220)
+                {
+                    return Result<Unit>.Failure("El título '"+request.Patrocinador.Url+"' es demasiado largo, no debe superar los 220 caracteres.");
+                }
                 _context.Patrocinadores.Add(request.Patrocinador);
 
                 var result = await _context.SaveChangesAsync() > 0;

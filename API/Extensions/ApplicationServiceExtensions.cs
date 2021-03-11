@@ -29,6 +29,7 @@ namespace API.Extensions
                 });
             });
             services.AddMediatR(typeof(Application.Eventos.List.Handler).Assembly);
+            services.AddMediatR(typeof(Infrastructure.Files.ImageUpload.Handler).Assembly);
             services.AddMediatR(typeof(Application.Noticias.List.Handler).Assembly);
             services.AddMediatR(typeof(Application.Patrocinadores.List.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);

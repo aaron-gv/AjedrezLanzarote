@@ -99,7 +99,9 @@ namespace Persistence
                             AppUser = users[2],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Evento
                 {
@@ -122,7 +124,10 @@ namespace Persistence
                             AppUser = users[2],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
+                    
                 },
                 new Evento
                 {
@@ -145,7 +150,9 @@ namespace Persistence
                             AppUser = users[0],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Evento
                 {
@@ -168,7 +175,9 @@ namespace Persistence
                             AppUser = users[1],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Evento
                 {
@@ -196,7 +205,9 @@ namespace Persistence
                             AppUser = users[2],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Evento
                 {
@@ -219,7 +230,9 @@ namespace Persistence
                             AppUser = users[1],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Evento
                 {
@@ -242,7 +255,9 @@ namespace Persistence
                             AppUser = users[1],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Evento
                 {
@@ -265,7 +280,9 @@ namespace Persistence
                             AppUser = users[0],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Evento
                 {
@@ -288,7 +305,9 @@ namespace Persistence
                             AppUser = users[0],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Evento
                 {
@@ -311,7 +330,9 @@ namespace Persistence
                             AppUser = users[1],
                             IsHost = false
                         },
-                    }
+                    },
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 }
             };
                 await context.Eventos.AddRangeAsync(eventos);
@@ -329,6 +350,8 @@ namespace Persistence
                     Date = DateTime.Now,
                     Url = "Present-1",
                     Body = "Noticia 2 months ago",
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Noticia
                 {
@@ -336,6 +359,8 @@ namespace Persistence
                     Date = DateTime.Now.AddMonths(-1),
                     Url = "Past-1",
                     Body = "Noticia 1 months ago",
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Noticia
                 {
@@ -343,6 +368,8 @@ namespace Persistence
                     Date = DateTime.Now.AddMonths(-2),
                     Url = "Past-2",
                     Body = "Noticia 2 months ago",
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
                 new Noticia
                 {
@@ -350,6 +377,8 @@ namespace Persistence
                     Date = DateTime.Now.AddMonths(-3),
                     Url = "Past-3",
                     Body = "Noticia 3 months ago",
+                    AppUserId = users[0].Id,
+                    AppUser = users[0]
                 },
             };
                 await context.Noticias.AddRangeAsync(noticias);

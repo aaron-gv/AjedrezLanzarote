@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Patrocinadores
@@ -36,6 +37,12 @@ namespace Application.Patrocinadores
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+                var uniquePatrocinador = await _context.Patrocinadores.FirstOrDefaultAsync(x => x.Url == request.Patrocinador.Url && x.Id != request.Patrocinador.Id);    
+                if (uniquePatrocinador != null)
+                {
+                    return Result<Unit>.Failure("La URL '"+request.Patrocinador.Url+"' ya existe para otro patrocinador, y debe ser única. Por favor prueba otra diferente.");
+                }
+                
                 var patrocinador = await _context.Patrocinadores.FindAsync(request.Patrocinador.Id);
                 _mapper.Map(request.Patrocinador, patrocinador);
                 var result = await _context.SaveChangesAsync() > 0;

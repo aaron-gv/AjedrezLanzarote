@@ -16,3 +16,12 @@ body {
 .react-datepicker-wrapper {
   width: 100%;
 }
+.pswp-thumbnail{
+  float: left;
+  position: relative;
+  margin-left: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  max-width: 80px;
+  max-height: 80px;
+}

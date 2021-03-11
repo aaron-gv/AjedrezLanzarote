@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Patrocinadores;
 using Domain;
+using Infrastructure.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,19 +37,55 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePatrocinador(Patrocinador patrocinador)
         {
-            return HandleResult(await Mediator.Send(new Create.Command {Patrocinador = patrocinador}));
+            var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            var firstResult = await Mediator.Send(new Create.Command {Patrocinador = patrocinador});
+            if (!firstResult.IsSuccess) {
+                    ModelState.AddModelError("some", firstResult.Error);
+                    await Mediator.Send(new EventsRecord.Command{EntityId = patrocinador.Id.ToString(), AppUserId = User.FindFirstValue(ClaimTypes.NameIdentifier), Ipv4 = Ip, Entity = "Patrocinador", Action = "CREATE", Status = firstResult.IsSuccess, Error = firstResult.Error});
+                    return ValidationProblem(ModelState);
+                }
+            return await HandleSecurityResult(
+                            firstResult,
+                            patrocinador.Id.ToString(), 
+                            User.FindFirstValue(ClaimTypes.NameIdentifier), 
+                            Ip, 
+                            "Patrocinador", 
+                            "CREATE"
+                        );
         }
         
         [HttpPut("{id}")]
         public async Task<IActionResult> EditPatrocinador(Guid id, Patrocinador patrocinador)
         {
             patrocinador.Id = id;
-            return HandleResult(await Mediator.Send(new Edit.Command{Patrocinador = patrocinador}));
+            var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            var firstResult = await Mediator.Send(new Edit.Command{Patrocinador = patrocinador});
+            if (!firstResult.IsSuccess) {
+                    ModelState.AddModelError("some", firstResult.Error);
+                    await Mediator.Send(new EventsRecord.Command{EntityId = patrocinador.Id.ToString(), AppUserId = User.FindFirstValue(ClaimTypes.NameIdentifier), Ipv4 = Ip, Entity = "Patrocinador", Action = "EDIT", Status = firstResult.IsSuccess, Error = firstResult.Error});
+                    return ValidationProblem(ModelState);
+                }
+            return await HandleSecurityResult(
+                            firstResult,
+                            patrocinador.Id.ToString(), 
+                            User.FindFirstValue(ClaimTypes.NameIdentifier), 
+                            Ip, 
+                            "Patrocinador", 
+                            "EDIT"
+                        );
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePatrocinador(Guid id)
         {
-            return HandleResult(await Mediator.Send(new Delete.Command{Id = id}));
+            var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            return await HandleSecurityResult(
+                            await Mediator.Send(new Delete.Command{Id = id}),
+                            id.ToString(), 
+                            User.FindFirstValue(ClaimTypes.NameIdentifier), 
+                            Ip, 
+                            "Patrocinador", 
+                            "DELETE"
+                        );
         }
     }
 }

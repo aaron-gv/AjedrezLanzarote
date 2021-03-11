@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
@@ -37,6 +38,12 @@ namespace Application.Eventos
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+                var uniqueEvent = await _context.Eventos.FirstOrDefaultAsync (x => x.Url == request.Evento.Url);    
+                if (uniqueEvent != null)
+                {
+                    return Result<Unit>.Failure("La URL '"+(request.Evento.Url).Substring(0,20)+"' ya existe, y debe ser única. Por favor prueba otra diferente.");
+                }
+               
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
                 var asistente = new EventoAsistente
                 {
@@ -46,6 +53,8 @@ namespace Application.Eventos
                 };
 
                 request.Evento.Asistentes.Add(asistente);
+                request.Evento.AppUserId = _userAccessor.GetUserId();
+                request.Evento.AppUser = user;
                 
                 _context.Eventos.Add(request.Evento);
 

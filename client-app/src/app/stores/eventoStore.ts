@@ -1,7 +1,10 @@
 import { format } from "date-fns";
 import { makeAutoObservable, runInAction } from "mobx";
+import { history } from "../..";
 import agent from "../api/agent";
-import { Evento } from "../models/evento";
+import { Evento, EventoFormValues } from "../models/evento";
+import { Profile } from "../models/profile";
+import { store } from "./store";
 
 export default class EventoStore {
   eventosRegistry = new Map<string, Evento>();
@@ -81,8 +84,17 @@ export default class EventoStore {
   }
 
   private setEvento = (evento: Evento) => {
+    const user = store.userStore.user;
+    if (user) {
+      evento.isGoing = evento.asistentes!.some(
+        a => a.username === user.username
+      );
+      evento.isHost = evento.hostUsername === user.username;
+      evento.host = evento.asistentes?.find(x => x.username === evento.hostUsername);
+    }
     evento.startDate = new Date(evento.startDate!);
     evento.endDate = new Date(evento.endDate!);
+
     this.eventosRegistry.set(evento.id, evento);
   }
 
@@ -95,39 +107,42 @@ export default class EventoStore {
   };
 
   
-  createEvento = async (evento: Evento) => {
-    this.loading = true;
+  createEvento = async (evento: EventoFormValues) => {
+    
+    
+    const userStore = store.userStore;
+    evento.appUserId = userStore.getUuid();
+    if (evento.appUserId!.length < 5)
+    {
+      return null;
+    }
+    const asistente = new Profile(userStore.user!);
     try {
-      await agent.Eventos.create(evento);
+      await agent.Eventos.create(evento as EventoFormValues);
+      const newEvento = new Evento(evento as EventoFormValues);
+      newEvento.hostUsername = userStore.user!.username;
+      newEvento.asistentes = [asistente];
+      this.setEvento(newEvento);
       runInAction(() => {
-        this.eventosRegistry.set(evento.id, evento);
-        this.selectedEvento = evento;
-        this.editMode = false;
-        this.loading = false;
+        this.selectedEvento = newEvento;
       });
     } catch (error) {
-      console.log(error);
-      runInAction(() => {
-        this.loading = false;
-      });
+      throw error;
     }
   };
 
-  updateEvento = async (evento: Evento) => {
-    this.loading = true;
+  updateEvento = async (evento: EventoFormValues) => {
     try {
       await agent.Eventos.update(evento);
       runInAction(() => {
-        this.eventosRegistry.set(evento.id, evento);
-        this.selectedEvento = evento;
-        this.editMode = false;
-        this.loading = false;
+        if (evento.id) {
+          let updatedEvento = {...this.getEvento(evento.id), ...evento}
+          this.eventosRegistry.set(evento.id, updatedEvento as Evento)
+          this.selectedEvento = updatedEvento as Evento;
+        }
       });
     } catch (error) {
-      console.log(error);
-      runInAction(() => {
-        this.loading = false;
-      });
+      throw error;
     }
   };
 
@@ -138,7 +153,9 @@ export default class EventoStore {
       runInAction(() => {
         this.eventosRegistry.delete(id);
         this.loading = false;
+        
       });
+      history.push("/eventos");
     } catch (error) {
       console.log(error);
       runInAction(() => {
@@ -146,4 +163,46 @@ export default class EventoStore {
       });
     }
   };
+
+  updateAsistencia = async () => {
+    const user = store.userStore.user;
+    this.loading = true;
+    try {
+      await agent.Eventos.asistir(this.selectedEvento!.url);
+      runInAction(() => {
+        if (this.selectedEvento?.isGoing) {
+          this.selectedEvento.asistentes = 
+            this.selectedEvento.asistentes?.filter(a => a.username!== user?.username);
+          this.selectedEvento.isGoing = false;
+        } else {
+          const asistente = new Profile(user!);
+          this.selectedEvento?.asistentes?.push(asistente);
+          this.selectedEvento!.isGoing = true;
+        }
+        this.eventosRegistry.set(this.selectedEvento?.id!, this.selectedEvento!);
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      runInAction(() => this.loading=false);
+    }
+  }
+
+  cancelEventoToggle = async () => {
+    this.loading = true;
+    try {
+      await agent.Eventos.cancelar(this.selectedEvento!.url);
+      runInAction(() => {
+        this.selectedEvento!.isCancelled = !this.selectedEvento?.isCancelled;
+        this.eventosRegistry.set(this.selectedEvento!.id, this.selectedEvento!);
+      })
+    } catch (error) {
+      console.log(error);
+    } finally {
+      runInAction(() => {
+        this.loading = false;
+      })
+      
+    }
+  }
 }

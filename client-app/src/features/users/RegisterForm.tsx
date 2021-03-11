@@ -17,25 +17,25 @@ export default observer(function LoginForm()
                 error => setErrors({error}))}
 
             validationSchema={Yup.object({
-                displayName: Yup.string().required(),
-                username: Yup.string().required(),
-                email: Yup.string().required().email(),
-                password: Yup.string().required(),
+                displayName: Yup.string().required("Este campo es requerido"),
+                username: Yup.string().required("Este campo es requerido"),
+                email: Yup.string().required("Este campo es requerido").email("Debe tener un formato de email válido"),
+                password: Yup.string().required("Este campo es requerido"),
             })}
         >
             {({handleSubmit, isSubmitting, errors, isValid, dirty}) => (
                 <Form className='ui form error' onSubmit={handleSubmit} autoComplete='off'>
-                    <MyTextInput name='username' placeholder='UserName' />
-                    <MyTextInput name='displayName' placeholder='DisplayName' />
+                    <MyTextInput name='username' placeholder='Nombre de usuario' />
+                    <MyTextInput name='displayName' placeholder='Nombre a mostrar' />
                     <MyTextInput name='email' placeholder='Email' />
-                    <MyTextInput name='password' placeholder='Password' type='password' />
+                    <MyTextInput name='password' placeholder='Contraseña' type='password' />
                     <ErrorMessage
                         name='error' render={() => 
                             <ValidationErrors errors={errors.error} />
                         }
                      />
 
-                    <Button disabled={!isValid || !dirty || isSubmitting} loading={isSubmitting} positive content='Register' type='submit' fluid />
+                    <Button disabled={!isValid || !dirty || isSubmitting} loading={isSubmitting} positive content='Registrar' type='submit' fluid />
                 </Form>
             )}
         </Formik>

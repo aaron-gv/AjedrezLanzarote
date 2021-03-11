@@ -1,72 +1,97 @@
-import { observer } from 'mobx-react-lite';
-import React from 'react';
-import Media from 'react-media';
-import { Link, NavLink } from 'react-router-dom';
-import { Button, Container, Dropdown, Image, Menu } from 'semantic-ui-react';
-import { useStore } from '../stores/store';
-
+import { observer } from "mobx-react-lite";
+import React from "react";
+import { Link, NavLink } from "react-router-dom";
+import {
+  
+  Divider,
+  Dropdown,
+  Image,
+  Label,
+  Menu,
+  
+} from "semantic-ui-react";
+import { useStore } from "../stores/store";
 
 export default observer(function NavBar() {
-    const {userStore: {user, logout}} = useStore();
+  const {
+    userStore: { user, logout },
+  } = useStore();
 
+  return (
+    <Menu fluid fixed='top' widths={7} >
+      <Menu.Item as={NavLink} to={"/info"}>
+        <img
+          src='/assets/logo.png'
+          alt='logo'
+          style={{ marginRight: "10px" }}
+        />
+        
+      </Menu.Item>
 
-    return (
-        <>
-        <Media query='(max-width: 599px)'>
-            {(matches) =>
-            matches ? ( 
-                <Menu borderless widths="2">
-                    <Container>
-                        <Menu.Item header as={NavLink} to={'/'} style={{justifyContent:'flex-start'}}>
-                            <img src="/assets/logo.png" alt="logo" style={{marginLeft:'10px',marginRight:"10px"}} />
-                            AjedrezLanzarote
-                        </Menu.Item>
-                        <Menu.Item position='right' style={{justifyContent:'flex-end'}} >
-                            <Button floated='right' style={{marginRight:'10px'}} icon='bars'  />
-                        </Menu.Item>
-                    </Container>
-                </Menu>
-            ) : (
-                <Menu fixed='top' style={{borderBottom: "1px"}}>
-                    <Container>
-                        <Menu.Item header as={NavLink} to={'/info'} exact>
-                            <img src="/assets/logo.png" alt="logo" style={{marginRight:"10px"}} />
-                            AjedrezLanzarote
-                        </Menu.Item>
-                        <Menu.Item name="Eventos" as={NavLink} to={'/eventos'} />
-                        <Menu.Item name="Noticias" as={NavLink} to={'/noticias'} />
-                        <Menu.Item name="Patrocinadores" as={NavLink} to={'/patrocinadores'} />
-                        <Menu.Item name="Errors" as={NavLink} to={'/errors'} />
-                        <Menu.Item>
-                            <Button as={NavLink} to={'/crearEvento'} positive content='Crear Evento' basic />
-                        </Menu.Item>
-                        
-                        {!user &&
-                            <>
-                            <Menu.Item>
-                                <Button size='small' as={NavLink} to={'/login'} positive content='Identificarse' />
-                            </Menu.Item>
-                            <Menu.Item>
-                                <Button size='small' color='teal' as={NavLink} to={'/register'} content='Registrarse' />
-                            </Menu.Item>
-                            </>
-                        }
-                        
-                        {user && 
-                            <Menu.Item position="right">
-                            <Image src={user?.image || '/assets/user.png'} avatar spaced='right' />
-                            <Dropdown pointing='top left' text={user?.displayName}>
-                            <Dropdown.Menu >
-                                <Dropdown.Item  as={Link} to={`/profile/${user?.username}`} text='My Profile' icon='user' />
-                                <Dropdown.Item  onClick={logout} text='Logout' icon='power' />
-                            </Dropdown.Menu>
-                            </Dropdown>
-                        </Menu.Item>
-                        }
-                    </Container>
-                </Menu>
-            )}
-        </Media>
-        </>
-    )
-})
+      <Menu.Item name='eventos' as={NavLink} to={"/eventos"} style={{overflow:'hidden'}}>
+        Eventos
+      </Menu.Item>
+
+      <Menu.Item name='noticias' as={NavLink} to={"/noticias"} style={{overflow:'hidden'}}>
+        Noticias
+      </Menu.Item>
+
+      <Menu.Item name='patrocinadores' as={NavLink} to={"/patrocinadores"} style={{overflow:'hidden'}}>
+        Patrocinadores
+      </Menu.Item>
+      <Menu.Item name='jugar'>
+        Jugar
+      </Menu.Item>
+      <Menu.Item name='user' style={{padding:0}}>
+        {user ? (
+          <>
+            <Image
+              src={user?.image || "/assets/user.png"}
+              avatar
+              spaced='right'
+            />
+            <Dropdown pointing='top left' text={user?.displayName}>
+              <Dropdown.Menu>
+                <Dropdown.Item
+                  as={Link}
+                  to={`/perfiles/${user?.username}`}
+                  text='Mi perfil'
+                  icon='user'
+                />
+                {user.roles && user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' )  &&
+                <>
+                 <Dropdown.Item as={NavLink} to={'/crearEvento'} icon='plus'  text='Crear Evento'  />
+                 <Dropdown.Item as={NavLink} to={'/crearNoticia'} icon='plus' text='Crear Noticia' />
+                </>
+                }
+                <Dropdown.Item onClick={logout} text='Cerrar sesión' icon='power' />
+              </Dropdown.Menu>
+            </Dropdown>
+          </>
+        ) : 
+        <div style={{padding:0}}>
+        <Label
+            size='small'
+            as={NavLink}
+            to={"/register"}
+            
+            content='Registrarse'
+            color='green'
+            basic
+            />
+            <Divider horizontal fitted />
+        <Label
+            size='small'
+            as={NavLink}
+            to={"/login"}
+            color='blue'
+            content='Identificarse'
+            basic
+          />
+            
+        </div>
+      }
+      </Menu.Item>
+    </Menu>
+  );
+});

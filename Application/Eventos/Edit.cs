@@ -6,6 +6,9 @@ using Domain;
 using FluentValidation;
 using MediatR;
 using Persistence;
+using Application.Interfaces;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Eventos
 {
@@ -27,8 +30,10 @@ namespace Application.Eventos
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
-            public Handler(DataContext context, IMapper mapper)
+            private readonly IUserAccessor _userAccesor;
+            public Handler(DataContext context, IMapper mapper, IUserAccessor userAccesor)
             {
+                _userAccesor = userAccesor;
                 _mapper = mapper;
                 _context = context;
 
@@ -36,15 +41,28 @@ namespace Application.Eventos
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var evento = await _context.Eventos.FindAsync(request.Evento.Id);
-
-                //if (evento == null) return null;
                 
+                var uniqueEvent = await _context.Eventos.FirstOrDefaultAsync(x => x.Url == request.Evento.Url && x.Id != request.Evento.Id);    
+                if (uniqueEvent != null)
+                {
+                    return Result<Unit>.Failure("La URL '"+request.Evento.Url+"' ya existe para otro evento, y debe ser única. Por favor prueba otra diferente.");
+                }
+                
+                //if (evento == null) return null;
+                var evento = await _context.Eventos.FindAsync(request.Evento.Id);
                 _mapper.Map(request.Evento, evento);
                 var result = await _context.SaveChangesAsync() > 0;
-                if  (!result) return Result<Unit>.Failure("Fallo al editar un evento");
-                return Result<Unit>.Success(Unit.Value);
+                if (!result)
+                {
+                    return Result<Unit>.Failure("Fallo al editar un evento");
+                }
+                else
+                {
+                    return Result<Unit>.Success(Unit.Value);
+                }
+
             }
         }
     }
+    
 }

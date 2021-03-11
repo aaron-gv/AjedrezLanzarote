@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { history } from '../..';
-import { Evento } from '../models/evento';
+import { Evento, EventoFormValues } from '../models/evento';
+import { Noticia } from '../models/noticia';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
@@ -13,6 +14,7 @@ const sleep = (delay: number) => {
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
+
 axios.interceptors.request.use(config => {
     const token = store.commonStore.token;
     if (token) config.headers.Authorization = `Bearer ${token}`
@@ -21,20 +23,23 @@ axios.interceptors.request.use(config => {
 
 axios.interceptors.response.use(async response => {
 
-        await sleep(1000);
+        await sleep(300);
         return response;
 }, (error: AxiosError) => {
     const {data, status, config} = error.response!;
+    
     switch (status) {
         case 400:
             if (typeof data === 'string') {
                 toast.error(data);
+                throw data;
             }
             if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
                 history.push('/not-found');
             }
             if (data.errors) {
                 const modalStateErrors = [];
+
                 for (const key in data.errors) {
                     if (data.errors[key])
                     {
@@ -70,11 +75,19 @@ const requests = {
 const Eventos = {
     list: () => requests.get<Evento[]>('/eventos'),
     details: (url: string) => requests.get<Evento>(`/eventos/${url}`),
-    create: (evento: Evento) => axios.post<void>(`/eventos`, evento),
-    update: (evento: Evento) => axios.put<void>(`/eventos/${evento.id}`, evento),
+    create: (evento: EventoFormValues) => axios.post<void>(`/eventos`, evento),
+    update: (evento: EventoFormValues) => axios.put<void>(`/eventos/${evento.id}`, evento),
+    delete: (id: string) => axios.delete(`/eventos/${id}`),
+    asistir: (url: string) => axios.post<void>(`/eventos/${url}/asistir`),
+    cancelar: (url: string) => axios.post<void>(`/eventos/${url}/cancelar`)
+}
+const Noticias = {
+    list: () => requests.get<Noticia[]>('/noticias'),
+    details: (url: string) => requests.get<Noticia>(`/noticias/${url}`),
+    create: (noticia: Noticia) => axios.post<void>(`/noticias`, noticia),
+    update: (noticia: Noticia) => axios.put<void>(`/noticias/${noticia.id}`, noticia),
     delete: (id: string) => axios.delete(`/eventos/${id}`)
 }
-
 const Account = {
     current: () => requests.get<User>('/account'),
     login: (user: UserFormValues) => axios.post<User>('/account/login', user),
@@ -83,7 +96,8 @@ const Account = {
 
 const agent = {
     Eventos,
-    Account
+    Account,
+    Noticias
 }
 
 export default agent;

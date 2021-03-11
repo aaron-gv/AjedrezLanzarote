@@ -1,10 +1,11 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { Checkbox, Header, Label, Menu, Segment } from "semantic-ui-react";
 import 'react-modern-calendar-datepicker/lib/DatePicker.css';
-import { Calendar } from 'react-modern-calendar-datepicker';
+import { Calendar, DayValue } from 'react-modern-calendar-datepicker';
 import * as locale from './locale';
 
 export default function EventoFilters() {
+  const [selectedDay, setSelectedDay] = useState<DayValue>(null);
   return (
     <>
       <Menu vertical size='large' style={{ width: "100%" }}>
@@ -13,17 +14,18 @@ export default function EventoFilters() {
         <Menu.Item content='Abiertos' />
         
         <Segment clearing>
-            <>
-            <Label content="online" style={{float: 'left'}} />
             <Checkbox style={{float: 'left'}} fitted value='online' defaultChecked={false} />
-            </>
-            <>
-            <Label  content="presencial" style={{float: 'left', border:'none'}} />
+            <Label content="online" style={{float: 'left'}} />
+            <br /><br />
             <Checkbox style={{float: 'left', border:'none'}} fitted value='presencial' defaultChecked={false} />
-            </>
+            <Label  content="presencial" style={{float: 'left', border:'none'}} />
         </Segment>
       </Menu>
-      <Calendar locale={locale.es} />
+      <Calendar key="calendario" 
+      locale={locale.es} 
+      value={selectedDay}
+      onChange={setSelectedDay}
+      />
     </>
   );
 }

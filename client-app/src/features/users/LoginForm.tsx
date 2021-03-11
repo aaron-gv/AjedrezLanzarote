@@ -15,20 +15,20 @@ export default observer(function LoginForm()
             onSubmit={(values, {setErrors}) => userStore.login(values).catch(
                 error => setErrors({error: 'invalid email or password'}))}
             validationSchema={Yup.object({
-                    email: Yup.string().required().email(),
-                    password: Yup.string().required(),
+                    email: Yup.string().required("Este campo es requerido").email(),
+                    password: Yup.string().required("Este campo es requerido"),
                 })}
         >
             {({handleSubmit, isSubmitting, errors, isValid, dirty}) => (
                 <Form method='post' className='ui form' onSubmit={handleSubmit} autoComplete='off'>
                     <MyTextInput name='email' placeholder='Email' />
-                    <MyTextInput name='password' placeholder='Password' type='password' />
+                    <MyTextInput name='password' placeholder='Contraseña' type='password' />
                     <ErrorMessage
                         name='error' render={() => 
                         <Label style={{marginBottom: 10}} basic color='red' content={errors.error} />}
                      />
 
-                    <Button disabled={!isValid || !dirty || isSubmitting} loading={isSubmitting} positive content='Login' type='submit' fluid />
+                    <Button disabled={!isValid || !dirty || isSubmitting} loading={isSubmitting} positive content='Iniciar sesión' type='submit' fluid />
                 </Form>
             )}
         </Formik>

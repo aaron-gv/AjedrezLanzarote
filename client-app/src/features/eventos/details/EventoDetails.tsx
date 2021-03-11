@@ -16,11 +16,10 @@ export default observer(function EventoDetails() {
     
     useEffect(() => {
       if (url) loadEventoByUrl(url);
-    }, [url, loadEventoByUrl]);
+    }, [url, loadEventoByUrl, evento]);
 
 
     if (loadingInitial || !evento) return <LoadingComponent />;
-
   return (
     <Grid>
       <Grid.Column width={10}>
@@ -29,7 +28,7 @@ export default observer(function EventoDetails() {
         <EventoDetailedChat />
       </Grid.Column>
       <Grid.Column width={6}>
-        <EventoDetailedSidebar />
+        <EventoDetailedSidebar evento={evento} />
       </Grid.Column>
     </Grid>
   );

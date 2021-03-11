@@ -9,8 +9,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210306124800_AddCancelledProperty")]
-    partial class AddCancelledProperty
+    [Migration("20210309210916_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,10 +88,43 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Domain.EntityEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Action")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Entity")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EntityId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ip")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EntityEvents");
+                });
+
             modelBuilder.Entity("Domain.Evento", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Category")
@@ -123,6 +156,11 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("Url")
+                        .IsUnique();
+
                     b.ToTable("Eventos");
                 });
 
@@ -144,10 +182,117 @@ namespace Persistence.Migrations
                     b.ToTable("EventoAsistentes");
                 });
 
+            modelBuilder.Entity("Domain.Gallery", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Galleries");
+                });
+
+            modelBuilder.Entity("Domain.GalleryEvento", b =>
+                {
+                    b.Property<Guid>("GalleryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("EventoId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("GalleryId", "EventoId");
+
+                    b.HasIndex("EventoId");
+
+                    b.ToTable("GalleryEventos");
+                });
+
+            modelBuilder.Entity("Domain.GalleryImage", b =>
+                {
+                    b.Property<Guid>("GalleryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("GalleryId", "ImageId");
+
+                    b.HasIndex("ImageId");
+
+                    b.ToTable("GalleryImages");
+                });
+
+            modelBuilder.Entity("Domain.GalleryNoticia", b =>
+                {
+                    b.Property<Guid>("GalleryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("NoticiaId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("GalleryId", "NoticiaId");
+
+                    b.HasIndex("NoticiaId");
+
+                    b.ToTable("GalleryNoticia");
+                });
+
+            modelBuilder.Entity("Domain.Image", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Filename")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Thumbnail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("Domain.Noticia", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Body")
@@ -163,6 +308,11 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("Url")
+                        .IsUnique();
 
                     b.ToTable("Noticias");
                 });
@@ -190,7 +340,26 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Url")
+                        .IsUnique();
+
                     b.ToTable("Patrocinadores");
+                });
+
+            modelBuilder.Entity("Domain.ProfileImage", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ImageId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AppUserId", "ImageId");
+
+                    b.HasIndex("ImageId")
+                        .IsUnique();
+
+                    b.ToTable("ProfileImage");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -331,10 +500,26 @@ namespace Persistence.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Level")
                         .HasColumnType("INTEGER");
 
+                    b.HasIndex("AppUserId");
+
                     b.HasDiscriminator().HasValue("AppRole");
+                });
+
+            modelBuilder.Entity("Domain.Evento", b =>
+                {
+                    b.HasOne("Domain.AppUser", "AppUser")
+                        .WithMany("EventosCreados")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Domain.EventoAsistente", b =>
@@ -354,6 +539,115 @@ namespace Persistence.Migrations
                     b.Navigation("AppUser");
 
                     b.Navigation("Evento");
+                });
+
+            modelBuilder.Entity("Domain.Gallery", b =>
+                {
+                    b.HasOne("Domain.AppUser", "AppUser")
+                        .WithMany("Galleries")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("Domain.GalleryEvento", b =>
+                {
+                    b.HasOne("Domain.Evento", "Evento")
+                        .WithMany("GalleryEventos")
+                        .HasForeignKey("EventoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Gallery", "Gallery")
+                        .WithMany("GalleryEventos")
+                        .HasForeignKey("GalleryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Evento");
+
+                    b.Navigation("Gallery");
+                });
+
+            modelBuilder.Entity("Domain.GalleryImage", b =>
+                {
+                    b.HasOne("Domain.Gallery", "Gallery")
+                        .WithMany("GalleryImages")
+                        .HasForeignKey("GalleryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Image", "Image")
+                        .WithMany("GalleryImages")
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gallery");
+
+                    b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("Domain.GalleryNoticia", b =>
+                {
+                    b.HasOne("Domain.Gallery", "Gallery")
+                        .WithMany("GalleryNoticias")
+                        .HasForeignKey("GalleryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Noticia", "Noticia")
+                        .WithMany("GalleryNoticias")
+                        .HasForeignKey("NoticiaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gallery");
+
+                    b.Navigation("Noticia");
+                });
+
+            modelBuilder.Entity("Domain.Image", b =>
+                {
+                    b.HasOne("Domain.AppUser", "AppUser")
+                        .WithMany("Images")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("Domain.Noticia", b =>
+                {
+                    b.HasOne("Domain.AppUser", "AppUser")
+                        .WithMany("Noticias")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("Domain.ProfileImage", b =>
+                {
+                    b.HasOne("Domain.AppUser", "AppUser")
+                        .WithMany("ProfileImages")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Image", "Image")
+                        .WithOne("Profile")
+                        .HasForeignKey("Domain.ProfileImage", "ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -407,14 +701,56 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.AppRole", b =>
+                {
+                    b.HasOne("Domain.AppUser", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("AppUserId");
+                });
+
             modelBuilder.Entity("Domain.AppUser", b =>
                 {
                     b.Navigation("Eventos");
+
+                    b.Navigation("EventosCreados");
+
+                    b.Navigation("Galleries");
+
+                    b.Navigation("Images");
+
+                    b.Navigation("Noticias");
+
+                    b.Navigation("ProfileImages");
+
+                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("Domain.Evento", b =>
                 {
                     b.Navigation("Asistentes");
+
+                    b.Navigation("GalleryEventos");
+                });
+
+            modelBuilder.Entity("Domain.Gallery", b =>
+                {
+                    b.Navigation("GalleryEventos");
+
+                    b.Navigation("GalleryImages");
+
+                    b.Navigation("GalleryNoticias");
+                });
+
+            modelBuilder.Entity("Domain.Image", b =>
+                {
+                    b.Navigation("GalleryImages");
+
+                    b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("Domain.Noticia", b =>
+                {
+                    b.Navigation("GalleryNoticias");
                 });
 #pragma warning restore 612, 618
         }

@@ -14,9 +14,11 @@ namespace Domain
         public string Category { get; set; }
         public string City { get; set; }
         public string Venue { get; set; }
-
+        public string AppUserId {get; set;}
+        public AppUser AppUser {get; set;}
         public bool IsCancelled {get; set;}
         
         public ICollection<EventoAsistente> Asistentes { get; set; } = new List<EventoAsistente>();
+        public ICollection<GalleryEvento> GalleryEventos { get; set; } = new List<GalleryEvento>();
     }
 }

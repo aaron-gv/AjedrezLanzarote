@@ -47,8 +47,6 @@ namespace Application.Eventos
 
                 var asistencia = evento.Asistentes.FirstOrDefault(x => x.AppUser.UserName == user.UserName);
                 
-                if (user.Roles.First().Name !="Administrador" || user.Roles.First().Name!="Desarrollador") return null;
-
                 evento.IsCancelled = !evento.IsCancelled;
 
                 var result = await _context.SaveChangesAsync() > 0;

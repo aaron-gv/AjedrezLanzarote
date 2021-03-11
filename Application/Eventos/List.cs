@@ -17,7 +17,11 @@ namespace Application.Eventos
     {
         public class Query : IRequest<Result<List<EventoDto>>>
         {
-
+            public Microsoft.AspNetCore.Http.IHeaderDictionary _headers;
+            public Query(Microsoft.AspNetCore.Http.IHeaderDictionary headers)
+            {
+                _headers = headers;
+            }
         }
 
         public class Handler : IRequestHandler<Query, Result<List<EventoDto>>>
@@ -30,18 +34,24 @@ namespace Application.Eventos
                 _mapper = mapper;
                 _logger = logger;
                 _context = context;
-
+                
             }
 
             public async Task<Result<List<EventoDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-
+                _logger.LogInformation("----------------------");
+                foreach (var item in request._headers)
+                {
+                    if (item.Key == "Referer" || item.Key == "Origin")
+                        _logger.LogInformation(item.Key + " = " + item.Value);
+                }
+                _logger.LogInformation("----------------------");
                 try
                 {
                     var eventos = await _context.Eventos
                         .ProjectTo<EventoDto>(_mapper.ConfigurationProvider)
                         .ToListAsync(cancellationToken);
-                    
+
                     return Result<List<EventoDto>>.Success(eventos);
                 }
                 catch (Exception ex) when (ex is TaskCanceledException)

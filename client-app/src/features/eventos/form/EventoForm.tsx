@@ -5,40 +5,30 @@ import { Button, Header, Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
 import { v4 as uuid } from "uuid";
-import { Formik, Form } from "formik";
+import { Formik, Form, FormikHelpers, ErrorMessage } from "formik";
 import * as Yup from 'yup';
 import MyTextInput from "../../../app/common/form/MyTextInput";
 import MyTextArea from "../../../app/common/form/MyTextArea";
 import MySelectInput from "../../../app/common/form/MySelectInput";
 import { categoryOptions } from "../../../app/common/options/categoryOptions";
 import MyDateInput from "../../../app/common/form/MyDateInput";
-import { Evento } from "../../../app/models/evento";
+import { EventoFormValues } from "../../../app/models/evento";
+import ValidationErrors from "../../errors/ValidationErrors";
+
 
 export default observer(function EventoForm() {
   const history = useHistory();
-  const { eventoStore } = useStore();
+  const { eventoStore, userStore  } = useStore();
   const {
     loadEventoByUrl,
     loadingInitial,
     setLoadingInitial,
     createEvento,
-    updateEvento,
-    loading,
+    updateEvento
   } = eventoStore;
+  
   const { url } = useParams<{ url: string }>();
-
-  const [evento, setEvento] = useState<Evento>({
-    id: "",
-    title: "",
-    category: "",
-    description: "",
-    url: "",
-    startDate: null,
-    endDate: null,
-    city: "",
-    venue: "",
-  });
-
+  const [evento, setEvento] = useState<EventoFormValues>(new EventoFormValues());
   const validationSchema = Yup.object({
     title: Yup.string().required('El título del evento es obligatorio'),
     url: Yup.string().required('La Url del evento es obligatorio'),
@@ -52,34 +42,70 @@ export default observer(function EventoForm() {
 
   useEffect(() => {
     if (url) {
-      loadEventoByUrl(url).then((evento) => setEvento(evento!));
+      loadEventoByUrl(url).then((evento) => setEvento(new EventoFormValues(evento)));
     } else {
       setLoadingInitial(false);
     }
   }, [url, loadEventoByUrl, setLoadingInitial]);
 
-  function handleFormSubmit(evento: Evento) {
-    if (evento.id.length === 0) {
-      let newEvento = {
-        ...evento,
-        id: uuid(),
-      };
-      createEvento(newEvento).then(() =>
-        history.push(`/eventos/${newEvento.url}`)
-      );
+  function handleFormSubmit(evento: EventoFormValues, actions: FormikHelpers<{
+    error: any;
+    id?: string | undefined;
+    url: string;
+    title: string;
+    category: string;
+    description: string;
+    startDate: Date | null;
+    endDate: Date | null;
+    city: string;
+    venue: string;
+    appUserId: string;
+}>
+) {
+    
+    if (!evento.id) {
+      let newEvento: EventoFormValues = {...evento, id: uuid(), appUserId : userStore.getUuid()};
+      
+      createEvento(newEvento)
+      .then(function(value) {
+        history.push(`/eventos/${newEvento.url}`); 
+        window.location.reload();
+       }, function(error) {
+        actions.setSubmitting(false)
+        throw error;
+     }).catch(error => actions.setErrors({error}));
+        return null;
+        
     } else {
-      updateEvento(evento).then(() => history.push(`/eventos/${evento.url}`));
+    return updateEvento(evento)
+      .then(function(value) {
+        history.push(`/eventos/${evento.url}`); 
+        window.location.reload();
+       }, function(error) {
+        actions.setSubmitting(false);
+        throw error;
+     }).catch(error => actions.setErrors({error}));
+      
     }
   }
   if (loadingInitial) return <LoadingComponent content='Cargando evento...' />;
-
+    
   return (
     <Segment clearing>
       <Header content='Detalles del evento' sub color='teal' />
-      <Formik validationSchema={validationSchema} enableReinitialize initialValues={evento} onSubmit={(values) => handleFormSubmit(values)}>
-        {({ handleSubmit, isValid, dirty, isSubmitting }) => (
-          <Form className='ui form'  onSubmit={handleSubmit} autoComplete='off'>
-            
+      <Formik validationSchema={validationSchema} enableReinitialize 
+      initialValues={{...evento, error: null}}
+        onSubmit={(values, actions) => {
+            handleFormSubmit(values, actions);
+        }
+      }
+      >
+        {({ handleSubmit, isValid, dirty, isSubmitting, setSubmitting, errors }) => (
+          <Form className='ui form error'  onSubmit={handleSubmit} autoComplete='off'>
+            <ErrorMessage
+              name='error' render={() => 
+                  <ValidationErrors errors={errors.error} />
+              } />
             <MyTextInput name='title' placeholder='Título' />
             <MyTextInput name='url' placeholder='Url' />
             <MyTextArea rows={5} name='description' placeholder='Descripción' />
@@ -90,9 +116,10 @@ export default observer(function EventoForm() {
             <MyTextInput name='city' placeholder='Ciudad' />
             <MyTextInput name='venue' placeholder='Lugar o dirección' />
             
+            
             <Button
               disabled={isSubmitting || !dirty || !isValid}
-              loading={loading}
+              loading={isSubmitting}
               floated='right'
               positive
               type='submit'
@@ -111,3 +138,5 @@ export default observer(function EventoForm() {
     </Segment>
   );
 });
+
+

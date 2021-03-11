@@ -21,6 +21,7 @@ export default observer(function DashboardExtended() {
   return (
     <Grid>
       <Grid.Column width='10'>
+      
         <EventoList />
       </Grid.Column>
       <Grid.Column width='6'>

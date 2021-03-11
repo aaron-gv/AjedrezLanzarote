@@ -16,6 +16,9 @@ import { useStore } from "../stores/store";
 import LoadingComponent from "./LoadingComponent";
 import { observer } from "mobx-react-lite";
 import RegisterForm from "../../features/users/RegisterForm";
+import NoticiaDetails from "../../features/noticias/details/NoticiaDetails";
+import NoticiaDashboard from "../../features/noticias/dashboard/NoticiaDashboard";
+import NoticiaForm from "../../features/noticias/form/NoticiaForm";
 
 export default observer(function App() {
   const location = useLocation();
@@ -45,10 +48,17 @@ export default observer(function App() {
                 <Route path='/info' exact component={HomePage} />
                 <Route path='/eventos' exact component={EventoDashboard} />
                 <Route path='/eventos/:url' component={EventoDetails} />
+                <Route path='/noticias' exact component={NoticiaDashboard} />
+                <Route path='/noticias/:url' component={NoticiaDetails} />
                 <Route
                   key={location.key}
-                  path={["/crearEvento", "/editar/:url"]}
+                  path={["/crearEvento", "/editarEvento/:url"]}
                   component={EventoForm}
+                />
+                <Route
+                  key={location.key}
+                  path={["/crearNoticia", "/editarNoticia/:url"]}
+                  component={NoticiaForm}
                 />
                 <Route path='/errors' component={TestErrors} />
                 <Route path='/server-error' component={ServerError} />

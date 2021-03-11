@@ -1,14 +1,26 @@
 import { format } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import React from 'react'
-import {Segment, Grid, Icon} from 'semantic-ui-react'
+import React, { ReactNode } from 'react'
+import {Segment, Grid, Icon, Image} from 'semantic-ui-react'
 import {Evento} from "../../../app/models/evento";
+import ReactTextFormat from 'react-text-format';
 
 interface Props {
     evento: Evento
 }
 
 export default observer(function EventoDetailedInfo({evento}: Props) {
+    var customImageDecorator = (
+        decoratedURL: string
+        ): ReactNode => {
+        return (
+            <div style={{float:'left',margin:2}}>
+            <a href={decoratedURL} rel="noreferrer" target="_blank">
+                <Image src={decoratedURL}  rel='noopener' style={{maxWidth:'300px',maxHeight:'200px'}} className='customImage' />
+            </a>
+          </div>
+        )
+        };
     return (
         <Segment.Group>
             <Segment attached='top'>
@@ -16,8 +28,11 @@ export default observer(function EventoDetailedInfo({evento}: Props) {
                     <Grid.Column width={1}>
                         <Icon size='large' color='teal' name='info'/>
                     </Grid.Column>
-                    <Grid.Column width={15}>
-                        <p>{evento.description}</p>
+                    <Grid.Column width={15} style={{whiteSpace: 'pre-line'}}>
+                    <ReactTextFormat
+                        allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
+                        imageDecorator={customImageDecorator}
+                    >{evento.description}</ReactTextFormat>
                     </Grid.Column>
                 </Grid>
             </Segment>
