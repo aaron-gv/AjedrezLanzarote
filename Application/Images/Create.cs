@@ -54,6 +54,9 @@ namespace Application.Images
                     _context.Images.Add(image);
                     //Console.WriteLine(image.Title+" - "+image.Filename+" - "+image.Height+" - "+image.Id+" - "+image.Source+" - "+image.Thumbnail+" - "+image);
                     //637508478995547212.png - 637508478995547212.png - 949 - 64def9b9-3d59-4f18-b54b-31900067d304 - /assets/galleryImages/637508478995547212.png - /assets/galleryImages/637508478995547212_thumb.png - 1600
+                    Console.WriteLine("------------------");
+                    Console.WriteLine(request.GalleryId+ " and "+ image.Id);
+                    Console.WriteLine("------------------");
                     _context.GalleryImages.Add(new GalleryImage { GalleryId = request.GalleryId, ImageId = image.Id, Gallery = Gallery, Image = image });
                 });
                 var result = await _context.SaveChangesAsync() > 0;

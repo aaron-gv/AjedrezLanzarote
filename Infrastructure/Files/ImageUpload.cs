@@ -88,7 +88,7 @@ namespace Infrastructure.Files
                             }
                             // ExitCode 0 = clean, 2 = infected
                             if (process.ExitCode != 0) {
-                                Console.WriteLine("Algo ha ido mal.");
+                                Console.WriteLine("Algo ha ido mal en el análisis de seguridad del archivo.");
                                 System.IO.File.Delete(filePath);
                                 break;
                             }
@@ -104,16 +104,18 @@ namespace Infrastructure.Files
                                 using (var sourceStream = new FileStream(thumbfilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
                                 using (var destinationStream = new FileStream(realThumbPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
                                 await sourceStream.CopyToAsync(destinationStream);
+                                
                                 System.IO.File.Delete(thumbfilePath);
                             } else {
                                 var thumbfilePath = filePath;
                                 publicThumbPath = pubicPath;
                             }
 
-                            System.IO.File.Move(filePath, realPath);
+                            
                             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
                             using (var destinationStream = new FileStream(realPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
                             await sourceStream.CopyToAsync(destinationStream);
+                            
                             System.IO.File.Delete(filePath);
 
                             newImgEntity = new Domain.Image{
@@ -123,7 +125,8 @@ namespace Infrastructure.Files
                                 Width = imageFile.Width,
                                 Height = imageFile.Height,
                                 Source = pubicPath,
-                                Thumbnail = publicThumbPath
+                                Thumbnail = publicThumbPath,
+                                AppUserId = _userAccessor.GetUserId()
                             };
                             _imageEntities.Add(newImgEntity);
                             imageFile.Dispose();
@@ -204,7 +207,7 @@ namespace Infrastructure.Files
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
 
 
