@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { Evento } from "../../../app/models/evento";
 import EventoGallery from "./EventoGallery";
-import {PhotoSwipeGalleryItem} from 'react-photoswipe';
 
  
 
@@ -13,45 +12,18 @@ interface Props {
 }
 
 export default observer(function ActivityDetailedSidebar({
-  evento: { category, asistentes, host },
+  evento: { category, asistentes, host, galleries },
 }: Props) {
-  let items: PhotoSwipeGalleryItem[]  = [
-    {
-      src: 'https://static.toiimg.com/thumb/72975551.cms?width=680&height=512&imgsize=881753',
-      w: 1200,
-      h: 900,
-      thumbnail: 'https://static.toiimg.com/thumb/72975551.cms?width=680&height=512&imgsize=881753',
-      title: "Foto 1"
-    },
-    {
-      src: 'https://images.chesscomfiles.com/uploads/v1/group/153790.e5abfa79.160x160o.86e6e2064c3c.jpeg',
-      w: 1200,
-      h: 900,
-      thumbnail: 'https://images.chesscomfiles.com/uploads/v1/group/153790.e5abfa79.160x160o.86e6e2064c3c.jpeg',
-      title: "Foto 1"
-    },
-    
-  ];
-  let items2: PhotoSwipeGalleryItem[]  = [
-    {
-      src: 'https://betacssjs.chesscomfiles.com/bundles/web/images/offline-play/standardboard.png',
-      w: 1200,
-      h: 900,
-      thumbnail: 'https://betacssjs.chesscomfiles.com/bundles/web/images/offline-play/standardboard.png',
-      title: "Foto 1"
-    }
-    
-  ];
+  
   if (!asistentes || category === "presencial") {
     return (
       <>
         <Segment clearing>
+          {galleries && 
           <Segment secondary clearing>
-            <EventoGallery items={items} />
-          </Segment>
-          <Segment secondary clearing>
-          <EventoGallery items={items2} />
-          </Segment>
+              {galleries.map(gallery => <EventoGallery id={gallery.id} items={gallery.images} />)}
+          </Segment>  
+          }
         </Segment>
       </>
     );

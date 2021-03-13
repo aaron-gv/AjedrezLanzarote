@@ -12,8 +12,8 @@ namespace Domain
         public string Title { get; set; }
         public string Source { get; set; }
         public string Thumbnail { get; set; }
-        public ICollection<GalleryImage> GalleryImages { get; set; } = new List<GalleryImage>();
-        
+        public List<GalleryImage> GalleryImages { get; set; } = new List<GalleryImage>();
+        public ICollection<Gallery> Galleries { get; set; }
         public string AppUserId {get; set;}
         public AppUser AppUser {get; set;}
         public ProfileImage Profile {get; set;}

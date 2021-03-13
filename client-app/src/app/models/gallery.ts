@@ -1,6 +1,6 @@
-import { Image } from "./image";
+import { ImageDto } from "./image";
 
 export default interface Gallery {
-    galleryId: string,
-    images: Image[]
+    id: string,
+    images: ImageDto[]
 }

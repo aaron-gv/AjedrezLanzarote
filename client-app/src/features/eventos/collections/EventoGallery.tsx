@@ -1,12 +1,13 @@
 import React from 'react';
 import { Image, Segment } from 'semantic-ui-react';
-import Gallery from '../../../app/models/gallery'
+import Gallery from '../../../app/models/gallery';
 export default function EventoCollection(gallery: Gallery) {
     if (!gallery) return null;
+    console.log(gallery);
     return (
-        <Segment key={gallery.galleryId}>
+        <Segment key={gallery.id}>
         { gallery.images && gallery.images.map(image => 
-            <Image width={image.width} height={image.height} key={image.id} src={image.thumbnail} alt={image.name} />
+            <Image title={image.title} width={image.w} height={image.h} key={image.id} src={image.thumbnail} alt={image.name} />
         )}
         </Segment>
     )

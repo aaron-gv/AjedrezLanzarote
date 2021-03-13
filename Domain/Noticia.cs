@@ -11,6 +11,7 @@ namespace Domain
         public DateTime Date { get; set; }
         public string Body { get; set; }
         public ICollection<GalleryNoticia> GalleryNoticias { get; set; } = new List<GalleryNoticia>();
+        public ICollection<Gallery> Galleries { get; set; } = new List<Gallery>();
         public string AppUserId {get; set;}
         public AppUser AppUser {get; set;}
     }

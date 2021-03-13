@@ -1,8 +1,11 @@
-export interface Image {
+
+export interface ImageDto{
     id: string,
+    title: string,
+    filename: string,
     src: string,
     name: string,
-    height: number,
-    width: number,
+    h: number,
+    w: number,
     thumbnail: string
 }

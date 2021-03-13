@@ -10,6 +10,5 @@ namespace Domain
         public Guid EventoId { get; set; }
         public Evento Evento { get; set; }
 
-        public ICollection<GalleryImage> GalleryImages { get; set; } = new List<GalleryImage>();
     }
 }

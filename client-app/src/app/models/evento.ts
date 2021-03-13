@@ -18,7 +18,7 @@ export interface Evento {
     host?:Profile;
     appUserId: string;
     asistentes?: Profile[];
-    galleryEventos?: Gallery[];
+    galleries?: Gallery[];
 }
 
 export class Evento implements Evento {

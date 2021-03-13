@@ -20,6 +20,7 @@ namespace Domain
         
         public ICollection<EventoAsistente> Asistentes { get; set; } = new List<EventoAsistente>();
         public ICollection<GalleryEvento> GalleryEventos { get; set; } = new List<GalleryEvento>();
+        public ICollection<Gallery> Galleries { get; set; } = new List<Gallery>();
         
     }
 }

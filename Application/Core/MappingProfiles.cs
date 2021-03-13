@@ -13,8 +13,6 @@ namespace Application.Core
         public MappingProfiles()
         {
             CreateMap<Evento, Evento>();
-            
-            CreateMap<Image, ImageDto>();
             CreateMap<Noticia, Noticia>();
             CreateMap<Patrocinador, Patrocinador>();
             CreateMap<Evento, EventoDto>()
@@ -33,7 +31,10 @@ namespace Application.Core
                 .ForMember(d => d.Username , o => o.MapFrom(s => s.AppUser.UserName))
                 .ForMember(d => d.Bio, o => o.MapFrom(s => s.AppUser.Bio));
             
-            CreateMap<Image, ImageDto>();
+            CreateMap<Image, ImageDto>()
+                .ForMember(d => d.Src, o => o.MapFrom(s => s.Source))
+                .ForMember(d => d.W, o => o.MapFrom(s => s.Width))
+                .ForMember(d => d.H, o => o.MapFrom(s => s.Height));
             CreateMap<GalleryImage, Gallery>()
                 .ForMember(gi => gi.Id, g => g.MapFrom(o => o.GalleryId));
                 CreateMap<GalleryImage, Image>()
