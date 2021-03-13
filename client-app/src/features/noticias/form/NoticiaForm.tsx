@@ -91,15 +91,7 @@ export default observer(function NoticiaForm() {
             <MyTextInput name='url' placeholder='Url' />
             <MyTextArea rows={5} name='body' placeholder='Cuerpo de la noticia' />
             <MyDateInput name='date' placeholderText='Fecha de comienzo' showTimeSelect timeCaption='time' dateFormat='MMMM d, yyyy h:mm aa'  />
-            
-            <Button
-              disabled={isSubmitting || !dirty || !isValid}
-              loading={isSubmitting}
-              floated='right'
-              positive
-              type='submit'
-              content='Crear'
-            />
+            <Button.Group floated='right'>
             <Button
               as={Link}
               to={`/noticias`}
@@ -107,6 +99,18 @@ export default observer(function NoticiaForm() {
               type='button'
               content='Cancelar'
             />
+            <Button.Or text='o' />
+            <Button
+              disabled={isSubmitting || !dirty || !isValid}
+              loading={isSubmitting}
+              floated='right'
+              
+              type='submit'
+              color={noticia.id ? 'blue' : 'green'}
+              content={noticia.id ? 'Actualizar' : 'Crear'}
+            />
+            
+            </Button.Group>
           </Form>
         )}
       </Formik>

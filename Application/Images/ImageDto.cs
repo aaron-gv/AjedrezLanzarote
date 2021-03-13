@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Application.Galleries;
+using Domain;
 
-namespace Domain
+namespace Application.Images
 {
-    public class Image
+    public class ImageDto
     {
         public Guid Id { get; set; }
         public string Filename { get; set; }
@@ -13,9 +15,8 @@ namespace Domain
         public string Source { get; set; }
         public string Thumbnail { get; set; }
         public ICollection<GalleryImage> GalleryImages { get; set; } = new List<GalleryImage>();
-        
-        public string AppUserId {get; set;}
-        public AppUser AppUser {get; set;}
-        public ProfileImage Profile {get; set;}
+        public string AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
+        public ProfileImage Profile { get; set; }
     }
 }

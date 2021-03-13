@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Galleries;
+using Application.Images;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;

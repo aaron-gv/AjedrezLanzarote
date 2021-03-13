@@ -93,11 +93,14 @@ const Account = {
     login: (user: UserFormValues) => axios.post<User>('/account/login', user),
     register: (user: UserFormValues) => axios.post<User>('/account/register', user)
 }
-
+const Images = {
+    createGallery: (images: FormData) => axios.post<void>('/Images/E922B26B-482B-49C8-B9B6-863840546873', images)
+}
 const agent = {
     Eventos,
     Account,
-    Noticias
+    Noticias,
+    Images
 }
 
 export default agent;

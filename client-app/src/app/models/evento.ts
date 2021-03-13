@@ -1,3 +1,4 @@
+import Gallery from "./gallery";
 import { Profile } from "./profile";
 
 export interface Evento {
@@ -17,6 +18,7 @@ export interface Evento {
     host?:Profile;
     appUserId: string;
     asistentes?: Profile[];
+    galleryEventos?: Gallery[];
 }
 
 export class Evento implements Evento {

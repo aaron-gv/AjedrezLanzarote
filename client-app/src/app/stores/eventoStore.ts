@@ -39,6 +39,7 @@ export default class EventoStore {
     this.loadingInitial = true;
     try {
       const eventos = await agent.Eventos.list();
+      console.log(eventos);
       eventos.forEach((evento) => {
         this.setEvento(evento);
       });

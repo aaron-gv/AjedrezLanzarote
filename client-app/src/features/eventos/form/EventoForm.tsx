@@ -14,6 +14,7 @@ import { categoryOptions } from "../../../app/common/options/categoryOptions";
 import MyDateInput from "../../../app/common/form/MyDateInput";
 import { EventoFormValues } from "../../../app/models/evento";
 import ValidationErrors from "../../errors/ValidationErrors";
+import ImagesDropzone from "../../images/ImagesDropzone";
 
 
 export default observer(function EventoForm() {
@@ -91,6 +92,7 @@ export default observer(function EventoForm() {
   if (loadingInitial) return <LoadingComponent content='Cargando evento...' />;
     
   return (
+    <>
     <Segment clearing>
       <Header content='Detalles del evento' sub color='teal' />
       <Formik validationSchema={validationSchema} enableReinitialize 
@@ -116,15 +118,7 @@ export default observer(function EventoForm() {
             <MyTextInput name='city' placeholder='Ciudad' />
             <MyTextInput name='venue' placeholder='Lugar o dirección' />
             
-            
-            <Button
-              disabled={isSubmitting || !dirty || !isValid}
-              loading={isSubmitting}
-              floated='right'
-              positive
-              type='submit'
-              content='Crear'
-            />
+            <Button.Group floated='right'>
             <Button
               as={Link}
               to={`/eventos`}
@@ -132,10 +126,29 @@ export default observer(function EventoForm() {
               type='button'
               content='Cancelar'
             />
+            <Button.Or text='o' />
+            <Button
+              disabled={isSubmitting || !dirty || !isValid}
+              loading={isSubmitting}
+              floated='right'
+              basic={!dirty || !isValid}
+              type='submit'
+              color={evento.id ? 'blue' : 'green'}
+              content={evento.id ? 'Actualizar' : 'Crear'}
+            />
+            
+            </Button.Group>
           </Form>
         )}
       </Formik>
+      
     </Segment>
+    {evento.id && 
+      <Segment>
+        <ImagesDropzone eventoId={evento.id} />
+      </Segment>
+    }
+    </>
   );
 });
 

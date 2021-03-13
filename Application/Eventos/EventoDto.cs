@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Application.Eventos.Profiles;
+using Application.Galleries;
+using Domain;
 
 namespace Application.Eventos
 {
@@ -19,5 +21,6 @@ namespace Application.Eventos
         public string HostUsername { get; set; }
         public bool IsCancelled {get; set;}
         public ICollection<Profile> Asistentes {get; set;}
+        public ICollection<GalleryDto> GalleryDtos {get; set;} = new List<GalleryDto>();
     }
 }
