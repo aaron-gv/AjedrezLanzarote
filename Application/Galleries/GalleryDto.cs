@@ -11,7 +11,5 @@ namespace Application.Galleries
         public string Title { get; set; }
         public ICollection<ImageDto> Images { get; set; } = new List<ImageDto>();
         
-        //public ICollection<GalleryImageDto> GalleryImages { get; set; } = new List<GalleryImageDto>();
-        
     }
 }

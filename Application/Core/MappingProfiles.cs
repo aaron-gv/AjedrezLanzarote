@@ -23,12 +23,7 @@ namespace Application.Core
                
              CreateMap<Evento, EventoDto>().ForMember(ed => ed.Galleries, opt => opt.MapFrom(e => e.GalleryEventos.Select(eg => eg.Gallery)));
              CreateMap<Gallery, GalleryDto>().ForMember(ed => ed.Images, opt => opt.MapFrom(e => e.GalleryImages.Select(eg => eg.Image)));
-             //CreateMap<Gallery, GalleryDto>().ForMember(ed => ed.ImageDtos, opt => opt.MapFrom(e => e.GalleryImages.SelectMany(eg => eg.Images)));
-             /*
-            CreateMap<Gallery, GalleryDto>()
-            .ForMember(ed => ed.ImageDtos, opt => opt.MapFrom(e => e.GalleryImages.SelectMany(eg => eg.Images)))
-            .ForMember(d => d.GalleryImages , opt => opt.MapFrom(s => s.GalleryImages));
-            */
+
                 CreateMap<Evento, Evento>()
                     .ForMember(dest => dest.AppUserId, src => src.Ignore());
             
@@ -37,7 +32,7 @@ namespace Application.Core
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.AppUser.DisplayName))
                 .ForMember(d => d.Username , o => o.MapFrom(s => s.AppUser.UserName))
                 .ForMember(d => d.Bio, o => o.MapFrom(s => s.AppUser.Bio));
-            CreateMap<GalleryImage, GalleryImageDto>();
+            
             CreateMap<Image, ImageDto>();
             CreateMap<GalleryImage, Gallery>()
                 .ForMember(gi => gi.Id, g => g.MapFrom(o => o.GalleryId));
