@@ -21,6 +21,6 @@ namespace Application.Eventos
         public string HostUsername { get; set; }
         public bool IsCancelled {get; set;}
         public ICollection<Profile> Asistentes {get; set;}
-        public ICollection<GalleryDto> GalleryDtos {get; set;} = new List<GalleryDto>();
+        public ICollection<GalleryDto> Galleries {get; set;} = new List<GalleryDto>();
     }
 }
