@@ -16,6 +16,16 @@ body {
 .react-datepicker-wrapper {
   width: 100%;
 }
+.pswp-thumbnails{
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+}
+.editGallery{
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+}
 .pswp-thumbnail{
   float: left;
   position: relative;
@@ -24,4 +34,39 @@ body {
   cursor: pointer;
   max-width: 80px;
   max-height: 80px;
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.deleteLayer{
+  position:absolute;
+  width: 100%;
+  height: 100%;
+  top:0;
+  left:0;
+  z-index: 1000;
+  background: white;
+  opacity: 0;
+  color:transparent;
+  text-align: center;
+  vertical-align: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 22px;
+}
+.deleteLayer_always{
+  opacity: 1;
+  background: transparent;
+  color:chocolate;
+  align-items: flex-start;
+  justify-content:end;
+  text-align: right;
+}
+.deleteLayer:hover{
+  opacity: 0.7;
+  cursor: pointer;
+  color:chocolate;
 }

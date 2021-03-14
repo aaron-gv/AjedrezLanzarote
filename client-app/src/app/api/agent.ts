@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { history } from '../..';
 import { Evento, EventoFormValues } from '../models/evento';
+import {Gallery} from '../models/gallery';
 import { Noticia } from '../models/noticia';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
@@ -94,13 +95,18 @@ const Account = {
     register: (user: UserFormValues) => axios.post<User>('/account/register', user)
 }
 const Images = {
-    createGallery: (images: FormData) => axios.post<void>('/Images/E922B26B-482B-49C8-B9B6-863840546873', images)
+    deleteEventGalleries: (id: string) => axios.delete<Gallery[]>(`/GalleryEvento/${id}`),
+    createEventGallery: (images: FormData, id: string, galleryId: string) => axios.post<void>(`/Images/${id}/${galleryId}`, images)
+}
+const Galleries = {
+    get: (id: string) => requests.get<Gallery>(`/GalleryEvento/${id}`)
 }
 const agent = {
     Eventos,
     Account,
     Noticias,
-    Images
+    Images,
+    Galleries
 }
 
 export default agent;

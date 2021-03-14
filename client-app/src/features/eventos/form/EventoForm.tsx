@@ -15,9 +15,14 @@ import MyDateInput from "../../../app/common/form/MyDateInput";
 import { EventoFormValues } from "../../../app/models/evento";
 import ValidationErrors from "../../errors/ValidationErrors";
 import ImagesDropzone from "../../images/ImagesDropzone";
+import {Gallery} from "../../../app/models/gallery";
+import EventoGalleryModify from "../collections/EventoGalleryModify";
 
+interface Props {
+  evento: EventoFormValues;
+}
 
-export default observer(function EventoForm() {
+export default observer(function EventoForm({evento} : Props) {
   const history = useHistory();
   const { eventoStore, userStore  } = useStore();
   const {
@@ -28,8 +33,8 @@ export default observer(function EventoForm() {
     updateEvento
   } = eventoStore;
   
-  const { url } = useParams<{ url: string }>();
-  const [evento, setEvento] = useState<EventoFormValues>(new EventoFormValues());
+  
+  //const [evento, setEvento] = useState<EventoFormValues>(new EventoFormValues());
   const validationSchema = Yup.object({
     title: Yup.string().required('El título del evento es obligatorio'),
     url: Yup.string().required('La Url del evento es obligatorio'),
@@ -41,16 +46,10 @@ export default observer(function EventoForm() {
     venue: Yup.string().required('La calle/dirección/lugar del evento es obligatorio'),
   })
 
-  useEffect(() => {
-    if (url) {
-      loadEventoByUrl(url).then((evento) => setEvento(new EventoFormValues(evento)));
-    } else {
-      setLoadingInitial(false);
-    }
-  }, [url, loadEventoByUrl, setLoadingInitial]);
+  
 
   function handleFormSubmit(evento: EventoFormValues, actions: FormikHelpers<{
-    error: any;
+    error: null;
     id?: string | undefined;
     url: string;
     title: string;
@@ -143,11 +142,8 @@ export default observer(function EventoForm() {
       </Formik>
       
     </Segment>
-    {evento.id && 
-      <Segment>
-        <ImagesDropzone eventoId={evento.id} />
-      </Segment>
-    }
+    
+    
     </>
   );
 });

@@ -10,6 +10,7 @@ using Application.Interfaces;
 using System;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Application.Eventos
 {
     public class Edit

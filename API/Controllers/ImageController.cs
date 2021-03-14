@@ -41,16 +41,24 @@ namespace API.Controllers
             //return HandleResult(await Mediator.Send(new Create.Command {Evento = evento}));
         }
         [Authorize(Policy = "IsAdmin")]
-        [HttpPost("{evento}")]
-        public async Task<ActionResult> CreateImageEntities(List<IFormFile> Images, Guid evento,Guid GalleryId= new Guid())
+        [HttpPost("{evento}/{gallery}")]
+        public async Task<ActionResult> CreateImageEntities(List<IFormFile> Images, Guid evento, Guid gallery)
         {
             //ActionResult<List<Domain.Image>> Result, Guid GalleryId
-            if (GalleryId == Guid.Parse("00000000-0000-0000-0000-000000000000"))
-                GalleryId = Guid.NewGuid();
-             ;
-             Result<List<Domain.Image>> imgCollection = CreateImages(Images).Result;
- 
-            return HandleResult(await Mediator.Send(new Application.Images.Create.Command {Images = imgCollection.Value, GalleryId = GalleryId,EventoId = evento}));
+            if (gallery == Guid.Parse("00000000-0000-0000-0000-000000000000"))
+                return BadRequest();
+             
+             Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new ImageUpload.Query {Images = Images});
+            if (!imgCollectionResult.IsSuccess)
+            {
+                return BadRequest("Ha ocurrido un problema subiendo los archivos, compruebe que los archivos estén en un formato de imagen válido.");
+            }
+            if (imgCollectionResult.Value.Count < 1)
+            {
+                return BadRequest("No se han enviado imágenes válidas");
+            }
+
+            return HandleResult(await Mediator.Send(new Application.Images.Create.Command {Images = imgCollectionResult.Value, GalleryId = gallery,EventoId = evento}));
         }
         /*
         [Authorize(Policy = "IsAdmin")]
@@ -60,6 +68,7 @@ namespace API.Controllers
             return Ok();
             //return HandleResult(await Mediator.Send(new Delete.Command{Id = id}));
         }*/
+        
     }
     
 }

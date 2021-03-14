@@ -10,6 +10,9 @@ namespace Application.Images
         public Guid Id { get; set; }
         public string Filename { get; set; }
         public int W { get; set; }
+
+        public int smallWidth {get; set;}
+        public int smallHeight {get; set;}
         public int H { get; set; }
         public string Title { get; set; }
         public string Src { get; set; }

@@ -1,16 +1,22 @@
-import React, { useCallback, useState } from 'react'
+import { observer } from 'mobx-react-lite';
+import  { useCallback, useState } from 'react'
 import {useDropzone} from 'react-dropzone'
-import { Button, Container, Divider, Grid, Image, Input, Label, Placeholder, Segment } from 'semantic-ui-react';
+import { Button,  Divider, Grid, Image, Input, Label,  Segment } from 'semantic-ui-react';
 import agent from '../../app/api/agent'
-import MyTextInput from '../../app/common/form/MyTextInput';
+import { useStore } from '../../app/stores/store';
+import { v4 as uuid } from "uuid";
+import { Evento } from '../../app/models/evento';
+
 interface Props {
-  eventoId: string
+  evento: Evento;
+  galleryId: string;
 }
-export default function ImagesDropzone({eventoId} : Props) {
+export default observer(function ImagesDropzone({evento, galleryId} : Props) {
     const [myData, setMyData] = useState<any[]>([]);
     const [items, setItems] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasItems, setHasItems] = useState(false);
+    const {eventoStore: {createGallery}} = useStore();
     const onDrop = useCallback(acceptedFiles => {
         const formData = myData;
         console.log(acceptedFiles as FormData[]);
@@ -22,24 +28,24 @@ export default function ImagesDropzone({eventoId} : Props) {
         setMyData(formData);
         setHasItems(!hasItems);
         //agent.Images.createGallery(formData)
-      }, [myData, setItems, setMyData, setHasItems, hasItems])
+      }, [myData, setItems, setMyData, setHasItems, hasItems]);
       const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+
+      if (galleryId === '') {
+        galleryId = uuid();
+      }
       
       async function handleSubmit() {
           if (!myData)
             return null;
           setIsSubmitting(true);
-            var myForm = new FormData();
-            myData.map((data) => {
-                myForm.append("Images", data);
-            })
-            myForm.append("eventoId", eventoId);
-            myForm.append("collectionTitle", (document.getElementById('collectionTitle')?.textContent || ''))
-
-            await agent.Images.createGallery(myForm).finally(() => setIsSubmitting(false));
+          createGallery(myData, evento, galleryId).finally(() => setIsSubmitting(false)).finally(() => {
+            setMyData([]);
+            setItems([]);
+          });
 
       }
-      if (!eventoId) return null;
+      if (!evento.id) return null;
       return (
         <Segment clearing>
         <div className='ui Segment' {...getRootProps()} style={{minWidth:200, width:'100%',position:'relative',overflow:'hidden'}}>
@@ -78,7 +84,7 @@ export default function ImagesDropzone({eventoId} : Props) {
             <Grid doubling columns={6} id='griddy'> 
                 {myData?.map((item) => (
                     
-                    <Grid.Column verticalAlign='middle' textAlign='center'>
+                    <Grid.Column verticalAlign='middle' textAlign='center' key={uuid()}>
                         <Image src={URL.createObjectURL(item)} style={{maxWidth:'100px',maxHeight:'100px', margin:'0 auto'}} />
                     </Grid.Column>
                     
@@ -106,4 +112,4 @@ export default function ImagesDropzone({eventoId} : Props) {
         </Segment>
       )
     
-}
+})

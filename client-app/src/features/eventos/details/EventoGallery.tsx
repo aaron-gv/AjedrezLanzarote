@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import 'react-photoswipe/lib/photoswipe.css';
-import {PhotoSwipeGallery, PhotoSwipeGalleryItem} from 'react-photoswipe';
-import { Image } from 'semantic-ui-react';
+import {PhotoSwipeGallery} from 'react-photoswipe';
+import { Image, Label } from 'semantic-ui-react';
 import { observer } from 'mobx-react-lite';
-import { ImageDto } from '../../../app/models/image';
 
 interface Props {
-    items: PhotoSwipeGalleryItem[],
-    id: string
+    items: any[],
+    id: string,
+    title: string
 }
-var getThumbnailContent = (item: PhotoSwipeGalleryItem) => {
+var getThumbnailContent = (item: any) => {
     return (
-      <img src={item.thumbnail} alt={item.src} title={item.title} width={200} />
+      <Image src={item.thumbnail} centered fluid alt={item.src} title={item.title} verticalAlign={'middle'} />
     );
   }
   
-export default observer(function EventoGallery({items, id} : Props) {
+export default observer(function EventoGallery({items, id, title} : Props) {
     
 const [isOpen,setIsOpen] = useState(false);
  
@@ -25,8 +25,10 @@ let options = {
   console.log(items);
     return (
         <>
-        {items.forEach(item => {
-            <Image key={item.thumbnail} src={item.src} title={item.title} style={{maxWidth:'100px',maxHeight:'100px', float:'left',marginLeft:'10px'}} onClick={() => setIsOpen(!isOpen)} />
+        <Label content={<>{title}<Label style={{marginLeft:5}} circular color='blue' size='tiny'>{items.length}</Label></>} ribbon style={{opacity:0.7}} color='orange' size='tiny'  />
+        
+        {items.forEach(item => { 
+            <Image key={item.thumbnail} verticalAlign={'middle'} src={item.src} title={item.title} style={{ float:'left',marginLeft:'10px'}} onClick={() => setIsOpen(!isOpen)} />
         })}
             <PhotoSwipeGallery key={id} items={items} options={options} thumbnailContent={getThumbnailContent}/>
         </>

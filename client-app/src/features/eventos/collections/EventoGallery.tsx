@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, Segment } from 'semantic-ui-react';
-import Gallery from '../../../app/models/gallery';
+import {Gallery} from '../../../app/models/gallery';
 export default function EventoCollection(gallery: Gallery) {
     if (!gallery) return null;
     console.log(gallery);

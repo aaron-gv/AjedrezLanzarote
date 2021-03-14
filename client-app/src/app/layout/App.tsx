@@ -20,7 +20,8 @@ import NoticiaDetails from "../../features/noticias/details/NoticiaDetails";
 import NoticiaDashboard from "../../features/noticias/dashboard/NoticiaDashboard";
 import NoticiaForm from "../../features/noticias/form/NoticiaForm";
 import ImagesDropzone from "../../features/images/ImagesDropzone";
-
+import EventoEdit from "../../features/eventos/form/EventoEdit";
+  
 export default observer(function App() {
   const location = useLocation();
   const {commonStore, userStore} = useStore();
@@ -54,13 +55,13 @@ export default observer(function App() {
                 <Route
                   key={location.key}
                   path={["/crearEvento", "/editarEvento/:url"]}
-                  component={EventoForm}
-                />
-                <Route
+                  component={EventoEdit}
+                /> 
+                <Route 
                   key={location.key}
                   path={["/crearNoticia", "/editarNoticia/:url"]}
                   component={NoticiaForm}
-                />
+                /> 
                 <Route path='/eventos/:url' component={EventoDetails} />
                 <Route path='/noticias/:url' component={NoticiaDetails} />
                 <Route path='/errors' component={TestErrors} />

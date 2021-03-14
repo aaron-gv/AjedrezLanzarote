@@ -1,13 +1,12 @@
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
-import React, { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Button, Icon, Item, Label, Segment } from "semantic-ui-react";
 import { Evento } from "../../../app/models/evento";
 import EventoListItemAsistente from "./EventoListItemAsistente";
 import ReactTextFormat from 'react-text-format';
 import EventoGallery from "../details/EventoGallery";
-import {PhotoSwipeGalleryItem} from 'react-photoswipe';
 
 interface Props {
   evento: Evento;
@@ -18,25 +17,6 @@ export default observer(function EventoListItem({
   
 }: Props) {
 
-  let items: PhotoSwipeGalleryItem[]  = [
-    
-    /* 
-    {
-      src: 'https://static.toiimg.com/thumb/72975551.cms?width=680&height=512&imgsize=881753',
-      w: 1200,
-      h: 900,
-      thumbnail: 'https://static.toiimg.com/thumb/72975551.cms?width=680&height=512&imgsize=881753',
-      title: "Foto 1"
-    },
-    {
-      src: 'https://images.chesscomfiles.com/uploads/v1/group/153790.e5abfa79.160x160o.86e6e2064c3c.jpeg',
-      w: 1200,
-      h: 900,
-      thumbnail: 'https://images.chesscomfiles.com/uploads/v1/group/153790.e5abfa79.160x160o.86e6e2064c3c.jpeg',
-      title: "Foto 1"
-    },
-     */
-  ];
   var customImageDecorator = (
     decoratedURL: string
     ): ReactNode => {
@@ -82,7 +62,7 @@ export default observer(function EventoListItem({
         <Segment secondary><EventoListItemAsistente asistentes={evento.asistentes!} /></Segment>
       }
       {evento.category === "presencial" && evento.galleries && evento.galleries.map(gallery => (
-        <Segment secondary clearing key={gallery.id}><EventoGallery key={gallery.id} id={gallery.id} items={gallery.images} /></Segment>
+        <Segment secondary clearing key={gallery.id}><EventoGallery title={gallery.title} key={gallery.id} id={gallery.id} items={gallery.images} /></Segment>
       ))
         
       }

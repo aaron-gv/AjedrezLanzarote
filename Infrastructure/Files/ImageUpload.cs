@@ -93,13 +93,18 @@ namespace Infrastructure.Files
                                 break;
                             }
                             var publicThumbPath ="";
-                            if (imageFile.Width > 300 || imageFile.Height > 300)
+                            var smallWidth = imageFile.Width;
+                            var smallHeight = imageFile.Height;
+
+                            if (imageFile.Width > 250 || imageFile.Height > 250)
                             {
                                 var thumbfilePath = _config + fileName+"_thumb."+extension;
                                 var realThumbPath = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\assets\\galleryImages\\"+fileName+"_thumb."+extension;
                                 publicThumbPath = "/assets/galleryImages/"+fileName+"_thumb."+extension;
                                 var thumbResized = ScaleImage(imageFile, 250, 250);
                                 thumbResized.Save(thumbfilePath);
+                                smallWidth = thumbResized.Width;
+                                smallHeight = thumbResized.Height;
                                 thumbResized.Dispose();
                                 using (var sourceStream = new FileStream(thumbfilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
                                 using (var destinationStream = new FileStream(realThumbPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
@@ -124,6 +129,8 @@ namespace Infrastructure.Files
                                 Filename = fullFileName,
                                 Width = imageFile.Width,
                                 Height = imageFile.Height,
+                                smallWidth = smallWidth,
+                                smallHeight = smallHeight,
                                 Source = pubicPath,
                                 Thumbnail = publicThumbPath,
                                 AppUserId = _userAccessor.GetUserId()
@@ -136,9 +143,7 @@ namespace Infrastructure.Files
                             _logger.LogError(error.Message);
                         } finally {
                             eParams.Dispose();
-                            
                         }
-                        
                     }
                 }
                 _logger.LogInformation("Finally ++ images count" + _imageEntities.Count());
@@ -147,73 +152,6 @@ namespace Infrastructure.Files
 
                 return Result<List<Domain.Image>>.Success(_imageEntities);
             }
-            
-        
-            public string GetFixedSizeImage(string oldFile)
-            {
-                int sourceX = 0, sourceY = 0, destX = 0, destY = 0;
-                float nPercent = 0, nPercentW = 0, nPercentH = 0;
-                int height =1650, width=2350;
-                
-                string fixedImageFilePath =@"OutputImagePath....";
-                
-                try
-                {
-                    System.Drawing.Image sourceImage = System.Drawing.Image.FromFile(oldFile);
-                    int sourceWidth = sourceImage.Width;
-                    int sourceHeight = sourceImage.Height;
-                    nPercentW = ((float)width / (float)sourceWidth);
-                    nPercentH = ((float)height / (float)sourceHeight);
-                
-                    if (nPercentH < nPercentW)
-                    {
-                        nPercent = nPercentH;
-                        destX = System.Convert.ToInt16((width - (sourceWidth * nPercent)) / 2);
-                    }
-                    else
-                    {
-                        nPercent = nPercentW;
-                        destY = System.Convert.ToInt16((height - (sourceHeight * nPercent)) / 2);
-                    }
-                    int destWidth = (int)(sourceWidth * nPercent);
-                    int destHeight = (int)(sourceHeight * nPercent);
-
-
-                    using (Bitmap bmPhoto = new Bitmap(width, height))
-                    {
-                        bmPhoto.SetResolution(sourceImage.HorizontalResolution, sourceImage.VerticalResolution);
-
-
-                        using (Graphics grPhoto = Graphics.FromImage(bmPhoto))
-                        {
-                            grPhoto.Clear(System.Drawing.Color.White);
-                            grPhoto.CompositingQuality = CompositingQuality.HighQuality;
-                            grPhoto.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            grPhoto.SmoothingMode = SmoothingMode.HighQuality;
-                            grPhoto.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-
-                            grPhoto.DrawImage(sourceImage, new System.Drawing.Rectangle(destX, destY, destWidth, destHeight)
-                                , new System.Drawing.Rectangle(sourceX, sourceY, sourceWidth, sourceHeight), GraphicsUnit.Pixel);
-                        }
-
-
-                        ImageCodecInfo codec = ImageCodecInfo.GetImageEncoders()[1];
-                        EncoderParameters eParams = new EncoderParameters(1);
-                        eParams.Param[0] = new EncoderParameter(Encoder.Quality, 80L);
-                        bmPhoto.Save(fixedImageFilePath, codec, eParams);
-                        eParams.Dispose();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-
-
-                return fixedImageFilePath;
-            }
-
             
             public static System.Drawing.Image ScaleImage(System.Drawing.Image image, int maxWidth, int maxHeight)
             {

@@ -1,6 +1,22 @@
 import { ImageDto } from "./image";
 
-export default interface Gallery {
+export interface Gallery {
     id: string,
-    images: ImageDto[]
+    images: ImageDto[],
+    title: string
+}
+
+export class GalleryFormValues {
+    eventoId: string = '';
+    id :string = '';
+    title: string = '';
+    images: ImageDto[] = [];
+    constructor(gallery?: GalleryFormValues) {
+        if (gallery) {
+            this.id = gallery.id;
+            this.title = gallery.title;
+            this.eventoId = gallery?.eventoId;
+            this.images = gallery.images;
+        }
+    }
 }
