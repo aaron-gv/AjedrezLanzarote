@@ -103,11 +103,13 @@ namespace Persistence
                 j => j
                     .HasOne(pt => pt.Noticia)
                     .WithMany(t => t.GalleryNoticias)
-                    .HasForeignKey(pt => pt.NoticiaId),
+                    .HasForeignKey(pt => pt.NoticiaId)
+                    .OnDelete(DeleteBehavior.Cascade),
                 j => j
                     .HasOne(pt => pt.Gallery)
                     .WithMany(p => p.GalleryNoticias)
-                    .HasForeignKey(pt => pt.GalleryId),
+                    .HasForeignKey(pt => pt.GalleryId)
+                    .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
                     j.HasKey(t => new { t.GalleryId, t.NoticiaId });
@@ -120,11 +122,13 @@ namespace Persistence
                 j => j
                     .HasOne(pt => pt.Evento)
                     .WithMany(t => t.GalleryEventos)
-                    .HasForeignKey(pt => pt.EventoId),
+                    .HasForeignKey(pt => pt.EventoId)
+                    .OnDelete(DeleteBehavior.Cascade),
                 j => j
                     .HasOne(pt => pt.Gallery)
                     .WithMany(p => p.GalleryEventos)
-                    .HasForeignKey(pt => pt.GalleryId),
+                    .HasForeignKey(pt => pt.GalleryId)
+                    .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
                     j.HasKey(t => new { t.GalleryId, t.EventoId });
@@ -137,11 +141,14 @@ namespace Persistence
                 j => j
                     .HasOne(pt => pt.Image)
                     .WithMany(t => t.GalleryImages)
-                    .HasForeignKey(pt => pt.ImageId),
+                    .HasForeignKey(pt => pt.ImageId)
+                    .OnDelete(DeleteBehavior.Cascade),
+                    
                 j => j
                     .HasOne(pt => pt.Gallery)
                     .WithMany(p => p.GalleryImages)
-                    .HasForeignKey(pt => pt.GalleryId),
+                    .HasForeignKey(pt => pt.GalleryId)
+                    .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
                     j.HasKey(t => new { t.GalleryId, t.ImageId });

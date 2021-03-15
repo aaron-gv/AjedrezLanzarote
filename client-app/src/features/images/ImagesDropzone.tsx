@@ -2,7 +2,6 @@ import { observer } from 'mobx-react-lite';
 import  { useCallback, useState } from 'react'
 import {useDropzone} from 'react-dropzone'
 import { Button,  Divider, Grid, Image, Input, Label,  Segment } from 'semantic-ui-react';
-import agent from '../../app/api/agent'
 import { useStore } from '../../app/stores/store';
 import { v4 as uuid } from "uuid";
 import { Evento } from '../../app/models/evento';

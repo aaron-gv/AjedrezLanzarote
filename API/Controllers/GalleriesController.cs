@@ -21,6 +21,12 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Delete.Command{Id = Guid.Parse(galleryId)}));
         }
         [Authorize(Policy = "IsAdmin")]
+        [HttpDelete("{imageId}/{galleryId}")]
+        public async Task<IActionResult> DeleteGallery(string imageId, string galleryId)
+        {
+            return HandleResult(await Mediator.Send(new DeleteImage.Command{ImageId = Guid.Parse(imageId),GalleryId = Guid.Parse(galleryId)}));
+        }
+        [Authorize(Policy = "IsAdmin")]
         [HttpGet("{Id}")]
         public async Task<IActionResult> getGallery(string Id)
         {

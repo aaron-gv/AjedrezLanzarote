@@ -3,7 +3,6 @@ import { Container } from "semantic-ui-react";
 import NavBar from "./NavBar";
 import EventoDashboard from "../../features/eventos/dashboard/EventoDashboard";
 import { Route, Switch, useLocation } from "react-router-dom";
-import EventoForm from "../../features/eventos/form/EventoForm";
 import HomePage from "../../features/home/HomePage";
 import EventoDetails from "../../features/eventos/details/EventoDetails";
 import LandingPage from "../../features/landing/LandingPage";
@@ -21,6 +20,7 @@ import NoticiaDashboard from "../../features/noticias/dashboard/NoticiaDashboard
 import NoticiaForm from "../../features/noticias/form/NoticiaForm";
 import ImagesDropzone from "../../features/images/ImagesDropzone";
 import EventoEdit from "../../features/eventos/form/EventoEdit";
+import EventoCreate from "../../features/eventos/form/EventoCreate";
   
 export default observer(function App() {
   const location = useLocation();
@@ -54,9 +54,14 @@ export default observer(function App() {
                 
                 <Route
                   key={location.key}
-                  path={["/crearEvento", "/editarEvento/:url"]}
+                  path={"/editarEvento/:url"}
                   component={EventoEdit}
                 /> 
+                <Route 
+                  key={location.key}
+                  path={"/crearEvento"}
+                  component={EventoCreate}
+                  />
                 <Route 
                   key={location.key}
                   path={["/crearNoticia", "/editarNoticia/:url"]}

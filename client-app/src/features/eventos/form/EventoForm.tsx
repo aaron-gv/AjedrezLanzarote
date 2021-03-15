@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import React from "react";
+import { Link, useHistory } from "react-router-dom";
 import { Button, Header, Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
@@ -14,9 +14,6 @@ import { categoryOptions } from "../../../app/common/options/categoryOptions";
 import MyDateInput from "../../../app/common/form/MyDateInput";
 import { EventoFormValues } from "../../../app/models/evento";
 import ValidationErrors from "../../errors/ValidationErrors";
-import ImagesDropzone from "../../images/ImagesDropzone";
-import {Gallery} from "../../../app/models/gallery";
-import EventoGalleryModify from "../collections/EventoGalleryModify";
 
 interface Props {
   evento: EventoFormValues;
@@ -26,9 +23,7 @@ export default observer(function EventoForm({evento} : Props) {
   const history = useHistory();
   const { eventoStore, userStore  } = useStore();
   const {
-    loadEventoByUrl,
     loadingInitial,
-    setLoadingInitial,
     createEvento,
     updateEvento
   } = eventoStore;
@@ -140,10 +135,7 @@ export default observer(function EventoForm({evento} : Props) {
           </Form>
         )}
       </Formik>
-      
     </Segment>
-    
-    
     </>
   );
 });

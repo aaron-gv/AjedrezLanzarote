@@ -99,7 +99,8 @@ const Images = {
     createEventGallery: (images: FormData, id: string, galleryId: string) => axios.post<void>(`/Images/${id}/${galleryId}`, images)
 }
 const Galleries = {
-    get: (id: string) => requests.get<Gallery>(`/GalleryEvento/${id}`)
+    get: (id: string) => requests.get<Gallery>(`/GalleryEvento/${id}`),
+    deleteImage: (imageId: string, galleryId:string) => axios.delete<void>(`/GalleryEvento/${imageId}/${galleryId}`)
 }
 const agent = {
     Eventos,

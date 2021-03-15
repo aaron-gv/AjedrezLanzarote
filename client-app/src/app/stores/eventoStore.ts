@@ -3,7 +3,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { history } from "../..";
 import agent from "../api/agent";
 import { Evento, EventoFormValues } from "../models/evento";
-import {Gallery, GalleryFormValues} from '../models/gallery';
 import { Profile } from "../models/profile";
 import { store } from "./store";
 
@@ -213,28 +212,57 @@ export default class EventoStore {
       throw new Error("Alguno de los parámetros es incorrecto.");
     this.loading = true;
     var myForm = new FormData();
-    myData.map((data) => {
-      myForm.append("Images", data);
-    });
+    myData.map((data) => 
+      myForm.append("Images", data)
+    );
     myForm.append("collectionTitle", (document.getElementById('collectionTitle')?.textContent || ''))
     try {
       await agent.Images.createEventGallery(myForm,evento.id,galleryId);
       let newGallery = await agent.Galleries.get(galleryId);
       runInAction(() => {
-        evento.galleries?.push(newGallery);
+        if (evento.galleries)
+          evento.galleries.push(newGallery);
+        else 
+          evento.galleries = [newGallery];
         this.eventosRegistry.set(evento.id, evento as Evento);
-        this.selectedEvento = evento as Evento;
+        this.selectedEvento = evento;
         this.loading = false;
       })
     } catch(error) {
+      console.log(error);
       runInAction(() => {
         this.loading = false;
       })
     }
-    
-    
+  }
 
-    
+  deleteImage = async (evento:Evento, imageId: string, galleryId: string) => {
+    this.loading = true;
+
+    try {
+      await agent.Galleries.deleteImage(imageId, galleryId);
+      
+      runInAction(() => {
+        console.log(evento.galleries?.find(x => x.id === galleryId)?.images);
+        var newImageList = evento.galleries?.find(x => x.id === galleryId)?.images.filter(x => x.id !== imageId);
+        console.log(newImageList);
+        if (newImageList!==undefined && newImageList?.length > 0)
+        {
+          evento.galleries!.find(x => x.id === galleryId)!.images = newImageList;
+        } else {
+          let newGalleries = evento.galleries!.filter(x => x.id !== galleryId);
+          evento.galleries = newGalleries.length > 0 ? newGalleries : [];
+        }
+        this.eventosRegistry.set(evento.id, evento as Evento);
+        this.selectedEvento = evento;
+        this.loading = false;
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction(() => { 
+        this.loading = false;
+      });
+    }
   }
 }
 

@@ -32,12 +32,10 @@ namespace Application.Images
         {
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
-            private readonly string _config;
             private readonly ILogger<Create> _logger;
             public Handler(DataContext context, IUserAccessor userAccessor, ILogger<Create> logger)
             {
                 _logger = logger;
-                _config = "d:/AppImages/";
                 _userAccessor = userAccessor;
                 _context = context;
 
