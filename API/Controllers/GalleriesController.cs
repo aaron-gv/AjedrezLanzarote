@@ -15,14 +15,14 @@ namespace API.Controllers
     public class GalleryEventoController : BaseApiController
     {
         [Authorize(Policy = "IsAdmin")]
-        [HttpDelete("{galleryId}")]
-        public async Task<IActionResult> DeleteGallery(string galleryId)
+        [HttpDelete("gallerydel/{galleryId}/{eventoId}")]
+        public async Task<IActionResult> DeleteEventoGallery(string galleryId, string eventoId)
         {
-            return HandleResult(await Mediator.Send(new Delete.Command{Id = Guid.Parse(galleryId)}));
+            return HandleResult(await Mediator.Send(new DeleteEventoGallery.Command{Id = Guid.Parse(galleryId), EventoId = Guid.Parse(eventoId)}));
         }
         [Authorize(Policy = "IsAdmin")]
-        [HttpDelete("{imageId}/{galleryId}")]
-        public async Task<IActionResult> DeleteGallery(string imageId, string galleryId)
+        [HttpDelete("imagedel/{imageId}/{galleryId}")]
+        public async Task<IActionResult> DeleteImageGallery(string imageId, string galleryId)
         {
             return HandleResult(await Mediator.Send(new DeleteImage.Command{ImageId = Guid.Parse(imageId),GalleryId = Guid.Parse(galleryId)}));
         }

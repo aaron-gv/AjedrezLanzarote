@@ -13,6 +13,7 @@ using Persistence;
 using System;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using ImageMagick;
 
 namespace Infrastructure.Files
 {
@@ -41,15 +42,19 @@ namespace Infrastructure.Files
                 _context = context;
                 _imageEntities = new List<Domain.Image> {};
             }
+            
+
             public async Task<Result<List<Domain.Image>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                
                 foreach (var formFile in request.Images)
                 {
+                    
                     if (formFile.Length > 0 && formFile.Length < 15000000 && formFile.ContentType == "image/jpeg" || formFile.ContentType == "image/png" || formFile.ContentType == "image/jpg")
                     {
                         var filenameParts = formFile.FileName.Split('.');
                         var extension = filenameParts.Last();
+
+
                         filenameParts = null;
                         var fileName = DateTime.Now.Ticks.ToString();
                         var fullFileName = fileName +"."+ extension;
@@ -62,50 +67,79 @@ namespace Infrastructure.Files
                         Domain.Image newImgEntity = null;
                         System.Diagnostics.Process process = new System.Diagnostics.Process();
                         System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                        ImageCodecInfo codec = ImageCodecInfo.GetImageEncoders()[1];
-                        EncoderParameters eParams = new EncoderParameters(1);
-                        eParams.Param[0] = new EncoderParameter(Encoder.Quality, 90L);
+
                         try
                         {
-                            var imageFile = System.Drawing.Image.FromStream(formFile.OpenReadStream());
-                            if (imageFile.Width > 1600 || imageFile.Height > 1600) {
-                                var imageResized = ScaleImage(imageFile, 1600, 1600);
-                                imageResized.Save(filePath, codec, eParams);
-                                
-                                imageFile = imageResized;
-                            } else {
-                                imageFile.Save(filePath);
+                            var imageFile = new MagickImage(formFile.OpenReadStream());
+                            imageFile.FilterType = FilterType.Triangle;
+                            
+                            imageFile.Posterize(136);
+                            imageFile.Quality = 75;
+                            imageFile.ColorSpace = ColorSpace.sRGB;
+                            imageFile.Interlace = Interlace.NoInterlace;
+                            
+                            if (extension == "png")
+                            {
+                                imageFile.Format = MagickFormat.Png;
                             }
+                            if (extension == "jpg" || extension == "jpeg")
+                            {
+                                imageFile.Format = MagickFormat.Jpeg;
+                                
+                            }
+                            if (imageFile.Width > 1600){
+                                
+                                imageFile.Resize(1600,0);
+                            } 
+                            else if (imageFile.Height > 1600) {
+                                imageFile.Resize(0,1600);
+                            } 
+                            imageFile.Strip();
+                            
+                            imageFile.Write(filePath);
+                            
                             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                            startInfo.FileName = "C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.2101.9-0\\MpCmdRun.exe";
+                            startInfo.FileName = "C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.2102.4-0\\MpCmdRun.exe";
                             startInfo.Arguments = "-Scan -ScanType 3 -File " + filePath;
                             startInfo.WorkingDirectory = "d:\\AppImages\\";
                             process.StartInfo = startInfo;
+                            process.Start();
                             
-                            var results = process.Start();
-                            while(!process.HasExited){
-                                Thread.Sleep(0);
+                            //process.WaitForExit();
+                            while(!process.HasExited)
+                            {
+                                Thread.Sleep(500);
                             }
                             // ExitCode 0 = clean, 2 = infected
                             if (process.ExitCode != 0) {
                                 Console.WriteLine("Algo ha ido mal en el análisis de seguridad del archivo.");
+                                
                                 System.IO.File.Delete(filePath);
                                 break;
                             }
+                            
                             var publicThumbPath ="";
                             var smallWidth = imageFile.Width;
                             var smallHeight = imageFile.Height;
-
-                            if (imageFile.Width > 250 || imageFile.Height > 250)
+                            var thumbnail = new MagickImage(imageFile);
+                            var createThumb = false;
+                            if (imageFile.Width > 250) {   
+                                thumbnail.Resize(250, 0);
+                                
+                                createThumb = true;
+                            }
+                            if (imageFile.Width > 250) {
+                                thumbnail.Resize(250, 0);
+                                createThumb = true;
+                            }
+                            if (createThumb)
                             {
                                 var thumbfilePath = _config + fileName+"_thumb."+extension;
                                 var realThumbPath = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\assets\\galleryImages\\"+fileName+"_thumb."+extension;
                                 publicThumbPath = "/assets/galleryImages/"+fileName+"_thumb."+extension;
-                                var thumbResized = ScaleImage(imageFile, 250, 250);
-                                thumbResized.Save(thumbfilePath);
-                                smallWidth = thumbResized.Width;
-                                smallHeight = thumbResized.Height;
-                                thumbResized.Dispose();
+                                thumbnail.Write(thumbfilePath);
+                                smallWidth = thumbnail.Width;
+                                smallHeight = thumbnail.Height;
                                 using (var sourceStream = new FileStream(thumbfilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
                                 using (var destinationStream = new FileStream(realThumbPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
                                 await sourceStream.CopyToAsync(destinationStream);
@@ -115,7 +149,7 @@ namespace Infrastructure.Files
                                 var thumbfilePath = filePath;
                                 publicThumbPath = pubicPath;
                             }
-
+                            
                             
                             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
                             using (var destinationStream = new FileStream(realPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
@@ -137,12 +171,11 @@ namespace Infrastructure.Files
                             };
                             _imageEntities.Add(newImgEntity);
                             imageFile.Dispose();
+                            thumbnail.Dispose();
                         }
                         catch (System.Exception error)
                         {
                             _logger.LogError(error.Message);
-                        } finally {
-                            eParams.Dispose();
                         }
                     }
                 }
@@ -161,9 +194,9 @@ namespace Infrastructure.Files
 
             var newWidth = (int)(image.Width * ratio);
             var newHeight = (int)(image.Height * ratio);
-
+            
             var newImage = new Bitmap(newWidth, newHeight);
-
+            
             using (var graphics = Graphics.FromImage(newImage))
                 graphics.DrawImage(image, 0, 0, newWidth, newHeight);
 

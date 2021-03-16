@@ -76,31 +76,31 @@ const requests = {
 const Eventos = {
     list: () => requests.get<Evento[]>('/eventos'),
     details: (url: string) => requests.get<Evento>(`/eventos/${url}`),
-    create: (evento: EventoFormValues) => axios.post<void>(`/eventos`, evento),
-    update: (evento: EventoFormValues) => axios.put<void>(`/eventos/${evento.id}`, evento),
-    delete: (id: string) => axios.delete(`/eventos/${id}`),
-    asistir: (url: string) => axios.post<void>(`/eventos/${url}/asistir`),
-    cancelar: (url: string) => axios.post<void>(`/eventos/${url}/cancelar`)
+    create: (evento: EventoFormValues) => axios.post<void>(`/eventos`, evento).then(responseBody),
+    update: (evento: EventoFormValues) => axios.put<void>(`/eventos/${evento.id}`, evento).then(responseBody),
+    delete: (id: string) => axios.delete(`/eventos/${id}`).then(responseBody),
+    asistir: (url: string) => axios.post<void>(`/eventos/${url}/asistir`).then(responseBody),
+    cancelar: (url: string) => axios.post<void>(`/eventos/${url}/cancelar`).then(responseBody)
 }
 const Noticias = {
     list: () => requests.get<Noticia[]>('/noticias'),
     details: (url: string) => requests.get<Noticia>(`/noticias/${url}`),
-    create: (noticia: Noticia) => axios.post<void>(`/noticias`, noticia),
-    update: (noticia: Noticia) => axios.put<void>(`/noticias/${noticia.id}`, noticia),
+    create: (noticia: Noticia) => axios.post<void>(`/noticias`, noticia).then(responseBody),
+    update: (noticia: Noticia) => axios.put<void>(`/noticias/${noticia.id}`, noticia).then(responseBody),
     delete: (id: string) => axios.delete(`/eventos/${id}`)
 }
 const Account = {
     current: () => requests.get<User>('/account'),
     login: (user: UserFormValues) => axios.post<User>('/account/login', user),
     register: (user: UserFormValues) => axios.post<User>('/account/register', user)
-}
+} 
 const Images = {
-    deleteEventGalleries: (id: string) => axios.delete<Gallery[]>(`/GalleryEvento/${id}`),
-    createEventGallery: (images: FormData, id: string, galleryId: string) => axios.post<void>(`/Images/${id}/${galleryId}`, images)
+    deleteEventoGallery: (id: string, eventoId: string) => axios.delete(`/galleryevento/gallerydel/${id}/${eventoId}`).then(responseBody),
+    createEventGallery: (images: FormData, id: string, galleryId: string) => axios.post<void>(`/Images/${id}/${galleryId}`, images).then(responseBody)
 }
 const Galleries = {
-    get: (id: string) => requests.get<Gallery>(`/GalleryEvento/${id}`),
-    deleteImage: (imageId: string, galleryId:string) => axios.delete<void>(`/GalleryEvento/${imageId}/${galleryId}`)
+    get: (id: string) => requests.get<Gallery>(`/galleryevento/${id}`),
+    deleteImage: (imageId: string, galleryId:string) => axios.delete<void>(`/galleryevento/imagedel/${imageId}/${galleryId}`).then(responseBody)
 }
 const agent = {
     Eventos,

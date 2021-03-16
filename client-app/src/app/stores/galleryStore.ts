@@ -1,5 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import agent from "../api/agent";
 import { Gallery } from "../models/gallery";
 import { store } from "./store";
  

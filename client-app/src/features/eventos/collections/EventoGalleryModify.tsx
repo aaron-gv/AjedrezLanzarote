@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import { observer } from 'mobx-react-lite';
-import  { useEffect, useState } from 'react';
+import  {  useState } from 'react';
 import {  Card, Confirm,  Form, Grid,  Image,  Input,   } from 'semantic-ui-react';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
 import { Evento } from '../../../app/models/evento';
@@ -18,9 +18,7 @@ export default observer(function EventoGalleryModify({gallery, evento}:Props)
     const {eventoStore: {deleteImage}} = useStore();
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        
-    }, [deleteImage])
+    
 
     function handleImageDelete() 
     {

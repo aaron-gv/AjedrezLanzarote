@@ -215,18 +215,22 @@ export default class EventoStore {
     myData.map((data) => 
       myForm.append("Images", data)
     );
-    myForm.append("collectionTitle", (document.getElementById('collectionTitle')?.textContent || ''))
+    //myForm.append("collectionTitle", (document.getElementById('newGalleryTitle')?.textContent || ''))
+    
     try {
       await agent.Images.createEventGallery(myForm,evento.id,galleryId);
-      let newGallery = await agent.Galleries.get(galleryId);
-      runInAction(() => {
-        if (evento.galleries)
-          evento.galleries.push(newGallery);
-        else 
-          evento.galleries = [newGallery];
-        this.eventosRegistry.set(evento.id, evento as Evento);
-        this.selectedEvento = evento;
-        this.loading = false;
+      
+      runInAction(async () => {
+        let newGallery = await agent.Galleries.get(galleryId);
+          runInAction(() => {
+            if (evento.galleries)
+            evento.galleries.push(newGallery);
+          else 
+            evento.galleries = [newGallery];
+            this.eventosRegistry.set(evento.id, evento as Evento);
+            this.selectedEvento = evento;
+            this.loading = false;
+          });
       })
     } catch(error) {
       console.log(error);
@@ -253,6 +257,27 @@ export default class EventoStore {
           let newGalleries = evento.galleries!.filter(x => x.id !== galleryId);
           evento.galleries = newGalleries.length > 0 ? newGalleries : [];
         }
+        this.eventosRegistry.set(evento.id, evento as Evento);
+        this.selectedEvento = evento;
+        this.loading = false;
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction(() => { 
+        this.loading = false;
+      });
+    }
+  }
+
+  deleteGallery = async (evento:Evento, galleryId: string) => {
+    this.loading = true;
+
+    try {
+      await agent.Images.deleteEventoGallery(galleryId, evento.id);
+      
+      runInAction(() => {
+        let newGalleries = evento.galleries!.filter(x => x.id !== galleryId);
+        evento.galleries = newGalleries.length > 0 ? newGalleries : [];
         this.eventosRegistry.set(evento.id, evento as Evento);
         this.selectedEvento = evento;
         this.loading = false;
