@@ -22,7 +22,6 @@ const [isOpen,setIsOpen] = useState(false);
 let options = {
   //http://photoswipe.com/documentation/options.html
 };
-  console.log(items);
     return (
         <>
         <Label content={<>{title}<Label style={{marginLeft:5}} circular color='blue' size='tiny'>{items.length}</Label></>} ribbon style={{opacity:0.7}} color='orange' size='tiny'  />

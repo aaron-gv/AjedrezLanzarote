@@ -9,22 +9,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Infrastructure.Files;
 using Application.Core;
+using Microsoft.Extensions.Primitives;
 
 namespace API.Controllers
 {
+    public class MyModel
+    {
+        public string Key {get; set;}
+    }
+
     public class ImagesController : BaseApiController
     
     {
         [Authorize(Policy = "IsAdmin")]
         [HttpPost("{evento}/{gallery}")]
-        public async Task<ActionResult> CreateImageEntities(List<IFormFile> Images, Guid evento, Guid gallery)
+        public async Task<ActionResult> CreateImageEntities(IFormCollection Images, Guid evento, Guid gallery)
         {
+            var resultado = Request.HttpContext.Request.Form.TryGetValue("collectionTitle",out Microsoft.Extensions.Primitives.StringValues titulo);
             //ActionResult<List<Domain.Image>> Result, Guid GalleryId
-            if (gallery == Guid.Parse("00000000-0000-0000-0000-000000000000"))
+            if (gallery == Guid.Parse("00000000-0000-0000-0000-000000000000")) 
                 return BadRequest();
              
              Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new ImageUpload.Query {Images = Images});
-            if (!imgCollectionResult.IsSuccess)
+            if (!imgCollectionResult.IsSuccess)  
             {
                 return BadRequest("Ha ocurrido un problema subiendo los archivos, compruebe que los archivos estén en un formato de imagen válido.");
             }
@@ -33,7 +40,14 @@ namespace API.Controllers
                 return BadRequest("No se han enviado imágenes válidas");
             }
 
-            return HandleResult(await Mediator.Send(new Application.Images.Create.Command {Images = imgCollectionResult.Value, GalleryId = gallery,EventoId = evento}));
+            return HandleResult(await Mediator.Send(new Application.Images.Create.Command {Images = imgCollectionResult.Value, GalleryId = gallery,EventoId = evento, Title = titulo}));
+        }
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPut("imageRename/{imageId}")]
+        public async Task<IActionResult> RenameImage(string imageId)
+        {
+            Request.Form.TryGetValue("title", out StringValues value);
+            return HandleResult(await Mediator.Send(new RenameEventoImage.Command{ImageId = Guid.Parse(imageId), Title = value}));
         }
     }
     

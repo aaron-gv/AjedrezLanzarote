@@ -28,6 +28,9 @@ namespace Application.Galleries
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var gallery = await _context.Galleries.FindAsync(request.Id);
+                if (gallery == null)
+                    return Result<Unit>.Failure("La galería especificada no es válida, por favor refresque la página y vuelva a intentarlo.");
+
                 var galleryImages = await _context.GalleryImages.Where(x => x.GalleryId == gallery.Id).ToListAsync();
                 
                 var eventoGallery = await _context.GalleryEventos.FindAsync(request.Id, request.EventoId);

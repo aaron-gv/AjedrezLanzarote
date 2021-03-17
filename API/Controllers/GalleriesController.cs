@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.Features;
 using Infrastructure.Security;
 using System.Security.Claims;
+using Microsoft.Extensions.Primitives;
 
 namespace API.Controllers
 {
@@ -25,6 +26,13 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteImageGallery(string imageId, string galleryId)
         {
             return HandleResult(await Mediator.Send(new DeleteImage.Command{ImageId = Guid.Parse(imageId),GalleryId = Guid.Parse(galleryId)}));
+        }
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPut("galleryrename/{eventoId}/{galleryId}")]
+        public async Task<IActionResult> RenameGallery(string eventoId, string galleryId)
+        {
+            Request.Form.TryGetValue("title", out StringValues value);
+            return HandleResult(await Mediator.Send(new RenameEventoGallery.Command{GalleryId = Guid.Parse(galleryId), EventoId = Guid.Parse(eventoId), Title = value}));
         }
         [Authorize(Policy = "IsAdmin")]
         [HttpGet("{Id}")]

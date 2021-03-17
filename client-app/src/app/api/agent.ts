@@ -80,7 +80,9 @@ const Eventos = {
     update: (evento: EventoFormValues) => axios.put<void>(`/eventos/${evento.id}`, evento).then(responseBody),
     delete: (id: string) => axios.delete(`/eventos/${id}`).then(responseBody),
     asistir: (url: string) => axios.post<void>(`/eventos/${url}/asistir`).then(responseBody),
-    cancelar: (url: string) => axios.post<void>(`/eventos/${url}/cancelar`).then(responseBody)
+    cancelar: (url: string) => axios.post<void>(`/eventos/${url}/cancelar`).then(responseBody),
+    renameGallery: (idGallery: string, idEvento: string, title: FormData) => axios.put<void>(`/galleryevento/galleryrename/${idEvento}/${idGallery}`, title).then(responseBody),
+    renameImage: (idImage: string, title: FormData) => axios.put<void>(`/images/imagerename/${idImage}`, title).then(responseBody)
 }
 const Noticias = {
     list: () => requests.get<Noticia[]>('/noticias'),
@@ -94,7 +96,7 @@ const Account = {
     login: (user: UserFormValues) => axios.post<User>('/account/login', user),
     register: (user: UserFormValues) => axios.post<User>('/account/register', user)
 } 
-const Images = {
+const Images = { 
     deleteEventoGallery: (id: string, eventoId: string) => axios.delete(`/galleryevento/gallerydel/${id}/${eventoId}`).then(responseBody),
     createEventGallery: (images: FormData, id: string, galleryId: string) => axios.post<void>(`/Images/${id}/${galleryId}`, images).then(responseBody)
 }

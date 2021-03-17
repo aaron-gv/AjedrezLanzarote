@@ -9,5 +9,6 @@ export interface ImageDto{
     w: number,
     smallWidth: number,
     smallHeight:number,
-    thumbnail: string
+    thumbnail: string,
+    description: string
 }

@@ -1,8 +1,9 @@
-import {  Formik } from "formik";
+import {  Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import  React ,{ useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Confirm,  Dimmer,  Grid, Input,  Loader,  Segment } from "semantic-ui-react";
+import MyTextInput from "../../../app/common/form/MyTextInput";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import {  Evento, EventoFormValues } from "../../../app/models/evento";
 import { useStore } from "../../../app/stores/store";
@@ -29,7 +30,7 @@ export default observer(function EventoEdit() {
         
         setTargetGallery('');
     }
-  const { loadEventoByUrl, loadingInitial, selectedEvento: evento } = eventoStore;
+  const { loadEventoByUrl, loadingInitial, selectedEvento: evento, renameGallery } = eventoStore;
   useEffect(() => {
     if (url) {
       loadEventoByUrl(url).then((evento) => {
@@ -37,7 +38,12 @@ export default observer(function EventoEdit() {
       });
     }
   }, [url, loadEventoByUrl, evento]);
-  function handleFormSubmit() {
+  async function handleFormSubmit(galleryId:string, values: any) {
+    setTargetGallery(galleryId);
+    setLoadingComponent(true);
+    await renameGallery(evento!.id, galleryId, values.title);
+    setLoadingComponent(false);
+    setTargetGallery('');
     
   }
   if (loadingInitial || !evento ) return <LoadingComponent content='Cargando...' />;
@@ -47,12 +53,13 @@ export default observer(function EventoEdit() {
       {evento.id && 
       <Segment>
           <ImagesDropzone galleryId={''} evento={evento} />
-        </Segment>
+      </Segment>
       } 
       {evento.galleries &&
-        evento.galleries.map((gallery) => (
+        evento.galleries.map(gallery => (
+          
           <Segment key={gallery.id} clearing >
-            {loadingComponent && targetGallery===gallery.id &&
+            {loadingComponent  && targetGallery===gallery.id &&
               <Dimmer inverted active>
               <Loader content="Cargando..." />
               </Dimmer>
@@ -60,30 +67,36 @@ export default observer(function EventoEdit() {
             
             <div>
               <Formik
-                initialValues={{title: gallery.title ? gallery.title : ''}}
-                onSubmit={handleFormSubmit}
-              >
-                <form className='ui form'>
-                  <Grid columns={3}>
-                    <Grid.Column width={12}>
-                      <Input
-                        size='mini'
-                        name='title'
+                initialValues={{
+                  title: gallery.title ? gallery.title : ""}}
+                enableReinitialize
+                onSubmit={async (values, actions) => {
+                  handleFormSubmit(gallery.id, values);
+                }}
+              >{({dirty, handleSubmit}) => (
+              <Form className='ui form' onSubmit={handleSubmit} >
+                  <Grid columns={3} stretched>
+                    <Grid.Column width={10} style={{paddingRight:'0px'}}>
+                      <MyTextInput
+                        name="title"
                         placeholder={"Título de la collección"}
-                        fluid
                       />
                     </Grid.Column>
-                    <Grid.Column width={2}>
+                    <Grid.Column width={4}>
                       <Button
+                        style={{maxWidth:'150px', marginLeft:'10px'}}
                         color='blue'
                         content={"Actualizar"}
                         size='tiny'
+                        disabled={!dirty}
                         type='submit'
                       />
                     </Grid.Column>
                     <Grid.Column width={2}>
                       <Button
+                        style={{maxWidth:'80px'}}
                         color='red'
+                        floated='right'
                         basic
                         icon='trash'
                         size='tiny'
@@ -95,12 +108,12 @@ export default observer(function EventoEdit() {
                       />
                     </Grid.Column>
                   </Grid>
-                </form>
+                </Form>
+              )}
               </Formik>
             </div>
-            <div>
-                <EventoGalleryModify evento={evento} key={gallery.id} gallery={gallery} />
-            </div>
+            <EventoGalleryModify evento={evento} key={gallery.id} gallery={gallery} />
+            
           </Segment>
         ))}
        <Confirm

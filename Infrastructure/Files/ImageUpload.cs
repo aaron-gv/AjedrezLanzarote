@@ -22,7 +22,7 @@ namespace Infrastructure.Files
         
         public class Query : IRequest<Result<List<Domain.Image>>>
         {
-            public List<IFormFile> Images { get; set; }
+            public IFormCollection Images { get; set; }
             
         }
 
@@ -46,7 +46,7 @@ namespace Infrastructure.Files
 
             public async Task<Result<List<Domain.Image>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                foreach (var formFile in request.Images)
+                foreach (var formFile in request.Images.Files)
                 {
                     
                     if (formFile.Length > 0 && formFile.Length < 15000000 && formFile.ContentType == "image/jpeg" || formFile.ContentType == "image/png" || formFile.ContentType == "image/jpg")

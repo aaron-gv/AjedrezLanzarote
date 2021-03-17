@@ -23,6 +23,7 @@ namespace Application.Images
         public class Command : IRequest<Result<Unit>>
         {
             public List<Domain.Image> Images { get; set; }
+            public string Title { get; set; }
             public Guid GalleryId { get; set; }
             public Guid EventoId { get; set; }
         }
@@ -44,7 +45,7 @@ namespace Application.Images
             {
                 var userId = _userAccessor.GetUserId();
                 List<Domain.Image> images = request.Images;
-                var Gallery = new Gallery { Id = request.GalleryId, Title = "Title goes here", AppUserId = userId};
+                var Gallery = new Gallery { Id = request.GalleryId, Title = request.Title, AppUserId = userId};
                 _context.Galleries.Add(Gallery);
                 images.ForEach(image =>
                 {

@@ -9,6 +9,7 @@ namespace Domain
         public Gallery Gallery { get; set; }
         public Guid EventoId { get; set; }
         public Evento Evento { get; set; }
+        public string Title { get; set; }
 
     }
 }

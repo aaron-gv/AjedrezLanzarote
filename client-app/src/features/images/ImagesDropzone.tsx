@@ -13,13 +13,13 @@ interface Props {
 export default observer(function ImagesDropzone({evento, galleryId} : Props) {
     const [myData, setMyData] = useState<any[]>([]);
     const [items, setItems] = useState([]);
-    
+    const [newGalleryTitle, setNewGalleryTitle] = useState('');
+    const [inputElement, setInputElement] = useState<EventTarget & HTMLInputElement>();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasItems, setHasItems] = useState(false);
     const {eventoStore: {createGallery}} = useStore();
     const onDrop = useCallback(acceptedFiles => {
         const formData = myData;
-        setItems(acceptedFiles);
         acceptedFiles.map((file: any) => {
             formData?.push(file);
             return true;
@@ -27,7 +27,7 @@ export default observer(function ImagesDropzone({evento, galleryId} : Props) {
         setMyData(formData);
         setHasItems(!hasItems);
         //agent.Images.createGallery(formData)
-      }, [myData, setItems, setMyData, setHasItems, hasItems]);
+      }, [myData, setMyData, setHasItems, hasItems]);
       const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
       if (galleryId === '') {
@@ -38,16 +38,22 @@ export default observer(function ImagesDropzone({evento, galleryId} : Props) {
           if (!myData)
             return null;
           setIsSubmitting(true);
-          
-          await createGallery(myData, evento, galleryId);
-
+          let title = newGalleryTitle;
+          console.log(title);
+          await createGallery(myData, evento, galleryId, title); 
+          if (inputElement)
+            inputElement.value='';
           setIsSubmitting(false);
           setMyData([]);
           setItems([]);
           
           
       }
-
+      function handleChange(event : React.ChangeEvent<HTMLInputElement>) {
+        setNewGalleryTitle(event.currentTarget.value);
+        setInputElement(event.currentTarget);
+      }
+    
       if (!evento.id) return null;
       return (
         <Segment clearing key={evento.id}>
@@ -90,10 +96,10 @@ export default observer(function ImagesDropzone({evento, galleryId} : Props) {
             </Grid>
         } {items &&
             <>
-            <Grid doubling columns={6} id='griddy'> 
+            <Grid doubling columns={6}  id='griddy'> 
                 {myData?.map((item) => (
                     
-                    <Grid.Column verticalAlign='middle' textAlign='center' key={uuid()}>
+                    <Grid.Column style={{minHeight:'87px'}} verticalAlign='middle' textAlign='center' key={uuid()}>
                         <Image src={URL.createObjectURL(item)} style={{maxWidth:'100px',maxHeight:'100px', margin:'0 auto'}} />
                     </Grid.Column>
                     
@@ -111,7 +117,7 @@ export default observer(function ImagesDropzone({evento, galleryId} : Props) {
               <Label floated='right' content='Introduzca un titulo para la colección'   />
               </Grid.Column>
               <Grid.Column width={9}>
-              <Input type='text' name='newGalleryTitle' style={{width:'100%'}} size='small'  placeholder='Titulo'  />
+              <Input autoComplete='off' type='text' id='newGalleryTitle' value={newGalleryTitle} style={{width:'100%'}}  placeholder='Titulo' className={"ui small input"} onChange={(value) => handleChange(value)} />
               </Grid.Column>
               <Grid.Column width={3}>
               <Button size='small' type='submit' style={{width:'100%'}} positive content='Crear colección' floated='right' id='collectionTitle' onClick={() => handleSubmit()} disabled={myData!.length < 1 || isSubmitting} loading={isSubmitting} />

@@ -19,5 +19,6 @@ namespace Domain
         public string AppUserId {get; set;}
         public AppUser AppUser {get; set;}
         public ProfileImage Profile {get; set;}
+        public string Description {get; set;}
     }
 }

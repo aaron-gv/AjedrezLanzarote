@@ -7,6 +7,10 @@ interface Props {
     name: string;
     type?: string
     label?: string;
+    action?:any;
+    fluid?:boolean;
+    autoComplete?:string;
+    size?:any;
 }
 
 export default function MyTextInput(props: Props) {

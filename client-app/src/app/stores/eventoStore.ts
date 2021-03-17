@@ -69,6 +69,7 @@ export default class EventoStore {
       this.loadingInitial = true;
       try {
         let evento = await agent.Eventos.details(url);
+        console.log(evento);
         this.setEvento(evento);
         runInAction(() => {
           this.selectedEvento = evento;
@@ -207,7 +208,8 @@ export default class EventoStore {
     }
   }
 
-  createGallery = async (myData: any[], evento: Evento, galleryId: string) => {
+  createGallery = async (myData: any[], evento: Evento, galleryId: string, galleryTitle: string) => {
+    
     if (!evento || !galleryId || !myData)
       throw new Error("Alguno de los parámetros es incorrecto.");
     this.loading = true;
@@ -215,9 +217,10 @@ export default class EventoStore {
     myData.map((data) => 
       myForm.append("Images", data)
     );
-    //myForm.append("collectionTitle", (document.getElementById('newGalleryTitle')?.textContent || ''))
     
-    try {
+    myForm.append("collectionTitle", galleryTitle); 
+    
+    try { 
       await agent.Images.createEventGallery(myForm,evento.id,galleryId);
       
       runInAction(async () => {
@@ -237,6 +240,55 @@ export default class EventoStore {
       runInAction(() => {
         this.loading = false;
       })
+    }
+  }
+
+  renameGallery = async (eventoId: string, galleryId: string, title: string) => {
+    if (!eventoId || !galleryId || !title)
+      throw new Error("Alguno de los parámetros es incorrecto.");
+    this.loading = true;
+    var myForm = new FormData();
+    myForm.append("title", title);
+    try {
+      await agent.Eventos.renameGallery(galleryId,eventoId,myForm);
+      runInAction(() => {
+        this.loading = false;
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction(() => {
+        this.loading = false;
+      });
+    }
+  }
+
+  renameImage = async (galleryId:string, imageId: string, title: string) => {
+    this.loading = true;
+    var myForm = new FormData();
+    myForm.append("title", title);
+    try {
+      await agent.Eventos.renameImage(imageId,myForm);
+      runInAction(async () => {
+        
+        let newGallery = await agent.Galleries.get(galleryId);
+          runInAction(() => {
+            let evento = this.selectedEvento;
+            evento?.galleries?.map( gallery => {
+              if (gallery.id == galleryId)
+              gallery = newGallery;
+            });
+
+            this.eventosRegistry.set(evento!.id, evento as Evento);
+            this.selectedEvento = evento;
+            this.loading = false;
+          });
+
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction(() => {
+        this.loading = false;
+      });
     }
   }
 
