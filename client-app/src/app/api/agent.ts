@@ -7,12 +7,12 @@ import { Noticia } from '../models/noticia';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
-const sleep = (delay: number) => {
+/*const sleep = (delay: number) => {
     return new Promise((resolve) => {
         setTimeout(resolve, delay);
     })
 }
-
+*/
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
 
@@ -23,9 +23,12 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async response => {
-
-        await sleep(300);
+    //const {config, status} = response;
+        
+        //await sleep(300);   
+        //if (response.status === 200)
         return response;
+        
 }, (error: AxiosError) => {
     const {data, status, config} = error.response!;
     

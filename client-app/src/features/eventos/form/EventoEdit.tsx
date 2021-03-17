@@ -1,8 +1,8 @@
-import {  Form, Formik } from "formik";
+import {  Form, Formik, FormikHelpers } from "formik";
 import { observer } from "mobx-react-lite";
 import  React ,{ useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Confirm,  Dimmer,  Grid, Input,  Loader,  Segment } from "semantic-ui-react";
+import { Button, Confirm,  Dimmer,  Grid,   Loader,  Segment } from "semantic-ui-react";
 import MyTextInput from "../../../app/common/form/MyTextInput";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import {  Evento, EventoFormValues } from "../../../app/models/evento";
@@ -10,6 +10,7 @@ import { useStore } from "../../../app/stores/store";
 import ImagesDropzone from "../../images/ImagesDropzone";
 import EventoGalleryModify from "../collections/EventoGalleryModify";
 import EventoForm from "./EventoForm";
+
 
 export default observer(function EventoEdit() {
   const { url } = useParams<{ url: string }>();
@@ -20,6 +21,10 @@ export default observer(function EventoEdit() {
   const [eventoForm, setEventoForm] = useState<EventoFormValues>(
     new EventoFormValues()
   );
+  const { loadEventoByUrl, loadingInitial, selectedEvento: evento, renameGallery } = eventoStore;
+
+  
+  
   async function handleGalleryDelete() 
     {
       setLoadingComponent(true);
@@ -30,7 +35,7 @@ export default observer(function EventoEdit() {
         
         setTargetGallery('');
     }
-  const { loadEventoByUrl, loadingInitial, selectedEvento: evento, renameGallery } = eventoStore;
+  
   useEffect(() => {
     if (url) {
       loadEventoByUrl(url).then((evento) => {
@@ -38,13 +43,20 @@ export default observer(function EventoEdit() {
       });
     }
   }, [url, loadEventoByUrl, evento]);
-  async function handleFormSubmit(galleryId:string, values: any) {
+  /*
+    if (!user?.roles && !user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ))
+    {
+      return NotFound();
+    }
+  */
+  async function handleFormSubmit(galleryId:string, values: any, actions: FormikHelpers<{title: string;}>
+) {
     setTargetGallery(galleryId);
     setLoadingComponent(true);
     await renameGallery(evento!.id, galleryId, values.title);
     setLoadingComponent(false);
     setTargetGallery('');
-    
+    actions.resetForm();
   }
   if (loadingInitial || !evento ) return <LoadingComponent content='Cargando...' />;
   return (
@@ -71,7 +83,7 @@ export default observer(function EventoEdit() {
                   title: gallery.title ? gallery.title : ""}}
                 enableReinitialize
                 onSubmit={async (values, actions) => {
-                  handleFormSubmit(gallery.id, values);
+                  await handleFormSubmit(gallery.id, values, actions);
                 }}
               >{({dirty, handleSubmit}) => (
               <Form className='ui form' onSubmit={handleSubmit} >
@@ -112,8 +124,7 @@ export default observer(function EventoEdit() {
               )}
               </Formik>
             </div>
-            <EventoGalleryModify evento={evento} key={gallery.id} gallery={gallery} />
-            
+              <EventoGalleryModify evento={evento} key={gallery.id} gallery={gallery} />
           </Segment>
         ))}
        <Confirm

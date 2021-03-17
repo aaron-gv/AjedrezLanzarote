@@ -43,12 +43,11 @@ namespace Application.Galleries
                 var gallery = await _context.Galleries.FindAsync(request.GalleryId);
                 if (gallery == null)
                     return Result<Unit>.Failure("El evento o la galería no existen");
-
                 gallery.Title = request.Title;
                 var result = await _context.SaveChangesAsync() > 0;
                 if (!result)
                 {
-                    return Result<Unit>.Failure("Fallo al editar un evento");
+                    return Result<Unit>.Failure("No ha habido cambios");
                 }
                 else
                 {

@@ -25,7 +25,7 @@ import EventoCreate from "../../features/eventos/form/EventoCreate";
 export default observer(function App() {
   const location = useLocation();
   const {commonStore, userStore} = useStore();
-
+  const {user} = userStore;
   useEffect(() => {
     if (commonStore.token) {
       userStore.getUser().finally(()  => commonStore.setAppLoaded());
@@ -51,22 +51,31 @@ export default observer(function App() {
                 <Route path='/eventos' exact component={EventoDashboard} />
                 
                 <Route path='/noticias' exact component={NoticiaDashboard} />
+
+                {user?.roles && user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ) &&
                 
-                <Route
-                  key={location.key}
-                  path={"/editarEvento/:url"}
-                  component={EventoEdit}
-                /> 
-                <Route 
-                  key={location.key}
-                  path={"/crearEvento"}
-                  component={EventoCreate}
-                  />
-                <Route 
-                  key={location.key}
-                  path={["/crearNoticia", "/editarNoticia/:url"]}
-                  component={NoticiaForm}
-                /> 
+                  <Route
+                    key={location.key}
+                    path={"/editarEvento/:url"}
+                    component={EventoEdit}
+                  /> 
+                
+                
+                }
+                {user?.roles && user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ) &&
+                  <Route 
+                    key={location.key}
+                    path={"/crearEvento"}
+                    component={EventoCreate}
+                    />
+              }
+              {user?.roles && user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ) &&
+                  <Route 
+                    key={location.key}
+                    path={["/crearNoticia", "/editarNoticia/:url"]}
+                    component={NoticiaForm}
+                  /> 
+            }
                 <Route path='/eventos/:url' component={EventoDetails} />
                 <Route path='/noticias/:url' component={NoticiaDetails} />
                 <Route path='/errors' component={TestErrors} />

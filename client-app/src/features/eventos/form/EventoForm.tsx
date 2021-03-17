@@ -14,6 +14,7 @@ import { categoryOptions } from "../../../app/common/options/categoryOptions";
 import MyDateInput from "../../../app/common/form/MyDateInput";
 import { EventoFormValues } from "../../../app/models/evento";
 import ValidationErrors from "../../errors/ValidationErrors";
+import { toast } from "react-toastify";
 
 interface Props {
   evento: EventoFormValues;
@@ -28,7 +29,11 @@ export default observer(function EventoForm({evento} : Props) {
     updateEvento
   } = eventoStore;
   
-  
+/*   if (!user?.roles && !user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ))
+  {
+    return NotFound();
+  } */
+
   //const [evento, setEvento] = useState<EventoFormValues>(new EventoFormValues());
   const validationSchema = Yup.object({
     title: Yup.string().required('El título del evento es obligatorio'),
@@ -43,7 +48,7 @@ export default observer(function EventoForm({evento} : Props) {
 
   
 
-  function handleFormSubmit(evento: EventoFormValues, actions: FormikHelpers<{
+  async function handleFormSubmit(evento: EventoFormValues, actions: FormikHelpers<{
     error: null;
     id?: string | undefined;
     url: string;
@@ -61,7 +66,7 @@ export default observer(function EventoForm({evento} : Props) {
     if (!evento.id) {
       let newEvento: EventoFormValues = {...evento, id: uuid(), appUserId : userStore.getUuid()};
       
-      createEvento(newEvento)
+      await createEvento(newEvento)
       .then(function(value) {
         history.push(`/eventos/${newEvento.url}`); 
         window.location.reload();
@@ -72,10 +77,10 @@ export default observer(function EventoForm({evento} : Props) {
         return null;
         
     } else {
-    return updateEvento(evento)
+    await updateEvento(evento)
       .then(function(value) {
-        history.push(`/eventos/${evento.url}`); 
-        window.location.reload();
+        actions.setSubmitting(false);
+        toast.success("Ok");
        }, function(error) {
         actions.setSubmitting(false);
         throw error;
@@ -84,7 +89,7 @@ export default observer(function EventoForm({evento} : Props) {
     }
   }
   if (loadingInitial) return <LoadingComponent content='Cargando evento...' />;
-    
+  
   return (
     <>
     <Segment clearing>

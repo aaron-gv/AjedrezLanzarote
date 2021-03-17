@@ -32,14 +32,10 @@ export default class EventoStore {
       }, {} as {[key: string]: Evento[]})
     )
   }
-
-  
-
   loadEventos = async () => {
     this.loadingInitial = true;
     try {
       const eventos = await agent.Eventos.list();
-      console.log(eventos);
       eventos.forEach((evento) => {
         this.setEvento(evento);
       });
@@ -253,6 +249,14 @@ export default class EventoStore {
       await agent.Eventos.renameGallery(galleryId,eventoId,myForm);
       runInAction(() => {
         this.loading = false;
+        let evento = this.selectedEvento;
+            evento?.galleries?.forEach( gallery => {
+              if (gallery.id === galleryId) { 
+                gallery.title = title;
+              }});
+        this.eventosRegistry.set(evento!.id, evento as Evento);
+        this.selectedEvento = evento;
+        this.loading = false;
       });
     } catch (error) {
       console.log(error);
@@ -266,23 +270,23 @@ export default class EventoStore {
     this.loading = true;
     var myForm = new FormData();
     myForm.append("title", title);
+    
     try {
+      
       await agent.Eventos.renameImage(imageId,myForm);
       runInAction(async () => {
-        
-        let newGallery = await agent.Galleries.get(galleryId);
-          runInAction(() => {
             let evento = this.selectedEvento;
-            evento?.galleries?.map( gallery => {
-              if (gallery.id == galleryId)
-              gallery = newGallery;
+            evento?.galleries?.forEach( gallery => {
+              if (gallery.id === galleryId) { 
+                gallery.images.forEach(image => {
+                  if (image.id === imageId)
+                    image.title = title;
+                })
+              }
             });
-
             this.eventosRegistry.set(evento!.id, evento as Evento);
             this.selectedEvento = evento;
             this.loading = false;
-          });
-
       });
     } catch (error) {
       console.log(error);

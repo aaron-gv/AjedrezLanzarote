@@ -1,6 +1,6 @@
-import { Formik, Form } from "formik";
+import { Formik, Form, FormikHelpers, FormikState } from "formik";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import {
   Button,
@@ -10,18 +10,15 @@ import {
   Grid,
   Icon,
   Image,
-  Input,
   Label,
   Segment,
 } from "semantic-ui-react";
-import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { Evento } from "../../../app/models/evento";
 import { Gallery } from "../../../app/models/gallery";
 import { useStore } from "../../../app/stores/store";
 import { v4 as uuid } from "uuid";
-import useWindowDimensions from "../../../app/common/util/UseWindowDimensions";
-import { SemanticWIDTHS } from "semantic-ui-react/dist/commonjs/generic";
 import MyTextInput from "../../../app/common/form/MyTextInput";
+import { toast } from "react-toastify";
 interface Props {
   gallery: Gallery;
   evento: Evento;
@@ -35,23 +32,18 @@ export default observer(function EventoGalleryModify({
   const [targetImage, setTargetImage] = useState("");
   const [targetGallery, setTargetGallery] = useState("");
   const {
-    eventoStore: { deleteImage, renameImage },
+    eventoStore
   } = useStore();
   const [loading, setLoading] = useState(false);
   const [myData, setMyData] = useState<any[]>([]);
   const [hasItems, setHasItems] = useState(false);
-  const [initialState, setInitialState] = useState(gallery);
   // responsive :
   //const { height, width } = useWindowDimensions();
-
-  useEffect(() => {
-    setInitialState(initialState);
-  }, [initialState]);
 
   function handleImageDelete() {
     setLoading(true);
     setPopupStatus(false);
-    deleteImage(evento, targetImage, targetGallery);
+    eventoStore.deleteImage(evento, targetImage, targetGallery);
     setLoading(false);
     setTargetGallery("");
     setTargetImage("");
@@ -66,7 +58,6 @@ export default observer(function EventoGalleryModify({
       });
       setMyData(formData);
       setHasItems(!hasItems);
-      //agent.Images.createGallery(formData)
     },
     [myData, setMyData, setHasItems, hasItems]
   );
@@ -76,14 +67,25 @@ export default observer(function EventoGalleryModify({
     setHasItems(false);
   }
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-  async function handleFormSubmitRename(imageId: string, title: string) {
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  async function handleRenameImage(imageId: string, title: string, actions: FormikHelpers<{comment: string;}>
+) {
     setLoading(true);
-    await renameImage(gallery.id, imageId, title);
+    await eventoStore.renameImage(gallery.id, imageId, title).then(() => {
+      toast.success("Ok");
+      actions.resetForm({
+        comment: "KAKAKA"
+    } as Partial<FormikState<{ comment: string; }>>);
+    });
 
     setLoading(false);
   }
+  
   //if (loading) return <LoadingComponent  content='Cargando colección...' />
+  
+  if (!eventoStore || !eventoStore.selectedEvento || !eventoStore.selectedEvento.galleries || !gallery || !gallery.id) return null;
+
   return (
     <Segment
       secondary
@@ -150,8 +152,8 @@ export default observer(function EventoGalleryModify({
             </Card>
           </Grid.Column>
         ))}
-        {initialState.images &&
-          initialState.images.map((image) => (
+        {gallery.images &&
+          gallery.images.map((image) => (
             <Grid.Column key={image.id}>
               <Card style={{ height: "150px", verticalAlign: "middle" }}>
                 <Card.Header
@@ -191,13 +193,13 @@ export default observer(function EventoGalleryModify({
                   <Formik
                     enableReinitialize
                     initialValues={{ comment: image.title ? image.title : "" }}
-                    onSubmit={(values) => {
-                      handleFormSubmitRename(image.id, values.comment);
-                      
+                    onSubmit={async (values, actions) => {
+                      await handleRenameImage(image.id, values.comment, actions);
+                      //onHandleRenameImage();
                     }}
                   >
                     {({ handleSubmit, dirty }) => (
-                      <Form>
+                      <Form onSubmit={handleSubmit} >
                         <MyTextInput
                           fluid={true}
                           name='comment'
@@ -207,11 +209,9 @@ export default observer(function EventoGalleryModify({
                           action={{
                             color: "green",
                             icon: "check",
-                            type: "button",
+                            type: "submit",
                             disabled: !dirty,
-                            onClick: () => {
-                              handleSubmit();
-                            },
+                            
                           }}
                         />
                       </Form>

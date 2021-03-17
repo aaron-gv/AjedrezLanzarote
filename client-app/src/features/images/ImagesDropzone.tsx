@@ -71,7 +71,7 @@ export default observer(function ImagesDropzone({evento, galleryId} : Props) {
               <p>Suelta los archivos ahora para subirlos ...</p> : <p>Puede añadir más archivos, o crear la colección actual</p> :
               items.length < 1 ? <p>Para crear una colección nueva, arrastra las imágenes hasta aqui, o pincha en ésta caja</p>: <><p>Puede añadir más archivos, o crear la colección actual</p></> 
           }
-          {items.length < 1 && 
+          {myData.length < 1 && 
             
             <Grid doubling columns={6} id='griddy'> 
                 <Grid.Column verticalAlign='middle' textAlign='center'>
