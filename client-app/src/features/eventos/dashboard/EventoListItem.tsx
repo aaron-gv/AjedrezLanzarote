@@ -37,7 +37,7 @@ export default observer(function EventoListItem({
         }
         <Item.Group as={Link} to={`/eventos/${evento.url}`}>
           <Item>
-            <Item.Image style={{marginBottom:3}} size='tiny' src='/assets/user.png' />
+            <Item.Image style={{marginBottom:3}} size='tiny' src={'/assets/user.png'} />
             <Item.Content>
               <Item.Header>{evento.title}</Item.Header>
               <Item.Description>evento <strong style={{color:'darkblue'}}>{evento.category}</strong></Item.Description>

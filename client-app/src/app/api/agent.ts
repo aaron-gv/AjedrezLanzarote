@@ -101,11 +101,13 @@ const Account = {
 } 
 const Images = { 
     deleteEventoGallery: (id: string, eventoId: string) => axios.delete(`/galleryevento/gallerydel/${id}/${eventoId}`).then(responseBody),
-    createEventGallery: (images: FormData, id: string, galleryId: string) => axios.post<void>(`/Images/${id}/${galleryId}`, images).then(responseBody)
+    createEventGallery: (images: FormData, id: string, galleryId: string) => axios.post<void>(`/Images/${id}/${galleryId}`, images).then(responseBody),
+    
 }
 const Galleries = {
     get: (id: string) => requests.get<Gallery>(`/galleryevento/${id}`),
-    deleteImage: (imageId: string, galleryId:string) => axios.delete<void>(`/galleryevento/imagedel/${imageId}/${galleryId}`).then(responseBody)
+    deleteImage: (imageId: string, galleryId:string) => axios.delete<void>(`/galleryevento/imagedel/${imageId}/${galleryId}`).then(responseBody),
+    addImages: (images: FormData, galleryId: string) => axios.post<void>(`/Images/addImages/${galleryId}`, images).then(responseBody)
 }
 const agent = {
     Eventos,

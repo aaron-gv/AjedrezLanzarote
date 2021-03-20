@@ -239,6 +239,34 @@ export default class EventoStore {
     }
   }
 
+  addToGallery = async (myData: any[], evento: Evento, galleryId: string) => {
+    
+    if (!evento || !galleryId || !myData)
+      throw new Error("Alguno de los parámetros es incorrecto.");
+    this.loading = true;
+    var myForm = new FormData();
+    myData.map((data) => 
+      myForm.append("Images", data)
+    );
+    try { 
+      await agent.Galleries.addImages(myForm,galleryId); //change to update
+      runInAction(async () => {
+        let newGallery = await agent.Galleries.get(galleryId);
+          runInAction(() => {
+            evento.galleries!.find(x => x.id === newGallery.id)!.images = newGallery.images;
+            this.eventosRegistry.set(evento.id, evento as Evento);
+            this.selectedEvento = evento;
+            this.loading = false;
+          });
+      })
+    } catch(error) {
+      console.log(error);
+      runInAction(() => {
+        this.loading = false;
+      })
+    }
+  }
+
   renameGallery = async (eventoId: string, galleryId: string, title: string) => {
     if (!eventoId || !galleryId || !title)
       throw new Error("Alguno de los parámetros es incorrecto.");

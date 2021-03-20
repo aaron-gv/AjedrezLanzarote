@@ -39,6 +39,7 @@ export default observer(function EventoGalleryModify({
   const [hasItems, setHasItems] = useState(false);
   // responsive :
   //const { height, width } = useWindowDimensions();
+  const {addToGallery} = eventoStore;
 
   function handleImageDelete() {
     setLoading(true);
@@ -47,6 +48,18 @@ export default observer(function EventoGalleryModify({
     setLoading(false);
     setTargetGallery("");
     setTargetImage("");
+  }
+
+  const handleUploadFiles = async () => {
+    if (!myData)
+          return null;
+    
+    setLoading(true);
+    await addToGallery(myData, evento, gallery.id);
+    setLoading(false);
+    setMyData([]);
+    setMyData([]);
+      
   }
 
   const onDrop = useCallback(
@@ -87,6 +100,7 @@ export default observer(function EventoGalleryModify({
   if (!eventoStore || !eventoStore.selectedEvento || !eventoStore.selectedEvento.galleries || !gallery || !gallery.id) return null;
 
   return (
+    <>
     <Segment
       secondary
       style={{ overflow: "auto", maxHeight: "360px" }}
@@ -232,32 +246,35 @@ export default observer(function EventoGalleryModify({
         content='Está a punto de borrar la imagen. ¿está seguro?'
       />
 
-      {myData.length > 0 && (
-        <>
-          <Divider />
-          <Button
-            size='small'
-            type='submit'
-            positive
-            content={`Subir ${myData.length} ${
-              myData.length > 1 ? "imagenes" : "imagen"
-            }`}
-            floated='left'
-            id='collectionTitle'
-            disabled={myData!.length < 1}
-          />
-          <Button
-            onClick={handleCancelDropzone}
-            size='small'
-            type='submit'
-            color='grey'
-            content='Cancelar'
-            floated='left'
-            id='collectionTitle'
-            disabled={myData!.length < 1}
-          />
-        </>
-      )}
+     
     </Segment>
+     {myData.length > 0 && (
+      <>
+        <Divider />
+        <Button
+          size='small'
+          type='submit'
+          positive
+          content={`Subir ${myData.length} ${
+            myData.length > 1 ? "imagenes" : "imagen"
+          }`}
+          floated='left'
+          id='collectionTitle'
+          onClick={() => handleUploadFiles()}
+          disabled={myData!.length < 1}
+        />
+        <Button
+          onClick={handleCancelDropzone}
+          size='small'
+          type='submit'
+          color='grey'
+          content='Cancelar'
+          floated='left'
+          id='collectionTitle'
+          disabled={myData!.length < 1}
+        />
+      </>
+    )}
+    </>
   );
 });

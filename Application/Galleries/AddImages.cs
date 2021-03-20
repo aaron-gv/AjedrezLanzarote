@@ -16,16 +16,14 @@ using System.Drawing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Images
+namespace Application.Galleries
 {
-    public class Create
+    public class AddImages
     {
         public class Command : IRequest<Result<Unit>>
         {
             public List<Domain.Image> Images { get; set; }
-            public string Title { get; set; }
             public Guid GalleryId { get; set; }
-            public Guid EventoId { get; set; }
         }
 
 
@@ -33,8 +31,8 @@ namespace Application.Images
         {
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
-            private readonly ILogger<Create> _logger;
-            public Handler(DataContext context, IUserAccessor userAccessor, ILogger<Create> logger)
+            private readonly ILogger<AddImages> _logger;
+            public Handler(DataContext context, IUserAccessor userAccessor, ILogger<AddImages> logger)
             {
                 _logger = logger;
                 _userAccessor = userAccessor;
@@ -48,9 +46,7 @@ namespace Application.Images
                 var Gallery = await _context.Galleries.FindAsync (request.GalleryId);    
                 if (Gallery == null)
                 {
-                    //return Result<Unit>.Failure("La URL '"+(request.Evento.Url).Substring(0,20)+"' ya existe, y debe ser única. Por favor prueba otra diferente.");
-                    Gallery = new Gallery { Id = request.GalleryId, Title = request.Title, AppUserId = userId};
-                    _context.Galleries.Add(Gallery);
+                    return Result<Unit>.Failure("La galería especificada no existe");
                 }
 
                 List<Domain.Image> images = request.Images;
@@ -66,14 +62,7 @@ namespace Application.Images
                     _context.GalleryImages.Add(new GalleryImage { GalleryId = request.GalleryId, ImageId = image.Id, Gallery = Gallery, Image = image });
                 });
                 var result = await _context.SaveChangesAsync() > 0;
-                if (result)
-                {
-                    var evento = await _context.Eventos.FirstOrDefaultAsync(x => x.Id == request.EventoId);
-                    var gallery = await _context.Galleries.FirstOrDefaultAsync(x => x.Id == request.GalleryId);
-                    _context.GalleryEventos.Add(new GalleryEvento { GalleryId = request.GalleryId, EventoId = request.EventoId });
-                    result = await _context.SaveChangesAsync() > 0;
-                }
-
+               
                 if (result)
                     return Result<Unit>.Success(Unit.Value);
                 else

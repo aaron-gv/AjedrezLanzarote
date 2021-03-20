@@ -43,6 +43,28 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Application.Images.Create.Command {Images = imgCollectionResult.Value, GalleryId = gallery,EventoId = evento, Title = titulo}));
         }
         [Authorize(Policy = "IsAdmin")]
+        [HttpPost("addImages/{gallery}")]
+        public async Task<ActionResult> addToCollection(IFormCollection Images, Guid gallery)
+        {
+            var Gallery = Mediator.Send(new Application.Galleries.Details.Query{Id = gallery}).Result.Value;
+            if (Gallery == null)
+            {
+                return BadRequest();
+            }
+
+             Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new ImageUpload.Query {Images = Images});
+            if (!imgCollectionResult.IsSuccess)  
+            {
+                return BadRequest("Ha ocurrido un problema subiendo los archivos, compruebe que los archivos estén en un formato de imagen válido.");
+            }
+            if (imgCollectionResult.Value.Count < 1)
+            {
+                return BadRequest("No se han enviado imágenes válidas");
+            }
+
+            return HandleResult(await Mediator.Send(new Application.Galleries.AddImages.Command {Images = imgCollectionResult.Value, GalleryId = gallery}));
+        }
+        [Authorize(Policy = "IsAdmin")]
         [HttpPut("imageRename/{imageId}")]
         public async Task<IActionResult> RenameImage(string imageId)
         {
