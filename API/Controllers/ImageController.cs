@@ -29,8 +29,10 @@ namespace API.Controllers
             //ActionResult<List<Domain.Image>> Result, Guid GalleryId
             if (gallery == Guid.Parse("00000000-0000-0000-0000-000000000000")) 
                 return BadRequest();
-             
-             Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new ImageUpload.Query {Images = Images});
+             // Cloudinary image management version
+                Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new CloudinaryUpload.Query {Images = Images});
+             // Local storage version: 
+                //Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new ImageUpload.Query {Images = Images});
             if (!imgCollectionResult.IsSuccess)  
             {
                 return BadRequest("Ha ocurrido un problema subiendo los archivos, compruebe que los archivos estén en un formato de imagen válido.");

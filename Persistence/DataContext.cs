@@ -80,10 +80,12 @@ namespace Persistence
             .HasOne(p => p.AppUser)
             .WithMany(b => b.Galleries)
             .HasForeignKey(p => p.AppUserId).IsRequired();
+
             builder.Entity<Image>()
             .HasOne(p => p.AppUser)
             .WithMany(b => b.Images)
             .HasForeignKey(p => p.AppUserId).IsRequired();
+
 
             /* builder.Entity<Gallery>()
             .HasMany(i => i.Images)

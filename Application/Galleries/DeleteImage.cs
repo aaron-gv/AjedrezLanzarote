@@ -37,10 +37,13 @@ namespace Application.Galleries
                 var relatedimages = _context.GalleryImages.AnyAsync(x => x.ImageId == image.Id && x.GalleryId != gallery.Id).Result;
                 if (!relatedimages)
                 {
-                    var filename = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\assets\\galleryImages\\"+image.Filename;
-                    var thumbfile = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\"+image.Thumbnail;
-                    System.IO.File.Delete(filename);
-                    System.IO.File.Delete(thumbfile);
+                    /*
+                        For fileSystem image management
+                        var filename = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\assets\\galleryImages\\"+image.Filename;
+                        var thumbfile = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\"+image.Thumbnail;
+                        System.IO.File.Delete(filename);
+                        System.IO.File.Delete(thumbfile);
+                    */
                     _context.Remove(image);
                 }
                 var relatedgalleries = _context.GalleryImages.AnyAsync(x => x.GalleryId == gallery.Id && x.ImageId!=image.Id).Result;

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Application.Core;
+using Application.Files;
+using Application.Images;
 using Application.Interfaces;
+using Infrastructure.Files;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +39,8 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             //This will help to get the loged-in user's username from everywhere in our application
             services.AddScoped<IUserAccessor, UserAccessor>();
-
+            services.AddScoped<IImageAccessor, ImageAccessor>();
+            services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
             return services;
         }
     }

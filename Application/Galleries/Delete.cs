@@ -52,10 +52,13 @@ namespace Application.Galleries
                     var relatedimages = await _context.GalleryImages.AnyAsync(x => x.ImageId == imageObject.Result.Id && x.GalleryId != gallery.Id);
                     if (relatedimages == false)
                     {
-                        var filename = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\assets\\galleryImages\\"+imageObject.Result.Filename;
-                        var thumbfile = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\"+imageObject.Result.Thumbnail;
-                        System.IO.File.Delete(filename);
-                        System.IO.File.Delete(thumbfile);
+                        /*
+                            For local storage
+                            var filename = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\assets\\galleryImages\\"+imageObject.Result.Filename;
+                            var thumbfile = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\"+imageObject.Result.Thumbnail;
+                            System.IO.File.Delete(filename);
+                            System.IO.File.Delete(thumbfile);
+                        */
                         _context.Remove(imageObject.Result);
                     }
                     

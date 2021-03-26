@@ -48,7 +48,6 @@ namespace Infrastructure.Files
             {
                 foreach (var formFile in request.Images.Files)
                 {
-                    
                     if (formFile.Length > 0 && formFile.Length < 15000000 && formFile.ContentType == "image/jpeg" || formFile.ContentType == "image/png" || formFile.ContentType == "image/jpg")
                     {
                         var filenameParts = formFile.FileName.Split('.');
