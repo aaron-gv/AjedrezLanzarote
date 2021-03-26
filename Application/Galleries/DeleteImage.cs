@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Images;
+using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -19,8 +21,10 @@ namespace Application.Galleries
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+            private readonly IImageAccessor _imageAccessor;
+            public Handler(DataContext context, IImageAccessor imageAccessor)
             {
+                _imageAccessor = imageAccessor;
                 _context = context;
             }
 
@@ -37,8 +41,13 @@ namespace Application.Galleries
                 var relatedimages = _context.GalleryImages.AnyAsync(x => x.ImageId == image.Id && x.GalleryId != gallery.Id).Result;
                 if (!relatedimages)
                 {
+                    // Cloud image management: 
+                    if (image.CloudId != image.CloudThumbId)
+                        await _imageAccessor.DeleteImage(image.CloudThumbId);
+
+                    await _imageAccessor.DeleteImage(image.CloudId);
                     /*
-                        For fileSystem image management
+                        For fileSystem image management: 
                         var filename = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\assets\\galleryImages\\"+image.Filename;
                         var thumbfile = "C:\\workspace\\AjedrezLanzarote\\client-app\\public\\"+image.Thumbnail;
                         System.IO.File.Delete(filename);
@@ -46,18 +55,16 @@ namespace Application.Galleries
                     */
                     _context.Remove(image);
                 }
-                var relatedgalleries = _context.GalleryImages.AnyAsync(x => x.GalleryId == gallery.Id && x.ImageId!=image.Id).Result;
+                var relatedgalleries = _context.GalleryImages.AnyAsync(x => x.GalleryId == gallery.Id && x.ImageId != image.Id).Result;
                 if (!relatedgalleries)
                 {
-                    _context.Remove(gallery);   
-                } 
-                
+                    _context.Remove(gallery);
+                }
+
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result) return Result<Unit>.Failure("Fallo al eliminar imagen");
-                    return Result<Unit>.Success(Unit.Value);
-
-                
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

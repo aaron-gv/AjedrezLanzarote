@@ -5,10 +5,10 @@ using Microsoft.Extensions.Options;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using System;
-using Infrastructure.Files;
+using Infrastructure.Pictures;
 using Application.Images;
 
-namespace Application.Files
+namespace Infrastructure.Images
 {
     public class ImageAccessor : IImageAccessor
     {
@@ -23,16 +23,23 @@ namespace Application.Files
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<Application.Images.ImageUploadResult> AddImage(IFormFile file)
+        public async Task<Application.Images.ImageUploadResult> AddImage(IFormFile file, int Width, int Height)
         {
             if (file.Length > 0)
             {
                 await using var stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams
+                    {
+                        File = new FileDescription(file.FileName, stream)
+                    };
+                if (Width > 1600)
                 {
-                    File = new FileDescription(file.FileName, stream),
-                    Transformation = new Transformation().Width(1600).Crop("scale")
-                };
+                    uploadParams.Transformation = new Transformation().Width(1600).Crop("scale");
+                }
+                if (Height > 1600) {
+                    uploadParams.Transformation = new Transformation().Height(1600).Crop("scale");
+                } 
+                
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
                 if (uploadResult.Error != null) 
@@ -43,7 +50,9 @@ namespace Application.Files
                 return new Application.Images.ImageUploadResult
                 {
                     PublicId = uploadResult.PublicId,
-                    Url = uploadResult.SecureUrl.ToString()
+                    Url = uploadResult.SecureUrl.ToString(),
+                    Width = uploadResult.Width,
+                    Height = uploadResult.Height
                 };
 
                 
@@ -58,7 +67,7 @@ namespace Application.Files
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(file.FileName, stream),
-                    Transformation = new Transformation().Width(250).Crop("scale")
+                    Transformation = new Transformation().Height(250).Crop("scale")
                 };
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
@@ -70,7 +79,10 @@ namespace Application.Files
                 return new Application.Images.ImageUploadResult
                 {
                     PublicId = uploadResult.PublicId,
-                    Url = uploadResult.SecureUrl.ToString()
+                    Url = uploadResult.SecureUrl.ToString(),
+                    Width = uploadResult.Width,
+                    Height = uploadResult.Height
+
                 };
 
                 

@@ -15,7 +15,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using ImageMagick;
 
-namespace Infrastructure.Files
+namespace Infrastructure.Pictures
 {
     public class ImageUpload
     {

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using Application.Core;
-using Application.Files;
-using Application.Images;
 using Application.Interfaces;
-using Infrastructure.Files;
+using Application.Images;
+using Infrastructure.Images;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +32,8 @@ namespace API.Extensions
                 });
             });
             services.AddMediatR(typeof(Application.Eventos.List.Handler).Assembly);
-            services.AddMediatR(typeof(Infrastructure.Files.ImageUpload.Handler).Assembly);
+            //services.AddMediatR(typeof(Infrastructure.Images.ImageUpload.Handler).Assembly);
+            services.AddMediatR(typeof(Infrastructure.Images.CloudinaryUpload.Handler).Assembly);
             services.AddMediatR(typeof(Application.Noticias.List.Handler).Assembly);
             services.AddMediatR(typeof(Application.Patrocinadores.List.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);

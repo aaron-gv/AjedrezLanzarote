@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,12 +10,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Persistence;
 using System;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using ImageMagick;
-using Application.Images;
 
-namespace Infrastructure.Files
+namespace Infrastructure.Images
 {
     public class CloudinaryUpload
     {
@@ -33,10 +29,10 @@ namespace Infrastructure.Files
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
             private readonly string _config;
-            private readonly ILogger<ImageUpload> _logger;
+            private readonly ILogger<CloudinaryUpload> _logger;
             private List<Domain.Image> _imageEntities;
             private readonly IImageAccessor _imageAccessor;
-            public Handler(DataContext context, IUserAccessor userAccessor, ILogger<ImageUpload> logger, IImageAccessor imageAccessor)
+            public Handler(DataContext context, IUserAccessor userAccessor, ILogger<CloudinaryUpload> logger, IImageAccessor imageAccessor)
             {
                 _imageAccessor = imageAccessor;
                 _logger = logger;
@@ -72,7 +68,7 @@ namespace Infrastructure.Files
                         {
                             var imageFile = new MagickImage(formFile.OpenReadStream());
                             
-                            var cloudImage = await _imageAccessor.AddImage(formFile);
+                            var cloudImage = await _imageAccessor.AddImage(formFile, imageFile.Width, imageFile.Height);
                             if (cloudImage == null)
                             {
                                 break;
@@ -97,10 +93,12 @@ namespace Infrastructure.Files
                                 Id = Guid.NewGuid(),
                                 Title = "",
                                 Filename = fullFileName,
-                                Width = imageFile.Width,
-                                Height = imageFile.Height,
-                                smallWidth = smallWidth,
-                                smallHeight = smallHeight,
+                                CloudId = cloudImage.PublicId,
+                                CloudThumbId = thumbImage.PublicId,
+                                Width = cloudImage.Width,
+                                Height = cloudImage.Height,
+                                smallWidth = thumbImage.Width,
+                                smallHeight = thumbImage.Height,
                                 Source = cloudImage.Url,
                                 Thumbnail = thumbImage.Url,
                                 AppUserId = _userAccessor.GetUserId()

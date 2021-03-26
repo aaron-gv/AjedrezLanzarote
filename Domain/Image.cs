@@ -7,6 +7,8 @@ namespace Domain
     {
         public Guid Id { get; set; }
         public string Filename { get; set; }
+        public string CloudId { get; set; }
+        public string CloudThumbId { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public string Title { get; set; }
