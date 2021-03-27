@@ -9,5 +9,6 @@ namespace Domain
         public Gallery Gallery { get; set; }
         public Guid ImageId { get; set; }
         public Image Image { get; set; } 
+        public int Order { get; set; }
     }
 }

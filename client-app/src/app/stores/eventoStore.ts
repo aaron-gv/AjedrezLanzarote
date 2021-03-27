@@ -93,6 +93,16 @@ export default class EventoStore {
     evento.startDate = new Date(evento.startDate!);
     evento.endDate = new Date(evento.endDate!);
 
+    if (evento.galleries) {
+      evento.galleries.forEach(gallery => {
+        if (gallery.images.length > 0)
+        {
+          gallery.images = gallery.images.sort((a, b) => (a.order > b.order) ? 1 : -1);
+        }
+        
+      })
+    }
+
     this.eventosRegistry.set(evento.id, evento);
   }
 

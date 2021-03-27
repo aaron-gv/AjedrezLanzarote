@@ -48,9 +48,12 @@ namespace Application.Galleries
                 {
                     return Result<Unit>.Failure("La galería especificada no existe");
                 }
-
+                //Get put this image as the last one.
+                var GalleryLastItem = await _context.GalleryImages.OrderByDescending(GalleryImage => GalleryImage.Order).FirstAsync();
+                var lastOrder = (int) GalleryLastItem.Order;
+                GalleryLastItem = null;
                 List<Domain.Image> images = request.Images;
-                
+                lastOrder++;
                 images.ForEach(image =>
                 {
                     _context.Images.Add(image);
@@ -59,7 +62,8 @@ namespace Application.Galleries
                     Console.WriteLine("------------------");
                     Console.WriteLine(request.GalleryId+ " and "+ image.Id);
                     Console.WriteLine("------------------");
-                    _context.GalleryImages.Add(new GalleryImage { GalleryId = request.GalleryId, ImageId = image.Id, Gallery = Gallery, Image = image });
+                    _context.GalleryImages.Add(new GalleryImage { GalleryId = request.GalleryId, ImageId = image.Id, Gallery = Gallery, Image = image, Order = lastOrder });
+                    lastOrder++;
                 });
                 var result = await _context.SaveChangesAsync() > 0;
                

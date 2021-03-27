@@ -24,6 +24,13 @@ namespace API.Controllers
         }
 
         [Authorize(Policy = "IsAdmin")]
+        [HttpGet("imageposition/{imageId}/{galleryId}/{order}")]
+        public async Task<IActionResult> ChangeImagePosition(string imageId, string galleryId, int order)
+        {
+            return HandleResult(await Mediator.Send(new Reposition.Command{ImageId = Guid.Parse(imageId),GalleryId = Guid.Parse(galleryId), Order= order}));
+        }
+
+        [Authorize(Policy = "IsAdmin")]
         [HttpPut("galleryrename/{eventoId}/{galleryId}")]
         public async Task<IActionResult> RenameGallery(string eventoId, string galleryId)
         {

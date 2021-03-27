@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
@@ -38,6 +39,9 @@ namespace Application.Galleries
                     return Result<Unit>.Failure("Imagen/Colección no encontrados");
                 }
                 _context.Remove(relation);
+                
+                
+                
                 var relatedimages = _context.GalleryImages.AnyAsync(x => x.ImageId == image.Id && x.GalleryId != gallery.Id).Result;
                 if (!relatedimages)
                 {
@@ -55,10 +59,24 @@ namespace Application.Galleries
                     */
                     _context.Remove(image);
                 }
+                
+
                 var relatedgalleries = _context.GalleryImages.AnyAsync(x => x.GalleryId == gallery.Id && x.ImageId != image.Id).Result;
                 if (!relatedgalleries)
                 {
-                    _context.Remove(gallery);
+                    _context.Remove(gallery); 
+                } else {
+                    
+                    var galleryImages = await _context.GalleryImages.Where(x => x.GalleryId == gallery.Id).OrderByDescending(x => x.Order).ToListAsync();
+                    var orderCount = 0;
+                    galleryImages.ForEach(galimg => {
+                        if (galimg.ImageId != image.Id) {
+                        Console.WriteLine(orderCount);
+                        galimg.Order = orderCount;
+                        orderCount++;
+                        }
+                        
+                    });
                 }
 
                 var result = await _context.SaveChangesAsync() > 0;

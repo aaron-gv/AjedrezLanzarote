@@ -1,16 +1,13 @@
-import {  Form, Formik, FormikHelpers } from "formik";
 import { observer } from "mobx-react-lite";
 import  React ,{ useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Confirm,  Dimmer,  Grid,   Loader,  Segment } from "semantic-ui-react";
-import MyTextInput from "../../../app/common/form/MyTextInput";
+import {  Confirm,    Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import {  Evento, EventoFormValues } from "../../../app/models/evento";
 import { useStore } from "../../../app/stores/store";
 import ImagesDropzone from "../../images/ImagesDropzone";
-import EventoGalleryModify from "../collections/EventoGalleryModify";
+import EventoEditGallery from "./EventoEditGallery";
 import EventoForm from "./EventoForm";
-
 
 export default observer(function EventoEdit() {
   const { url } = useParams<{ url: string }>();
@@ -21,8 +18,7 @@ export default observer(function EventoEdit() {
   const [eventoForm, setEventoForm] = useState<EventoFormValues>(
     new EventoFormValues()
   );
-  const { loadEventoByUrl, loadingInitial, selectedEvento: evento, renameGallery } = eventoStore;
-
+  const { loadEventoByUrl, loadingInitial, selectedEvento: evento } = eventoStore;
   
   
   async function handleGalleryDelete() 
@@ -49,16 +45,9 @@ export default observer(function EventoEdit() {
       return NotFound();
     }
   */
-  async function handleFormSubmit(galleryId:string, values: any, actions: FormikHelpers<{title: string;}>
-) {
-    setTargetGallery(galleryId);
-    setLoadingComponent(true);
-    await renameGallery(evento!.id, galleryId, values.title);
-    setLoadingComponent(false);
-    setTargetGallery('');
-    actions.resetForm();
-  }
+  
   if (loadingInitial || !evento ) return <LoadingComponent content='Cargando...' />;
+
   return (
     <> 
       <EventoForm evento={eventoForm} />
@@ -69,63 +58,7 @@ export default observer(function EventoEdit() {
       } 
       {evento.galleries &&
         evento.galleries.map(gallery => (
-          
-          <Segment key={gallery.id} clearing >
-            {loadingComponent  && targetGallery===gallery.id &&
-              <Dimmer inverted active>
-              <Loader content="Cargando..." />
-              </Dimmer>
-            }
-            
-            <div>
-              <Formik
-                initialValues={{
-                  title: gallery.title ? gallery.title : ""}}
-                enableReinitialize
-                onSubmit={async (values, actions) => {
-                  await handleFormSubmit(gallery.id, values, actions);
-                }}
-              >{({dirty, handleSubmit}) => (
-              <Form className='ui form' onSubmit={handleSubmit} >
-                  <Grid columns={3} stretched>
-                    <Grid.Column width={10} style={{paddingRight:'0px'}}>
-                      <MyTextInput
-                        name="title"
-                        placeholder={"Título de la collección"}
-                      />
-                    </Grid.Column>
-                    <Grid.Column width={4}>
-                      <Button
-                        style={{maxWidth:'150px', marginLeft:'10px'}}
-                        color='blue'
-                        content={"Actualizar"}
-                        size='tiny'
-                        disabled={!dirty}
-                        type='submit'
-                      />
-                    </Grid.Column>
-                    <Grid.Column width={2}>
-                      <Button
-                        style={{maxWidth:'80px'}}
-                        color='red'
-                        floated='right'
-                        basic
-                        icon='trash'
-                        size='tiny'
-                        type='button'
-                        onClick={() => {
-                          setTargetGallery(gallery.id);
-                          setPopupStatusFather(true);
-                        }}
-                      />
-                    </Grid.Column>
-                  </Grid>
-                </Form>
-              )}
-              </Formik>
-            </div>
-              <EventoGalleryModify evento={evento} key={gallery.id} gallery={gallery} />
-          </Segment>
+          <EventoEditGallery key={gallery.id} setTargetGallery={setTargetGallery} evento={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} />
         ))}
        <Confirm
                 open={popupStatusFather}

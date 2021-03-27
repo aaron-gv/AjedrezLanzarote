@@ -11,6 +11,7 @@ export class GalleryFormValues {
     id :string = '';
     title: string = '';
     images: ImageDto[] = [];
+    
     constructor(gallery?: GalleryFormValues) {
         if (gallery) {
             this.id = gallery.id;

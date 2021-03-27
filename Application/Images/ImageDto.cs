@@ -18,5 +18,6 @@ namespace Application.Images
         public string Src { get; set; }
         public string Thumbnail { get; set; }
         public string Description { get; set; }
+        public int Order {get; set;}
     }
 }

@@ -54,7 +54,7 @@ namespace Application.Images
                 }
 
                 List<Domain.Image> images = request.Images;
-                
+                var orderCount = 0;
                 images.ForEach(image =>
                 {
                     _context.Images.Add(image);
@@ -63,7 +63,8 @@ namespace Application.Images
                     Console.WriteLine("------------------");
                     Console.WriteLine(request.GalleryId+ " and "+ image.Id);
                     Console.WriteLine("------------------");
-                    _context.GalleryImages.Add(new GalleryImage { GalleryId = request.GalleryId, ImageId = image.Id, Gallery = Gallery, Image = image });
+                    _context.GalleryImages.Add(new GalleryImage { GalleryId = request.GalleryId, ImageId = image.Id, Gallery = Gallery, Image = image, Order = orderCount });
+                    orderCount++;
                 });
                 var result = await _context.SaveChangesAsync() > 0;
                 if (result)
