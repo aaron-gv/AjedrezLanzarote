@@ -19,6 +19,13 @@ namespace API.Controllers
     public class ImagesController : BaseApiController
     
     {
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetImage(Guid id)
+        {
+            return HandleResult(await Mediator.Send(new Details.Query{Id = id}));
+        }
+
         [Authorize(Policy = "IsAdmin")]
         [HttpPost("{evento}/{gallery}")]
         public async Task<ActionResult> CreateImageEntities(IFormCollection Images, Guid evento, Guid gallery)

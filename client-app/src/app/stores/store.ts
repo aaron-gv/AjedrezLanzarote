@@ -4,6 +4,7 @@ import EventoStore from "./eventoStore";
 import UserStore from "./userStore";
 import NoticiaStore from './noticiaStore';
 import GalleryStore from "./galleryStore";
+import ImageStore from "./imageStore";
 
 interface Store {
     eventoStore: EventoStore;
@@ -11,6 +12,7 @@ interface Store {
     userStore: UserStore;
     noticiaStore: NoticiaStore;
     galleryStore: GalleryStore;
+    imageStore: ImageStore;
 }
 
 export const store: Store = {
@@ -18,7 +20,8 @@ export const store: Store = {
     commonStore: new CommonStore(),
     userStore: new UserStore(),
     noticiaStore: new NoticiaStore(),
-    galleryStore: new GalleryStore()
+    galleryStore: new GalleryStore(),
+    imageStore: new ImageStore()
 }
 
 export const StoreContext = createContext(store);

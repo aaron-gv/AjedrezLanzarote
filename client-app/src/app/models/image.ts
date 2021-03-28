@@ -5,6 +5,8 @@ export interface ImageDto{
     filename: string,
     src: string,
     name: string,
+    height:number,
+    width:number,
     h: number,
     w: number,
     smallWidth: number,

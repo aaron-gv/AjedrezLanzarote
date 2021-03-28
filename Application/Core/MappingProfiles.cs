@@ -19,7 +19,10 @@ namespace Application.Core
                 .ForMember(d => d.HostUsername, o => o.MapFrom(s => s.Asistentes.FirstOrDefault(x => x.IsHost).AppUser.UserName));
                 
                
-             CreateMap<Evento, EventoDto>().ForMember(ed => ed.Galleries, opt => opt.MapFrom(e => e.GalleryEventos.Select(eg => eg.Gallery)));
+             CreateMap<Evento, EventoDto>()
+                .ForMember(ed => ed.Galleries, opt => opt.MapFrom(e => e.GalleryEventos.Select(eg => eg.Gallery)))
+                .ForMember(d => d.PortraitUrl, o => o.MapFrom(s => s.Image.Source))
+                .ForMember(d => d.Portrait, o => o.MapFrom(s => s.Image));
              CreateMap<Gallery, GalleryDto>().ForMember(ed => ed.Images, opt => opt.MapFrom(e => e.GalleryImages.Select(eg => eg.Image)));
 
                 CreateMap<Evento, Evento>()

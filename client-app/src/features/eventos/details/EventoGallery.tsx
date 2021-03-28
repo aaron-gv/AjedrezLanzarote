@@ -1,9 +1,10 @@
 import 'react-photoswipe/lib/photoswipe.css';
-import {  Container, Image, Label } from 'semantic-ui-react';
+import {  Container, Image, Label, Segment } from 'semantic-ui-react';
 import { observer } from 'mobx-react-lite';
 import PhotoSwipe from 'photoswipe';
 import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default';
 import PSGallery from '../../../app/common/util/PSGallery';
+import React from 'react';
 
 
 interface Props {
@@ -37,10 +38,13 @@ function openPhotoSwipe(index: number) {
 
 
     return (
-        <>
-        <Label content={<>{title}<Label style={{marginLeft:5}} circular color='blue' size='tiny'>{items.length}</Label></>} ribbon style={{opacity:0.7}} color='orange' size='tiny'  />
-        
-        <Container style={{display:'flex', overflow:'hidden', height:'auto'}}>
+        <Segment style={{width:'90%',  marginLeft:'5%'}}>
+        <Label ribbon  style={{color:'white',fontFamily:"Arial",padding:2,paddingLeft:18, opacity:0.9, zIndex:30, top:'-10px',fontSize:'16px', textAlign:'left',fontWeight:'normal'}} color='blue'  >
+          {title}
+          <Label style={{padding:4,marginLeft:'10px'}}  size='medium'> {items.length} </Label>
+        </Label>
+
+        <Container style={{display:'flex', overflow:'hidden', height:'auto', marginTop:'-30px'}}>
           
         {items.slice(0,7).map((image, index) => (
           <Image key={image.thumbnail} verticalAlign={'middle'} src={image.thumbnail} title={image.title} style={{maxWidth:'100px',maxHeight:'70px', minWidth:'50px',  minHeight:'50px', float:'left',marginLeft:'10px', border:'none', cursor:'pointer'}} as='button' onClick={() => openPhotoSwipe(index)}  />
@@ -48,6 +52,6 @@ function openPhotoSwipe(index: number) {
         )}
         </Container>
             <PSGallery />
-        </>
+        </Segment>
     )
 })

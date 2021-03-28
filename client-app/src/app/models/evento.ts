@@ -1,4 +1,5 @@
 import {Gallery} from "./gallery";
+import { ImageDto } from "./image";
 import { Profile } from "./profile";
 
 export interface Evento {
@@ -15,6 +16,8 @@ export interface Evento {
     isCancelled: boolean;
     isGoing: boolean;
     isHost: boolean;
+    portraitUrl?: string;
+    portrait?: ImageDto;
     host?:Profile;
     appUserId: string;
     asistentes?: Profile[];

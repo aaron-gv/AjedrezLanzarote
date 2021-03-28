@@ -76,6 +76,8 @@ namespace Persistence
             .WithMany(b => b.EventosCreados)
             .HasForeignKey(p => p.AppUserId).IsRequired();
 
+
+
             builder.Entity<Gallery>()
             .HasOne(p => p.AppUser)
             .WithMany(b => b.Galleries)

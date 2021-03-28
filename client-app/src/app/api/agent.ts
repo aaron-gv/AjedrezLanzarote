@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { history } from '../..';
 import { Evento, EventoFormValues } from '../models/evento';
 import {Gallery} from '../models/gallery';
+import { ImageDto } from '../models/image';
 import { Noticia } from '../models/noticia';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
@@ -85,7 +86,8 @@ const Eventos = {
     asistir: (url: string) => axios.post<void>(`/eventos/${url}/asistir`).then(responseBody),
     cancelar: (url: string) => axios.post<void>(`/eventos/${url}/cancelar`).then(responseBody),
     renameGallery: (idGallery: string, idEvento: string, title: FormData) => axios.put<void>(`/galleryevento/galleryrename/${idEvento}/${idGallery}`, title).then(responseBody),
-    renameImage: (idImage: string, title: FormData) => axios.put<void>(`/images/imagerename/${idImage}`, title).then(responseBody)
+    renameImage: (idImage: string, title: FormData) => axios.put<void>(`/images/imagerename/${idImage}`, title).then(responseBody),
+    setMainImage: (eventoId: string, imageId: string) => axios.put<void>(`/eventos/setmainimage/${eventoId}/${imageId}`).then(responseBody)
 }
 const Noticias = {
     list: () => requests.get<Noticia[]>('/noticias'),
@@ -102,7 +104,7 @@ const Account = {
 const Images = { 
     deleteEventoGallery: (id: string, eventoId: string) => axios.delete(`/galleryevento/gallerydel/${id}/${eventoId}`).then(responseBody),
     createEventGallery: (images: FormData, id: string, galleryId: string) => axios.post<void>(`/Images/${id}/${galleryId}`, images).then(responseBody),
-    
+    get: (id: string) => requests.get<ImageDto>(`/images/${id}`)
 }
 const Galleries = {
     get: (id: string) => requests.get<Gallery>(`/galleryevento/${id}`),

@@ -103,5 +103,13 @@ namespace API.Controllers
         public async Task<IActionResult> Cancelar(string url) {
             return HandleResult(await Mediator.Send(new Cancel.Command{Url = url}));
         }
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPut("setmainimage/{eventoId}/{imageId}")]
+        public async Task<ActionResult> setMainImage(Guid eventoId, Guid imageId)
+        {
+            
+            //var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            return HandleResult(await Mediator.Send(new SetMainImage.Command{EventoId = eventoId, ImageId = imageId}));
+        }
     }
 }

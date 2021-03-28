@@ -20,6 +20,8 @@ namespace Application.Eventos
         public string AppUserId { get; set; }
         public string HostUsername { get; set; }
         public bool IsCancelled {get; set;}
+        public string PortraitUrl {get; set;}
+        public Image Portrait {get; set;}
         public ICollection<Profile> Asistentes {get; set;}
         public ICollection<GalleryDto> Galleries {get; set;} = new List<GalleryDto>();
     }

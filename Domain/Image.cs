@@ -21,7 +21,6 @@ namespace Domain
         public string AppUserId {get; set;}
         public AppUser AppUser {get; set;}
         public ProfileImage Profile {get; set;}
-        public List<Evento> Eventos {get; set;} = new List<Evento>();
         public string Description {get; set;}
     }
 }

@@ -4,6 +4,7 @@ import { history } from "../..";
 import agent from "../api/agent";
 import { Evento, EventoFormValues } from "../models/evento";
 import { Gallery } from "../models/gallery";
+import { ImageDto } from "../models/image";
 import { Profile } from "../models/profile";
 import { store } from "./store";
 
@@ -440,5 +441,45 @@ export default class EventoStore {
         });
     }
   }
+
+  setMainImage = async (image:ImageDto,eventoId:string, imageId: string, source: string) => {
+    this.loading = true;
+
+    try {
+      await agent.Eventos.setMainImage(eventoId, imageId);
+      
+      runInAction(() => {
+        let evento = this.eventosRegistry.get(eventoId);
+        console.log("antes");
+        if (evento !== undefined) {
+          evento.portraitUrl = source;
+          evento.portrait = image;
+          console.log(evento);
+          this.eventosRegistry.set(evento.id, evento);
+        }
+        this.loading = false;
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction(() => { 
+        this.loading = false;
+      });
+    }
+  }
+  getImage = async (imageId: string) => {
+    this.loading = true;
+    try {
+      await agent.Images.get(imageId);
+      runInAction(() => {
+          this.loading = false;
+        })
+    } catch (error) {
+        console.log(error);
+        runInAction(() => {
+          this.loading = false;
+        })
+        
+    }
+}
 }
 

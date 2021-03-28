@@ -19,6 +19,7 @@ export default observer(function ActivityDetailedSidebar({
     return (
       <>
         <Segment clearing>
+          <h3>Colecciones de imágenes</h3>
           {galleries && 
           <Segment secondary clearing>
               {galleries.map(gallery => <EventoGallery key={gallery.id} title={gallery.title} id={gallery.id} items={gallery.images} />)}

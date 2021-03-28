@@ -18,6 +18,8 @@ namespace Domain
         public AppUser AppUser {get; set;}
         public bool IsCancelled {get; set;}
         
+        public Guid? ImageId {get; set;}
+        public Image Image {get; set;}
         public ICollection<EventoAsistente> Asistentes { get; set; } = new List<EventoAsistente>();
         public ICollection<GalleryEvento> GalleryEventos { get; set; } = new List<GalleryEvento>();
         public ICollection<Gallery> Galleries { get; set; } = new List<Gallery>();

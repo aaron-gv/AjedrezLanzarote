@@ -1,6 +1,6 @@
 import { Form, Formik, FormikHelpers, FormikState } from 'formik';
 import React from 'react'
-import { Card, Icon, Image } from 'semantic-ui-react';
+import { Card, Icon, Image, Label } from 'semantic-ui-react';
 import { Gallery } from '../../../app/models/gallery';
 import { ImageDto } from '../../../app/models/image';
 import { useStore } from '../../../app/stores/store';
@@ -37,7 +37,13 @@ export default observer(function GalleryModifyImageItem({image, last, first, gal
     }))
     */
     
-    
+    async function handleSetMain(image: ImageDto) {
+      console.log(image.id);
+      console.log(eventoStore.selectedEvento!.id);
+      setLoading(true);
+      await eventoStore.setMainImage(image, eventoStore.selectedEvento!.id, image.id, image.src);
+      setLoading(false);
+    }
 
     async function handleRenameImage (
         imageId: string,
@@ -126,6 +132,7 @@ export default observer(function GalleryModifyImageItem({image, last, first, gal
                     </Formik>
                     <div style={{position:'absolute',left:'2px',right:'0'}}>
                       {!first && <Icon name="arrow left" style={{position:'relative',float:'left', cursor:'pointer',marginLeft:'2px',marginTop:'5px'}} onClick={() => handlePrevOrder(image,gallery.id)} />}
+                      {<Label content='Portada' size='mini' style={{position:'absolute',bottom:'-5px', left:'30%', cursor:'pointer',}} onClick={() => handleSetMain(image)} />}
                       {!last && <Icon name="arrow right" style={{position:'relative',float:'right',cursor:'pointer',marginTop:'5px'}} onClick={() => handleNextOrder(image,gallery.id)} />}
                     </div>
                   </Card.Content>
