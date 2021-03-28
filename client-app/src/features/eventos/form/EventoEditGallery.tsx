@@ -13,12 +13,13 @@ interface Props {
     evento: Evento,
     gallery: Gallery,
     targetGallery: string,
+    loadingComponent: boolean,
     setPopupStatusFather: (value: React.SetStateAction<boolean>) => void
 }
 
 
 
-export default observer(function EventoEditGallery({setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather} : Props) {
+export default observer(function EventoEditGallery({setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather, loadingComponent} : Props) {
     const [loading, setLoading] = useState(false);
     const {eventoStore} = useStore();
     const {renameGallery} = eventoStore;
@@ -34,7 +35,7 @@ export default observer(function EventoEditGallery({setTargetGallery, evento, ga
     
     return (
         <Segment key={gallery.id} clearing >
-            {loading  && targetGallery===gallery.id &&
+            {(loading || loadingComponent)  && targetGallery===gallery.id &&
               <Dimmer inverted active>
               <Loader content="Cargando..." />
               </Dimmer>

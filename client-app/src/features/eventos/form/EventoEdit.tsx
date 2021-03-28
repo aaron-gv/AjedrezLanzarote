@@ -58,7 +58,7 @@ export default observer(function EventoEdit() {
       } 
       {evento.galleries &&
         evento.galleries.map(gallery => (
-          <EventoEditGallery key={gallery.id} setTargetGallery={setTargetGallery} evento={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} />
+          <EventoEditGallery key={gallery.id} setTargetGallery={setTargetGallery} evento={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} />
         ))}
        <Confirm
                 open={popupStatusFather}

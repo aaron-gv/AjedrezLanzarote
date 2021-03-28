@@ -107,7 +107,8 @@ const Images = {
 const Galleries = {
     get: (id: string) => requests.get<Gallery>(`/galleryevento/${id}`),
     deleteImage: (imageId: string, galleryId:string) => axios.delete<void>(`/galleryevento/imagedel/${imageId}/${galleryId}`).then(responseBody),
-    addImages: (images: FormData, galleryId: string) => axios.post<void>(`/Images/addImages/${galleryId}`, images).then(responseBody)
+    addImages: (images: FormData, galleryId: string) => axios.post<void>(`/Images/addImages/${galleryId}`, images).then(responseBody),
+    changeImageOrder: (imageId: string, galleryId:string, order: number) => axios.put<void>(`/galleryevento/imageposition/${imageId}/${galleryId}/${order}`).then(responseBody)
 }
 const agent = {
     Eventos,

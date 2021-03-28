@@ -3,6 +3,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { history } from "../..";
 import agent from "../api/agent";
 import { Evento, EventoFormValues } from "../models/evento";
+import { Gallery } from "../models/gallery";
 import { Profile } from "../models/profile";
 import { store } from "./store";
 
@@ -78,6 +79,17 @@ export default class EventoStore {
           this.loadingInitial = false;
         })
       }
+    }
+  }
+
+  private reOrderImages = (gallery: Gallery) => {
+    if (gallery.images.length > 0) {
+      gallery.images = gallery.images.sort((a, b) => (a.order > b.order) ? 1 : -1);
+      let count = 0;
+      gallery.images.forEach(image => {
+        image.order = count;
+        count++;
+      })
     }
   }
 
@@ -231,11 +243,14 @@ export default class EventoStore {
       
       runInAction(async () => {
         let newGallery = await agent.Galleries.get(galleryId);
+        
           runInAction(() => {
+            
             if (evento.galleries)
             evento.galleries.push(newGallery);
           else 
             evento.galleries = [newGallery];
+            this.reOrderImages(evento.galleries.find(x => x.id === newGallery.id)!);
             this.eventosRegistry.set(evento.id, evento as Evento);
             this.selectedEvento = evento;
             this.loading = false;
@@ -264,6 +279,7 @@ export default class EventoStore {
         let newGallery = await agent.Galleries.get(galleryId);
           runInAction(() => {
             evento.galleries!.find(x => x.id === newGallery.id)!.images = newGallery.images;
+            this.reOrderImages(evento.galleries!.find(x => x.id === newGallery.id)!);
             this.eventosRegistry.set(evento.id, evento as Evento);
             this.selectedEvento = evento;
             this.loading = false;
@@ -347,6 +363,7 @@ export default class EventoStore {
         if (newImageList!==undefined && newImageList?.length > 0)
         {
           evento.galleries!.find(x => x.id === galleryId)!.images = newImageList;
+          this.reOrderImages(evento.galleries!.find(x => x.id === galleryId)!);
         } else {
           let newGalleries = evento.galleries!.filter(x => x.id !== galleryId);
           evento.galleries = newGalleries.length > 0 ? newGalleries : [];
@@ -381,6 +398,46 @@ export default class EventoStore {
       runInAction(() => { 
         this.loading = false;
       });
+    }
+  }
+
+  changeImageOrder = async (evento: Evento, galleryId: string, imageId: string, order: number, gallery: Gallery) => {
+    this.loading = true;
+    if (order < 0) order =0;
+    try {
+      await agent.Galleries.changeImageOrder(imageId,gallery.id,order);
+      runInAction(() => {
+        let originalImage = gallery.images.find(y => y.id === imageId);
+        let toReplace = gallery.images.find(y => y.order === order);
+        let originalOrder = originalImage!.order;
+        let moveTo = null;
+        let moveFrom = null;
+        gallery.images.forEach((image, key) => {
+          if (image.id === toReplace?.id) {
+            moveTo = key;
+          }
+          if (image.id === imageId)
+          {
+            moveFrom = key;
+          }
+        });
+        if (moveTo != null) {
+          originalImage!.order = order;
+          gallery.images[moveTo] = originalImage!;
+        }
+        if (moveFrom != null && toReplace) {
+          toReplace!.order = originalOrder;
+          gallery.images[moveFrom] = toReplace!;
+        }
+        this.loading = false;
+      });
+    } catch(error) {
+      console.log(error);
+      runInAction(() => {
+        this.loading = false;
+        
+        
+        });
     }
   }
 }

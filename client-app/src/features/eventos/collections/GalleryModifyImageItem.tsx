@@ -1,6 +1,6 @@
 import { Form, Formik, FormikHelpers, FormikState } from 'formik';
 import React from 'react'
-import { Card, Image } from 'semantic-ui-react';
+import { Card, Icon, Image } from 'semantic-ui-react';
 import { Gallery } from '../../../app/models/gallery';
 import { ImageDto } from '../../../app/models/image';
 import { useStore } from '../../../app/stores/store';
@@ -15,12 +15,16 @@ interface Props {
     setTargetImage: (value: React.SetStateAction<string>) => void,
     setTargetGallery:  (value: React.SetStateAction<string>) => void,
     setPopupStatus: (value: React.SetStateAction<boolean>) => void,
-    setLoading: (value: React.SetStateAction<boolean>) => void
+    setLoading: (value: React.SetStateAction<boolean>) => void,
+    handlePrevOrder: (image: ImageDto, galleryId: string) => Promise<void>,
+    handleNextOrder: (image: ImageDto, galleryId: string) => Promise<void>,
+    last: boolean,
+    first: boolean
 }
 
 
 
-export default observer(function GalleryModifyImageItem({image, gallery, setTargetGallery, setTargetImage, setPopupStatus, setLoading} : Props) {
+export default observer(function GalleryModifyImageItem({image, last, first, gallery, setTargetGallery, setTargetImage, setPopupStatus, setLoading, handleNextOrder, handlePrevOrder} : Props) {
     const {eventoStore} = useStore();
     /*const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
       // "type" is required. It is used by the "accept" specification of drop targets.
@@ -32,6 +36,7 @@ export default observer(function GalleryModifyImageItem({image, gallery, setTarg
       })
     }))
     */
+    
     
 
     async function handleRenameImage (
@@ -50,7 +55,7 @@ export default observer(function GalleryModifyImageItem({image, gallery, setTarg
         setLoading(false);
       }
     return (
-        <Card style={{ height: "150px", verticalAlign: "middle" }} draggable={true}  >
+        <Card style={{ height: "170px", verticalAlign: "middle" }} draggable={true}  >
                   <Card.Header
                     style={{
                       display: "flex",
@@ -119,6 +124,10 @@ export default observer(function GalleryModifyImageItem({image, gallery, setTarg
                         </Form>
                       )}
                     </Formik>
+                    <div style={{position:'absolute',left:'2px',right:'0'}}>
+                      {!first && <Icon name="arrow left" style={{position:'relative',float:'left', cursor:'pointer',marginLeft:'2px',marginTop:'5px'}} onClick={() => handlePrevOrder(image,gallery.id)} />}
+                      {!last && <Icon name="arrow right" style={{position:'relative',float:'right',cursor:'pointer',marginTop:'5px'}} onClick={() => handleNextOrder(image,gallery.id)} />}
+                    </div>
                   </Card.Content>
                 </Card>
     )
