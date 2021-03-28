@@ -43,7 +43,7 @@ function openPhotoSwipe(index: number) {
         <Container style={{display:'flex', overflow:'hidden', height:'auto'}}>
           
         {items.slice(0,7).map((image, index) => (
-          <Image key={image.thumbnail} verticalAlign={'middle'} src={image.thumbnail} title={image.title} style={{maxWidth:'100px',maxHeight:'100px', minWidth:'50px',  minHeight:'50px', float:'left',marginLeft:'10px', border:'none', cursor:'pointer'}} as='button' onClick={() => openPhotoSwipe(index)}  />
+          <Image key={image.thumbnail} verticalAlign={'middle'} src={image.thumbnail} title={image.title} style={{maxWidth:'100px',maxHeight:'70px', minWidth:'50px',  minHeight:'50px', float:'left',marginLeft:'10px', border:'none', cursor:'pointer'}} as='button' onClick={() => openPhotoSwipe(index)}  />
         )
         )}
         </Container>
