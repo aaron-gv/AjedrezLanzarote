@@ -76,7 +76,10 @@ namespace Persistence
             .WithMany(b => b.EventosCreados)
             .HasForeignKey(p => p.AppUserId).IsRequired();
 
-
+            builder.Entity<Evento>()
+            .HasOne(p => p.Image)
+            .WithMany()
+            .HasForeignKey(p => p.ImageId).HasForeignKey(p => p.ImageId).OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<Gallery>()
             .HasOne(p => p.AppUser)

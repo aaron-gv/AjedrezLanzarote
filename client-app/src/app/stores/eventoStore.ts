@@ -359,6 +359,10 @@ export default class EventoStore {
       
       runInAction(() => {
         console.log(evento.galleries?.find(x => x.id === galleryId)?.images);
+        if (imageId === evento.portrait?.id) {
+          evento.portrait = undefined;
+          evento.portraitUrl = undefined;
+        }
         var newImageList = evento.galleries?.find(x => x.id === galleryId)?.images.filter(x => x.id !== imageId);
         console.log(newImageList);
         if (newImageList!==undefined && newImageList?.length > 0)
@@ -388,8 +392,20 @@ export default class EventoStore {
       await agent.Images.deleteEventoGallery(galleryId, evento.id);
       
       runInAction(() => {
+        let targetGallery = evento.galleries!.find(x => x.id === galleryId);
+        
         let newGalleries = evento.galleries!.filter(x => x.id !== galleryId);
         evento.galleries = newGalleries.length > 0 ? newGalleries : [];
+        
+          targetGallery?.images.forEach(image => {
+            if (image.id === evento.portrait?.id)
+            {
+              evento.portrait = undefined;
+              evento.portraitUrl = undefined;
+            }
+          });
+        
+          
         this.eventosRegistry.set(evento.id, evento as Evento);
         this.selectedEvento = evento;
         this.loading = false;

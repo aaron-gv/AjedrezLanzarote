@@ -91,20 +91,25 @@ export default observer(function EventoListItem({
           allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
           imageDecorator={customImageDecorator}
         >
-          <Link to={`/eventos/${evento.url}`}>{evento.description.substr(0,100)+". . .\n. . .\n  Ver  información  completa  -> "}</Link>
+          {evento.description.length>300 ? <Link to={`/eventos/${evento.url}`}>{evento.description.substr(0,100)+". . .\n. . .\n  Ver  información  completa  -> "}</Link> : evento.description}
         </ReactTextFormat>
       </Segment>
       {evento.category === "online" && 
         <Segment secondary><EventoListItemAsistente asistentes={evento.asistentes!} /></Segment>
       }
-      <Segment secondary clearing >
-        <h3 >Imágenes :</h3>
-      {evento.category === "presencial" && evento.galleries && evento.galleries.map(gallery => (
-        <EventoGallery title={gallery.title} key={gallery.id} id={gallery.id} items={gallery.images} />
-      ))
-      
+      {evento.category === "presencial" && evento.galleries && evento.galleries.length > 0 &&
+      <>
+        <Segment secondary clearing >
+          <h3 >Imágenes :</h3>
+          {evento.galleries.map(gallery => (
+            <EventoGallery title={gallery.title} key={gallery.id} id={gallery.id} items={gallery.images} />
+          ))}
+        </Segment>
+        </>
       }
-      </Segment>
+      
+      
+      
       <Segment clearing>
         <Button
           as={Link}

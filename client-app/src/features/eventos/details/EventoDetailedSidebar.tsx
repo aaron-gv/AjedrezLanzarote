@@ -18,14 +18,16 @@ export default observer(function ActivityDetailedSidebar({
   if (!asistentes || category === "presencial") {
     return (
       <>
-        <Segment clearing>
+        
+          
+          {galleries && galleries.length > 0 &&
+          <Segment clearing>
           <h3>Colecciones de imágenes</h3>
-          {galleries && 
           <Segment secondary clearing>
               {galleries.map(gallery => <EventoGallery key={gallery.id} title={gallery.title} id={gallery.id} items={gallery.images} />)}
           </Segment>  
+          </Segment>
           }
-        </Segment>
       </>
     );
   } else {

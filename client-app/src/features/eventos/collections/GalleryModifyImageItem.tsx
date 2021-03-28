@@ -132,9 +132,10 @@ export default observer(function GalleryModifyImageItem({image, last, first, gal
                     </Formik>
                     <div style={{position:'absolute',left:'2px',right:'0'}}>
                       {!first && <Icon name="arrow left" style={{position:'relative',float:'left', cursor:'pointer',marginLeft:'2px',marginTop:'5px'}} onClick={() => handlePrevOrder(image,gallery.id)} />}
-                      {<Label content='Portada' size='mini' style={{position:'absolute',bottom:'-5px', left:'30%', cursor:'pointer',}} onClick={() => handleSetMain(image)} />}
+                      
                       {!last && <Icon name="arrow right" style={{position:'relative',float:'right',cursor:'pointer',marginTop:'5px'}} onClick={() => handleNextOrder(image,gallery.id)} />}
                     </div>
+                    {eventoStore.selectedEvento?.portrait?.id !== image.id && <Label content='Portada' size='mini' style={{display:'flex',position:'absolute',bottom:'2px', left:'30%', cursor:'pointer'}} onClick={() => handleSetMain(image)} />}
                   </Card.Content>
                 </Card>
     )
