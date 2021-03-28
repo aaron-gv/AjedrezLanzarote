@@ -222,8 +222,9 @@ export default observer(function EventoEditGalleryImageZone({
             }`}
             floated='left'
             id='collectionTitle'
+            loading={loading}
             onClick={() => handleUploadFiles()}
-            disabled={myData!.length < 1}
+            disabled={myData!.length < 1 || loading}
           />
           <Button
             onClick={handleCancelDropzone}

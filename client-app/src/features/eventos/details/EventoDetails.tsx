@@ -22,13 +22,11 @@ export default observer(function EventoDetails() {
     if (loadingInitial || !evento) return <LoadingComponent />;
   return (
     <Grid>
-      <Grid.Column width={10}>
+      <Grid.Column width={16}>
         <EventoDetailedHeader evento={evento} />
         <EventoDetailedInfo evento={evento} />
-        <EventoDetailedChat />
-      </Grid.Column>
-      <Grid.Column width={6}>
         <EventoDetailedSidebar evento={evento} />
+        <EventoDetailedChat />
       </Grid.Column>
     </Grid>
   );

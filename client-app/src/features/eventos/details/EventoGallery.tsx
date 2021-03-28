@@ -40,10 +40,10 @@ function openPhotoSwipe(index: number) {
         <>
         <Label content={<>{title}<Label style={{marginLeft:5}} circular color='blue' size='tiny'>{items.length}</Label></>} ribbon style={{opacity:0.7}} color='orange' size='tiny'  />
         
-        <Container style={{display:'flex',alignItems:'center'}}>
+        <Container style={{display:'flex', overflow:'hidden', height:'auto'}}>
           
         {items.slice(0,7).map((image, index) => (
-          <Image key={image.thumbnail} verticalAlign={'middle'} src={image.thumbnail} title={image.title} style={{ maxHeight:'100px', maxWidth:'100px',float:'left',marginLeft:'10px', border:'none', cursor:'pointer'}} as='button' onClick={() => openPhotoSwipe(index)}  />
+          <Image key={image.thumbnail} verticalAlign={'middle'} src={image.thumbnail} title={image.title} style={{maxWidth:'100px',maxHeight:'100px', minWidth:'50px',  minHeight:'50px', float:'left',marginLeft:'10px', border:'none', cursor:'pointer'}} as='button' onClick={() => openPhotoSwipe(index)}  />
         )
         )}
         </Container>

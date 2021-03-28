@@ -80,7 +80,7 @@ namespace Infrastructure.Images
                             var smallWidth = imageFile.Width;
                             var smallHeight = imageFile.Height;
                             
-                            if (imageFile.Width > 250 || imageFile.Height > 250)
+                            if (imageFile.Width > 100 || imageFile.Height > 100)
                                 createThumb = true;
                             
                             if (createThumb)
