@@ -1,7 +1,6 @@
-import { format } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import React, { ReactNode } from 'react'
-import {Segment, Grid,  Image} from 'semantic-ui-react'
+import React, { ReactNode, useState } from 'react'
+import {Segment, Grid,  Image,  Icon} from 'semantic-ui-react'
 import {Evento} from "../../../app/models/evento";
 import ReactTextFormat from 'react-text-format';
 
@@ -10,6 +9,15 @@ interface Props {
 }
 
 export default observer(function EventoDetailedInfo({evento}: Props) {
+    const [readAll,setReadAll] = useState(false);
+    const handleReadMore = () => {
+        console.log(document.getElementById('infoSegment'));
+        if (document.getElementById('infoSegment')!.style.maxHeight !== "")
+            document.getElementById('infoSegment')!.style.maxHeight = "";
+        else
+            document.getElementById('infoSegment')!.style.maxHeight = "332px";
+        setReadAll(!readAll);
+    }
     var customImageDecorator = (
         decoratedURL: string
         ): ReactNode => {
@@ -23,20 +31,33 @@ export default observer(function EventoDetailedInfo({evento}: Props) {
         };
     return (
         <>
-            <Segment attached>
-                        <b>Fecha: </b>{format(evento.startDate!, 'dd MMM yyyy h:mm aa')} - {format(evento.endDate!, 'dd MMM yyyy h:mm aa')}
-                        
-            </Segment>
-            <Segment attached>
-                <b>Lugar: </b><span>{evento.venue}, {evento.city}</span>
-            </Segment>
-            <Segment attached>
+            <Segment attached id={'infoSegment'} style={{maxHeight:'332px', overflow:'hidden'}}>
                 <Grid>
                     <Grid.Column width={16} style={{whiteSpace: 'pre-line'}}>
                     <ReactTextFormat
                         allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
                         imageDecorator={customImageDecorator}
-                    >{evento.description}</ReactTextFormat>
+                        
+                    >
+                        {
+                            evento.description.length > 700 ? <>
+                                                                {evento.description}
+                                                                {!readAll ?
+                                                                <div className='readMoreDimmer' onClick={handleReadMore}>
+                                                                    <Icon name="arrow down" /> Leer Más ...
+                                                                </div>
+                                                                :
+                                                                <div className='readMoreDimmer noDim' onClick={handleReadMore}>
+                                                                    <Icon name="arrow up" /> Encoger 
+                                                                </div>}
+                                                                
+                                                                
+                                                               </> 
+                                                            : evento.description
+                        }
+                        
+                        
+                    </ReactTextFormat>
                     </Grid.Column>
                 </Grid>
             </Segment>

@@ -1,4 +1,4 @@
-body {
+.body {
   background-color: #EAEAEA !important;
 }
 .ui.top.fixed.menu {
@@ -69,4 +69,30 @@ body {
   opacity: 0.7;
   cursor: pointer;
   color:chocolate;
+}
+
+.readMoreDimmer{
+  background: rgb(243,244,245);
+  background: linear-gradient(0deg, rgba(243,244,245,1) 0%, rgba(243,244,245,0.93) 33%, rgba(243,244,245,0.8) 59%, rgba(243,244,245,0.75) 79%, rgba(243,244,245,0) 100%);  opacity: 1;
+  margin-top:140px;
+  height:200px;
+  z-index: 1000;
+  position:absolute;
+  top: 0;
+  width: 100%;
+  left:0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: large;
+  color: #0673cc;
+  font-weight: bold;
+  cursor: pointer;
+}
+.noDim{
+  background: transparent;
+  align-items: flex-end;
+  bottom: 0;
+  top:unset;
+  padding-bottom: 10px;
 }

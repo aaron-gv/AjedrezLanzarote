@@ -10,6 +10,8 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import {createBrowserHistory} from 'history';
 import 'react-datepicker/dist/react-datepicker.css';
 
+
+
 export const history = createBrowserHistory();
 
 ReactDOM.render(

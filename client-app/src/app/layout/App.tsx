@@ -21,7 +21,8 @@ import NoticiaForm from "../../features/noticias/form/NoticiaForm";
 import ImagesDropzone from "../../features/images/ImagesDropzone";
 import EventoEdit from "../../features/eventos/form/EventoEdit";
 import EventoCreate from "../../features/eventos/form/EventoCreate";
-    
+require('typeface-montserrat');
+
 export default observer(function App() {
   const location = useLocation(); 
   const {commonStore, userStore} = useStore();

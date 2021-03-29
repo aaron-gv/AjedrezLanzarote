@@ -1,7 +1,8 @@
+import { format } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
-import {Button, Header,  Segment, Image, Label, Confirm, Grid} from 'semantic-ui-react'
+import {Button,   Segment, Image, Label, Confirm, Grid} from 'semantic-ui-react'
 import { Evento } from '../../../app/models/evento';
 import { useStore } from '../../../app/stores/store';
 
@@ -26,25 +27,26 @@ export default observer (function EventoDetailedHeader({evento}: Props) {
                 {evento.isCancelled && 
                     <Label style={{position:'absolute', zIndex: 1000, left: -14, top:20}} ribbon color='red' content='Cancelado' />
                 }
-                <Segment>
-                    <Header
-                        size='large'
-                        content={
-                        <>
-                            <Grid>
-                                <Grid.Column width={4}>
-                                    <Image src={evento.portraitUrl} />
+                            <Grid style={{}}>
+                                <Grid.Column width={3} >
+                                    <Image src={evento.portraitUrl || '/assets/calendar.png'} style={{margin:'0 auto'}} />
                                 </Grid.Column>
-                                <Grid.Column width={12} style={{display:'flex', alignItems:'center'}}>
-                                    {evento.title}
+                                <Grid.Column width={12} style={{alignItems:'left'}}>
+                                    <div style={{marginTop:'5px',marginBottom:'5px', fontSize:'16px', fontWeight:'bold'}}>
+                                        <h1>{evento.title}</h1>
+                                    </div>
+                                    <div style={{marginTop:'5px',marginBottom:'5px'}}>
+                                        ¿ Cuando ? <span style={{marginLeft:'10px',marginRight:'10px',fontWeight:'bold'}}>{format(evento.startDate!, 'dd MMM yyyy H:mm')}</span> - hasta el - <span style={{marginLeft:'10px',fontWeight:'bold'}}>{format(evento.endDate!, 'dd MMM yyyy H:mm')}</span>
+                                    </div>
+                
+                                    <div style={{marginTop:'5px',marginBottom:'5px'}}>
+                                        ¿ Donde ? <span style={{marginLeft:'10px',marginRight:'10px',fontWeight:'bold'}}>{evento.venue} &nbsp;&nbsp;, &nbsp;&nbsp; [{evento.city}]</span>
+                                    </div>
+                                    
                                 </Grid.Column>
 
                             </Grid>
                             
-                        </>
-                        }
-                    />
-                </Segment>
             </Segment>
             {userStore.user && 
             <Segment clearing attached secondary>

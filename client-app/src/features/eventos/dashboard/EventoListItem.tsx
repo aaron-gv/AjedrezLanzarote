@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { Button, Icon, Item, Label, Segment } from "semantic-ui-react";
+import { Button,  Item, Label, Segment } from "semantic-ui-react";
 import { Evento } from "../../../app/models/evento";
 import EventoListItemAsistente from "./EventoListItemAsistente";
 import ReactTextFormat from 'react-text-format';
@@ -71,20 +71,26 @@ export default observer(function EventoListItem({
         }
         <Item.Group >
           <Item>
-            <Item.Image style={{marginBottom:3, cursor:'pointer'}} size='tiny' src={evento.portrait?.thumbnail ? evento.portrait.thumbnail : '/assets/user.png'} onClick={() => openPhotoSwipe()} />
+            <Item.Image style={{marginBottom:3, cursor:'pointer'}} size='tiny' src={evento.portrait?.thumbnail ? evento.portrait.thumbnail : '/assets/calendar.png'} onClick={() => openPhotoSwipe()} />
             <Item.Content as={Link} to={`/eventos/${evento.url}`}>
               <Item.Header>{evento.title}</Item.Header>
-              <Item.Description>evento <strong style={{color:'darkblue'}}>{evento.category}</strong></Item.Description>
+
+              <Item.Description>
+                evento <strong style={{color:'darkblue'}}>{evento.category}</strong>
+                <div style={{marginTop:'5px'}}>
+                   ¿ Cuando ? <span style={{marginLeft:'10px',marginRight:'10px',fontWeight:'bold'}}>{format(evento.startDate!, 'dd MMM yyyy H:mm')}</span> - hasta el - <span style={{marginLeft:'10px',fontWeight:'bold'}}>{format(evento.endDate!, 'dd MMM yyyy H:mm')}</span>
+                </div>
+                {evento.category==="presencial" && 
+                  <div style={{marginTop:'5px'}}>
+                      ¿ Donde ? <span style={{marginLeft:'10px',marginRight:'10px',fontWeight:'bold'}}>{evento.venue} &nbsp;&nbsp;, &nbsp;&nbsp; [{evento.city}]</span>
+                  </div>
+                }
+                
+              </Item.Description>
             
             </Item.Content>
           </Item>
         </Item.Group>
-      </Segment>
-      <Segment>
-        <span>
-          <Icon name='clock' /> {format(evento.startDate!, 'dd MMM yyyy h:mm aa')} - {format(evento.endDate!, 'dd MMM yyyy h:mm aa')}
-          <Icon name='marker' /> {evento.venue}
-        </span>
       </Segment>
       <Segment clearing style={{whiteSpace: 'pre-line'}}>
         <ReactTextFormat
@@ -100,7 +106,7 @@ export default observer(function EventoListItem({
       {evento.category === "presencial" && evento.galleries && evento.galleries.length > 0 &&
       <>
         <Segment secondary clearing >
-          <h3 >Imágenes :</h3>
+          <h4 >Imágenes :</h4>
           {evento.galleries.map(gallery => (
             <EventoGallery title={gallery.title} key={gallery.id} id={gallery.id} items={gallery.images} />
           ))}
