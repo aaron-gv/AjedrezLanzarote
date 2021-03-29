@@ -38,6 +38,7 @@ export default class EventoStore {
     this.loadingInitial = true;
     try {
       const eventos = await agent.Eventos.list();
+      console.log(eventos);
       eventos.forEach((evento) => {
         this.setEvento(evento);
       });
@@ -496,6 +497,23 @@ export default class EventoStore {
         })
         
     }
+}
+
+changeGalleryVisibility = async (eventoId: string, galleryId: string, gallery: Gallery) => {
+  this.loading = true;
+  try {
+    await agent.Eventos.changeGalleryVisibility(eventoId,galleryId);
+    runInAction(() => {
+        gallery.public = !gallery.public;
+        this.loading = false;
+      })
+  } catch (error) {
+      console.log(error);
+      runInAction(() => {
+        this.loading = false;
+      })
+      
+  }
 }
 }
 

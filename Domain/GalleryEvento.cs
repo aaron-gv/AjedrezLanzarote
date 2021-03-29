@@ -10,7 +10,7 @@ namespace Domain
         public Guid EventoId { get; set; }
         public Evento Evento { get; set; }
         public string Title { get; set; }
-        public string Hidden { get; set; }
+        public Boolean Public { get; set; }
 
     }
 }

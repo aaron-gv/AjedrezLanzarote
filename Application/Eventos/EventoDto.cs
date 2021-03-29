@@ -23,6 +23,6 @@ namespace Application.Eventos
         public string PortraitUrl {get; set;}
         public Image Portrait {get; set;}
         public ICollection<Profile> Asistentes {get; set;}
-        public ICollection<GalleryDto> Galleries {get; set;} = new List<GalleryDto>();
+        virtual public ICollection<GalleryEventoDto> Galleries {get; set;} = new List<GalleryEventoDto>();
     }
 }

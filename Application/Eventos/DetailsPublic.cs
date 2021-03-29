@@ -12,7 +12,7 @@ using AutoMapper.QueryableExtensions;
 
 namespace Application.Eventos
 {
-    public class Details
+    public class DetailsPublic
     {
         public class Query : IRequest<Result<EventoDto>>
         {

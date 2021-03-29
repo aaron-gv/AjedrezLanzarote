@@ -31,10 +31,11 @@ namespace API.Extensions
                     policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
                 });
             });
-            services.AddMediatR(typeof(Application.Eventos.List.Handler).Assembly);
+            services.AddMediatR(typeof(Application.Eventos.ListAll.Handler).Assembly);
             //services.AddMediatR(typeof(Infrastructure.Images.ImageUpload.Handler).Assembly);
             services.AddMediatR(typeof(Infrastructure.Images.CloudinaryUpload.Handler).Assembly);
             services.AddMediatR(typeof(Application.Noticias.List.Handler).Assembly);
+            services.AddMediatR(typeof(Application.Eventos.ListPublic.Handler).Assembly);
             services.AddMediatR(typeof(Application.Patrocinadores.List.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             //This will help to get the loged-in user's username from everywhere in our application

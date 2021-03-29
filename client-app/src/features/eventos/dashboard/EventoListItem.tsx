@@ -92,13 +92,15 @@ export default observer(function EventoListItem({
           </Item>
         </Item.Group>
       </Segment>
-      <Segment clearing style={{whiteSpace: 'pre-line'}}>
+      <Segment style={{whiteSpace: 'pre-line',maxHeight:'250px',overflow:'hidden'}}>
+       {evento.description.length>300 && <Link color='blue' to={`/eventos/${evento.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link>}
         <ReactTextFormat
           allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
           imageDecorator={customImageDecorator}
         >
-          {evento.description.length>300 ? <Link to={`/eventos/${evento.url}`}>{evento.description.substr(0,100)+". . .\n. . .\n  Ver  información  completa  -> "}</Link> : evento.description}
+          {evento.description}
         </ReactTextFormat>
+      
       </Segment>
       {evento.category === "online" && 
         <Segment secondary><EventoListItemAsistente asistentes={evento.asistentes!} /></Segment>

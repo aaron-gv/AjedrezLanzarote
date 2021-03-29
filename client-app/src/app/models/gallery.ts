@@ -3,7 +3,9 @@ import { ImageDto } from "./image";
 export interface Gallery {
     id: string,
     images: ImageDto[],
-    title: string
+    title: string,
+    public: boolean,
+    eventoId: string
 }
 
 export class GalleryFormValues {

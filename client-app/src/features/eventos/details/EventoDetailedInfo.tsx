@@ -44,11 +44,11 @@ export default observer(function EventoDetailedInfo({evento}: Props) {
                                                                 {evento.description}
                                                                 {!readAll ?
                                                                 <div className='readMoreDimmer' onClick={handleReadMore}>
-                                                                    <Icon name="arrow down" /> Leer Más ...
+                                                                    <Icon name="arrow down" /> Ver todo el contenido
                                                                 </div>
                                                                 :
                                                                 <div className='readMoreDimmer noDim' onClick={handleReadMore}>
-                                                                    <Icon name="arrow up" /> Encoger 
+                                                                    <Icon name="arrow up" /> Contraer 
                                                                 </div>}
                                                                 
                                                                 

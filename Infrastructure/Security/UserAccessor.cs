@@ -20,5 +20,9 @@ namespace Infrastructure.Security
         {
             return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
+        public string GetUserRole()
+        {
+            return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+        }
     }
 }

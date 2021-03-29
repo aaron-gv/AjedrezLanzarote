@@ -1,7 +1,7 @@
 import { Formik, FormikHelpers } from 'formik';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import { Button, Dimmer, Form, Grid, Loader, Segment } from 'semantic-ui-react';
+import { Button, Dimmer, Form, Grid, Icon, Loader, Segment } from 'semantic-ui-react';
 import MyTextInput from '../../../app/common/form/MyTextInput';
 import { Evento } from '../../../app/models/evento';
 import { Gallery } from '../../../app/models/gallery';
@@ -22,7 +22,7 @@ interface Props {
 export default observer(function EventoEditGallery({setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather, loadingComponent} : Props) {
     const [loading, setLoading] = useState(false);
     const {eventoStore} = useStore();
-    const {renameGallery} = eventoStore;
+    const {renameGallery,changeGalleryVisibility} = eventoStore;
     async function handleFormSubmit(galleryId:string, values: any, actions: FormikHelpers<{title: string;}>
         ) {
             setTargetGallery(galleryId);
@@ -32,7 +32,13 @@ export default observer(function EventoEditGallery({setTargetGallery, evento, ga
             setTargetGallery('');
             actions.resetForm();
           }
-    
+
+    const handleChangeGalleryVisibility = async (galleryId: string) => {
+      setLoading(true);
+      await changeGalleryVisibility(evento.id, galleryId, gallery);
+      setLoading(false);
+    }
+    console.log(gallery);
     return (
         <Segment key={gallery.id} clearing >
             {(loading || loadingComponent)  && targetGallery===gallery.id &&
@@ -51,16 +57,16 @@ export default observer(function EventoEditGallery({setTargetGallery, evento, ga
                 }}
               >{({dirty, handleSubmit}) => (
               <Form className='ui form' onSubmit={handleSubmit} >
-                  <Grid columns={3} stretched>
-                    <Grid.Column width={10} style={{paddingRight:'0px'}}>
+                  <Grid columns={4}>
+                    <Grid.Column width={9} style={{paddingRight:'0px'}}>
                       <MyTextInput
                         name="title"
                         placeholder={"Título de la collección"}
                       />
                     </Grid.Column>
-                    <Grid.Column width={4}>
+                    <Grid.Column width={3} verticalAlign='middle'>
                       <Button
-                        style={{maxWidth:'150px', marginLeft:'10px'}}
+                        style={{width:'100%'}}
                         color='blue'
                         content={"Actualizar"}
                         size='tiny'
@@ -68,20 +74,31 @@ export default observer(function EventoEditGallery({setTargetGallery, evento, ga
                         type='submit'
                       />
                     </Grid.Column>
-                    <Grid.Column width={2}>
-                      <Button
-                        style={{maxWidth:'80px'}}
+                    
+                    <Grid.Column width={2} verticalAlign='middle' textAlign='center'>
+                      <Icon style={{maxWidth:'80px',cursor:'pointer'}}
+                        color={gallery.public ? 'blue' : 'grey'}
+                        floated='right'
+                        name={gallery.public ? 'eye' : 'eye slash'}
+                        size='large'
+                        type='button'
+                        onClick={() => {
+                          handleChangeGalleryVisibility(gallery.id); 
+                        }} /> {gallery.public ? 'publico' : 'privado'}
+                      
+                    </Grid.Column>
+                    <Grid.Column width={2} verticalAlign='middle' textAlign='center'>
+                      <Icon style={{maxWidth:'80px',cursor:'pointer'}}
                         color='red'
                         floated='right'
-                        basic
-                        icon='trash'
-                        size='tiny'
+                        name='trash'
+                        size='large'
                         type='button'
                         onClick={() => {
                           setTargetGallery(gallery.id);
                           setPopupStatusFather(true);
-                        }}
-                      />
+                        }} />
+                     
                     </Grid.Column>
                   </Grid>
                 </Form>

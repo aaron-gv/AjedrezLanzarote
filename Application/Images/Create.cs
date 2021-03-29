@@ -71,7 +71,7 @@ namespace Application.Images
                 {
                     var evento = await _context.Eventos.FirstOrDefaultAsync(x => x.Id == request.EventoId);
                     var gallery = await _context.Galleries.FirstOrDefaultAsync(x => x.Id == request.GalleryId);
-                    _context.GalleryEventos.Add(new GalleryEvento { GalleryId = request.GalleryId, EventoId = request.EventoId });
+                    _context.GalleryEventos.Add(new GalleryEvento { GalleryId = request.GalleryId, EventoId = request.EventoId, Title = request.Title });
                     result = await _context.SaveChangesAsync() > 0;
                 }
 
