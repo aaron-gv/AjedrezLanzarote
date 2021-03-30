@@ -25,7 +25,7 @@ namespace Application.Core
             CreateMap<AdminGalleryEventoDto, GalleryEventoDto>();
 
             CreateMap<Evento, EventoDto>()
-               .ForMember(ed => ed.Galleries, opt => opt.MapFrom(e => e.GalleryEventos.Where(ge => ge.Public == true).Select(eg => eg.Gallery)))
+               .ForMember(ed => ed.Galleries, opt => opt.MapFrom(e => e.GalleryEventos.Where(ge => ge.Public == true)))
                .ForMember(d => d.PortraitUrl, o => o.MapFrom(s => s.Image.Source))
                .ForMember(d => d.Portrait, o => o.MapFrom(s => s.Image));
                
