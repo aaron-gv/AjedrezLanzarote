@@ -34,12 +34,21 @@ namespace Application.Galleries
                 var gallery = await _context.Galleries.FindAsync(request.GalleryId);
                 var image = await _context.Images.FindAsync(request.ImageId);
                 var relation = await _context.GalleryImages.FindAsync(request.GalleryId, request.ImageId);
+                
+                
                 if (relation == null || gallery == null || image == null)
                 {
                     return Result<Unit>.Failure("Imagen/Colección no encontrados");
                 }
                 _context.Remove(relation);
                 
+                var order = 0;
+                await _context.GalleryImages.Where(x => x.GalleryId == request.GalleryId && x.ImageId != request.ImageId).OrderBy(x => x.Order).ForEachAsync(galleryImage => {
+                    Console.WriteLine(galleryImage.ImageId);
+                    Console.WriteLine(galleryImage.Order + "=> " + order);
+                    galleryImage.Order = order;
+                    order++;
+                });
                 
                 
                 var relatedimages = _context.GalleryImages.AnyAsync(x => x.ImageId == image.Id && x.GalleryId != gallery.Id).Result;
@@ -65,20 +74,7 @@ namespace Application.Galleries
                 if (!relatedgalleries)
                 {
                     _context.Remove(gallery); 
-                } else {
-                    
-                    var galleryImages = await _context.GalleryImages.Where(x => x.GalleryId == gallery.Id).OrderByDescending(x => x.Order).ToListAsync();
-                    var orderCount = 0;
-                    galleryImages.ForEach(galimg => {
-                        if (galimg.ImageId != image.Id) {
-                        Console.WriteLine(orderCount);
-                        galimg.Order = orderCount;
-                        orderCount++;
-                        }
-                        
-                    });
-                }
-
+                } 
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result) return Result<Unit>.Failure("Fallo al eliminar imagen");

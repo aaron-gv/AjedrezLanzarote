@@ -137,5 +137,12 @@ namespace API.Controllers
             //var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             return HandleResult(await Mediator.Send(new ChangeGalleryVisibility.Command { EventoId = eventoId, GalleryId = galleryId }));
         }
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPut("promotegallery/{eventoId}/{galleryId}")]
+        public async Task<ActionResult> promoteGallery(Guid eventoId, Guid galleryId)
+        {
+            //var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            return HandleResult(await Mediator.Send(new PromoteGallery.Command { EventoId = eventoId, GalleryId = galleryId }));
+        }
     }
 }

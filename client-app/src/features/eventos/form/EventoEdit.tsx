@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import {  Confirm,    Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import {  Evento, EventoFormValues } from "../../../app/models/evento";
+import { Gallery } from "../../../app/models/gallery";
 import { useStore } from "../../../app/stores/store";
 import ImagesDropzone from "../../images/ImagesDropzone";
 import EventoEditGallery from "./EventoEditGallery";
@@ -18,7 +19,7 @@ export default observer(function EventoEdit() {
   const [eventoForm, setEventoForm] = useState<EventoFormValues>(
     new EventoFormValues()
   );
-  const { loadEventoByUrl, loadingInitial, selectedEvento: evento } = eventoStore;
+  const { loadEventoByUrl, loadingInitial, selectedEvento: evento, promoteGallery } = eventoStore;
   
   
   async function handleGalleryDelete() 
@@ -31,7 +32,12 @@ export default observer(function EventoEdit() {
         
         setTargetGallery('');
     }
-  
+    const handlePromoteGallery = async (gallery:Gallery) => {
+      setLoadingComponent(true);
+      await promoteGallery(gallery, evento as Evento);
+      
+      setLoadingComponent(false);
+    }
   useEffect(() => {
     if (url) {
       loadEventoByUrl(url).then((evento) => {
@@ -58,7 +64,7 @@ export default observer(function EventoEdit() {
       } 
       {evento.galleries &&
         evento.galleries.map(gallery => (
-          <EventoEditGallery key={gallery.id} setTargetGallery={setTargetGallery} evento={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} />
+          <EventoEditGallery key={gallery.id} setTargetGallery={setTargetGallery} evento={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
         ))}
        <Confirm
                 open={popupStatusFather}

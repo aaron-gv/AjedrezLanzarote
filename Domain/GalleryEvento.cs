@@ -11,6 +11,7 @@ namespace Domain
         public Evento Evento { get; set; }
         public string Title { get; set; }
         public Boolean Public { get; set; }
+        public int Order { get; set; }
 
     }
 }

@@ -12,6 +12,7 @@ namespace Application.Galleries
         public string Title { get; set; }
         public ICollection<ImageDto> Images { get; set; } = new List<ImageDto>();
         public Boolean Public { get; set; }
+        public int Order { get; set; }
         
     }
 }

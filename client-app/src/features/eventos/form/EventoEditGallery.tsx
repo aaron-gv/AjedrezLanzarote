@@ -14,12 +14,14 @@ interface Props {
     gallery: Gallery,
     targetGallery: string,
     loadingComponent: boolean,
-    setPopupStatusFather: (value: React.SetStateAction<boolean>) => void
+    setPopupStatusFather: (value: React.SetStateAction<boolean>) => void,
+    handlePromoteGallery: (gallery: Gallery) => Promise<void>
+
 }
 
 
 
-export default observer(function EventoEditGallery({setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather, loadingComponent} : Props) {
+export default observer(function EventoEditGallery({setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
     const [loading, setLoading] = useState(false);
     const {eventoStore} = useStore();
     const {renameGallery,changeGalleryVisibility} = eventoStore;
@@ -38,6 +40,8 @@ export default observer(function EventoEditGallery({setTargetGallery, evento, ga
       await changeGalleryVisibility(evento.id, galleryId, gallery);
       setLoading(false);
     }
+
+
     console.log(gallery);
     return (
         <Segment key={gallery.id} clearing >
@@ -58,7 +62,16 @@ export default observer(function EventoEditGallery({setTargetGallery, evento, ga
               >{({dirty, handleSubmit}) => (
               <Form className='ui form' onSubmit={handleSubmit} >
                   <Grid columns={4}>
-                    <Grid.Column width={9} style={{paddingRight:'0px'}}>
+                    <Grid.Column width={1} verticalAlign='middle'>
+                      {gallery.order > 0 && 
+                        <Icon 
+                        name='arrow up'
+                        style={{cursor:'pointer'}}
+                        onClick={() => handlePromoteGallery(gallery)}
+                        />
+                      }
+                    </Grid.Column>
+                    <Grid.Column width={7} style={{paddingRight:'0px'}}>
                       <MyTextInput
                         name="title"
                         placeholder={"Título de la collección"}
@@ -84,7 +97,7 @@ export default observer(function EventoEditGallery({setTargetGallery, evento, ga
                         type='button'
                         onClick={() => {
                           handleChangeGalleryVisibility(gallery.id); 
-                        }} /> {gallery.public ? 'publico' : 'privado'}
+                        }} /> 
                       
                     </Grid.Column>
                     <Grid.Column width={2} verticalAlign='middle' textAlign='center'>

@@ -88,7 +88,8 @@ const Eventos = {
     renameGallery: (idGallery: string, idEvento: string, title: FormData) => axios.put<void>(`/galleryevento/galleryrename/${idEvento}/${idGallery}`, title).then(responseBody),
     renameImage: (idGallery: string, idImage: string, title: FormData) => axios.put<void>(`/images/imagerename/${idGallery}/${idImage}`, title).then(responseBody),
     setMainImage: (eventoId: string, imageId: string) => axios.put<void>(`/eventos/setmainimage/${eventoId}/${imageId}`).then(responseBody),
-    changeGalleryVisibility: (eventoId: string, galleryId: string) => axios.put<void>(`/eventos/changegalleryvisibility/${eventoId}/${galleryId}`).then(responseBody)
+    changeGalleryVisibility: (eventoId: string, galleryId: string) => axios.put<void>(`/eventos/changegalleryvisibility/${eventoId}/${galleryId}`).then(responseBody),
+    promoteGallery: (eventoId: string, galleryId: string) => axios.put<void>(`/eventos/promotegallery/${eventoId}/${galleryId}`).then(responseBody)
 }
 const Noticias = {
     list: () => requests.get<Noticia[]>('/noticias'),

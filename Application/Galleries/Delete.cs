@@ -72,9 +72,16 @@ namespace Application.Galleries
                         */
                         _context.Remove(imageObject);
                     }
+                    _context.Remove(item);
 
                 }
                 _context.Remove(eventoGallery);
+                var order = 0;
+                await _context.GalleryEventos.Where(x => x.EventoId == request.EventoId && x.GalleryId!=request.Id).OrderBy(x => x.Order).ForEachAsync(galleryEvento => {
+                    galleryEvento.Order = order;
+                    order++;
+                });
+
 
                 _context.Remove(gallery);
 

@@ -108,7 +108,10 @@ export default class EventoStore {
     evento.endDate = new Date(evento.endDate!);
 
     if (evento.galleries) {
+      evento.galleries = evento.galleries.sort((a, b) => (a.order > b.order) ? 1 : -1);
+
       evento.galleries.forEach(gallery => {
+        
         if (gallery.images.length > 0)
         {
           gallery.images = gallery.images.sort((a, b) => (a.order > b.order) ? 1 : -1);
@@ -505,6 +508,35 @@ changeGalleryVisibility = async (eventoId: string, galleryId: string, gallery: G
     await agent.Eventos.changeGalleryVisibility(eventoId,galleryId);
     runInAction(() => {
         gallery.public = !gallery.public;
+        this.loading = false;
+      })
+  } catch (error) {
+      console.log(error);
+      runInAction(() => {
+        this.loading = false;
+      })
+      
+  }
+}
+promoteGallery = async (gallery:Gallery,  evento: Evento) => {
+  this.loading = true;
+  var order = gallery.order-1;
+  
+  try {
+    await agent.Eventos.promoteGallery(evento.id,gallery.id);
+    runInAction(() => {
+        if (evento.galleries === undefined) return null;
+        var prevGallery = evento.galleries.find(x => x.order === order);
+        if (prevGallery === undefined) return null;
+          
+          console.log("prevGallery: "+prevGallery.title);
+                    
+          prevGallery.order = prevGallery.order+1;
+         
+          evento.galleries.find(x => x.id===gallery.id)!.order--;
+        
+        evento.galleries?.sort((a, b) => (a.order > b.order) ? 1 : -1);
+        this.eventosRegistry.set(evento.id,evento);
         this.loading = false;
       })
   } catch (error) {

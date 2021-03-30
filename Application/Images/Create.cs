@@ -69,9 +69,14 @@ namespace Application.Images
                 var result = await _context.SaveChangesAsync() > 0;
                 if (result)
                 {
-                    var evento = await _context.Eventos.FirstOrDefaultAsync(x => x.Id == request.EventoId);
-                    var gallery = await _context.Galleries.FirstOrDefaultAsync(x => x.Id == request.GalleryId);
-                    _context.GalleryEventos.Add(new GalleryEvento { GalleryId = request.GalleryId, EventoId = request.EventoId, Title = request.Title });
+                    var galleryEvento = _context.GalleryEventos.Where(x => x.EventoId == request.EventoId).OrderByDescending(x => x.Order);
+                    var order = 0;
+                    if (galleryEvento.Count() > 0) {
+                        var lastItem = await galleryEvento.FirstAsync();
+                        order = lastItem.Order+1;
+                    }
+                    
+                    _context.GalleryEventos.Add(new GalleryEvento { GalleryId = request.GalleryId, EventoId = request.EventoId, Title = request.Title, Order = order });
                     result = await _context.SaveChangesAsync() > 0;
                 }
 
