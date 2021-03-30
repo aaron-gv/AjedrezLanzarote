@@ -63,7 +63,7 @@ namespace Application.Images
                     Console.WriteLine("------------------");
                     Console.WriteLine(request.GalleryId+ " and "+ image.Id);
                     Console.WriteLine("------------------");
-                    _context.GalleryImages.Add(new GalleryImage { GalleryId = request.GalleryId, ImageId = image.Id, Gallery = Gallery, Image = image, Order = orderCount });
+                    _context.GalleryImages.Add(new GalleryImage { GalleryId = request.GalleryId, ImageId = image.Id, Gallery = Gallery, Image = image, Order = orderCount, Title = "" });
                     orderCount++;
                 });
                 var result = await _context.SaveChangesAsync() > 0;

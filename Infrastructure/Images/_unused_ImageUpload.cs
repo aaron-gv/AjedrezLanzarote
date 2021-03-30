@@ -158,7 +158,6 @@ namespace Infrastructure.Pictures
 
                             newImgEntity = new Domain.Image{
                                 Id = Guid.NewGuid(),
-                                Title = "",
                                 Filename = fullFileName,
                                 Width = imageFile.Width,
                                 Height = imageFile.Height,

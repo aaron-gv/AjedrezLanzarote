@@ -329,7 +329,7 @@ export default class EventoStore {
     
     try {
       
-      await agent.Eventos.renameImage(imageId,myForm);
+      await agent.Eventos.renameImage(galleryId,imageId,myForm);
       runInAction(async () => {
             let evento = this.selectedEvento;
             evento?.galleries?.forEach( gallery => {

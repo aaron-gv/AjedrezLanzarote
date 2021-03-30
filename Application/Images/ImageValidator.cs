@@ -7,7 +7,6 @@ namespace Application.Images
     {
         public ImageValidator()
         {
-            RuleFor(x => x.Title).NotEmpty();
             RuleFor(x => x.Width).NotEmpty();
             RuleFor(x => x.Height).NotEmpty();
         }   

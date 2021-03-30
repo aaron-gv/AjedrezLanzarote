@@ -17,7 +17,7 @@ namespace Application.Images
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid EventoId { get; set; }
+            public Guid GalleryId { get; set; }
             public Guid ImageId { get; set; }
             public string Title { get; set; }
 
@@ -40,14 +40,14 @@ namespace Application.Images
                 
                 
                 //if (evento == null) return null;
-                var image = await _context.Images.FindAsync(request.ImageId);
-                if (image == null)
+                var GalleryImage = await _context.GalleryImages.FindAsync(request.GalleryId, request.ImageId);
+                if (GalleryImage == null)
                     return Result<Unit>.Failure("El evento o la galería no existen");
 
                 Console.WriteLine("///////////////////////");
                 Console.WriteLine(request.Title);
  
-                image.Title = request.Title;
+                GalleryImage.Title = request.Title;
                 var result = await _context.SaveChangesAsync() > 0;
                 if (!result)
                 {

@@ -91,7 +91,6 @@ namespace Infrastructure.Images
                             newImgEntity = new Domain.Image
                             {
                                 Id = Guid.NewGuid(),
-                                Title = "",
                                 Filename = fullFileName,
                                 CloudId = cloudImage.PublicId,
                                 CloudThumbId = thumbImage.PublicId,

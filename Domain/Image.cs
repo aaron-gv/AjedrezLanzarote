@@ -11,7 +11,6 @@ namespace Domain
         public string CloudThumbId { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        public string Title { get; set; }
         public string Source { get; set; }
         public string Thumbnail { get; set; }
         public int smallWidth { get; set; }

@@ -10,5 +10,6 @@ namespace Domain
         public Guid ImageId { get; set; }
         public Image Image { get; set; } 
         public int Order { get; set; }
+        public string Title { get; set; }
     }
 }

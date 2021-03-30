@@ -86,7 +86,7 @@ const Eventos = {
     asistir: (url: string) => axios.post<void>(`/eventos/${url}/asistir`).then(responseBody),
     cancelar: (url: string) => axios.post<void>(`/eventos/${url}/cancelar`).then(responseBody),
     renameGallery: (idGallery: string, idEvento: string, title: FormData) => axios.put<void>(`/galleryevento/galleryrename/${idEvento}/${idGallery}`, title).then(responseBody),
-    renameImage: (idImage: string, title: FormData) => axios.put<void>(`/images/imagerename/${idImage}`, title).then(responseBody),
+    renameImage: (idGallery: string, idImage: string, title: FormData) => axios.put<void>(`/images/imagerename/${idGallery}/${idImage}`, title).then(responseBody),
     setMainImage: (eventoId: string, imageId: string) => axios.put<void>(`/eventos/setmainimage/${eventoId}/${imageId}`).then(responseBody),
     changeGalleryVisibility: (eventoId: string, galleryId: string) => axios.put<void>(`/eventos/changegalleryvisibility/${eventoId}/${galleryId}`).then(responseBody)
 }

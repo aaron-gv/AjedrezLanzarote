@@ -72,11 +72,11 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Application.Galleries.AddImages.Command {Images = imgCollectionResult.Value, GalleryId = gallery}));
         }
         [Authorize(Policy = "IsAdmin")]
-        [HttpPut("imageRename/{imageId}")]
-        public async Task<IActionResult> RenameImage(string imageId)
+        [HttpPut("imageRename/{galleryId}/{imageId}")]
+        public async Task<IActionResult> RenameImage(string galleryId, string imageId)
         {
             Request.Form.TryGetValue("title", out StringValues value);
-            return HandleResult(await Mediator.Send(new RenameEventoImage.Command{ImageId = Guid.Parse(imageId), Title = value}));
+            return HandleResult(await Mediator.Send(new RenameEventoImage.Command{GalleryId = Guid.Parse(galleryId), ImageId = Guid.Parse(imageId), Title = value}));
         }
     }
     
