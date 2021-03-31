@@ -57,7 +57,7 @@ export default observer(function EventoEditGallery({handleChangeGalleryVisibilit
                         style={{cursor:'pointer'}}
                         onClick={() => handlePromoteGallery(gallery)}
                         />
-                      } {gallery.order}
+                      } 
                     </Grid.Column>
                     <Grid.Column width={7} style={{paddingRight:'0px'}}>
                       <MyTextInput
