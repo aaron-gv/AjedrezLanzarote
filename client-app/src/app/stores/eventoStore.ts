@@ -238,7 +238,41 @@ export default class EventoStore {
       
     }
   }
+  createGalleryNew = async (formData: FormData, galleryTitle: string, eventoId: string) => {
+    this.loading = true;
+    var evento = this.selectedEvento;
+    if (evento === undefined) return null;
+      try {
+        var newGalId = await agent.Galleries.create2(formData);
+        
+        runInAction(async () => {
+          let newGallery = await agent.Galleries.get(newGalId);
+          
+            runInAction(() => {
+              newGallery.eventoId = eventoId;
+              newGallery.title = galleryTitle;
+              
 
+              if (evento!.galleries && evento!.galleries.length > 0) {
+                newGallery.order = evento!.galleries.length;
+                evento!.galleries.push(newGallery);
+              } else {
+                newGallery.order = 0;
+                evento!.galleries = [newGallery];
+              }
+              this.reOrderImages(evento!.galleries.find(x => x.id === newGallery.id)!);
+              this.eventosRegistry.set(evento!.id, evento as Evento);
+              this.selectedEvento = evento;
+              this.loading = false;
+            });
+        })
+      } catch (error) {
+        console.log(error);
+        runInAction(() => {
+          this.loading = false;
+        });
+      }
+  }
   createGallery = async (myData: any[], evento: Evento, galleryId: string, galleryTitle: string) => {
     
     if (!evento || !galleryId || !myData)

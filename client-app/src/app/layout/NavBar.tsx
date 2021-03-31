@@ -18,7 +18,7 @@ export default observer(function NavBar() {
   } = useStore();
 
   return (
-    <Menu fluid fixed='top' widths={7} >
+    <Menu fluid fixed='top' widths={7} style={{zIndex:2000}}>
       <Menu.Item as={NavLink} to={"/info"}>
         <img
           src='/assets/logo.png'

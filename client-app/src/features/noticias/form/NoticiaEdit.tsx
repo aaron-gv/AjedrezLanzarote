@@ -1,17 +1,17 @@
 import { observer } from "mobx-react-lite";
 import  React ,{ useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {  Confirm,    Segment } from "semantic-ui-react";
+import {  Button, Confirm,    Header,    Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import {  Noticia, NoticiaFormValues } from "../../../app/models/noticia";
 import { Gallery } from "../../../app/models/gallery";
 import { useStore } from "../../../app/stores/store";
 import EntityEditGallery from "../../Galleries/EntityEditGallery";
-import ImagesDropzone from "../../images/ImagesDropzone";
 import NoticiaForm from "./NoticiaForm";
 import { ImageDto } from "../../../app/models/image";
 import { FormikHelpers, FormikState } from "formik";
 import { toast } from "react-toastify";
+import CreateGallery from "../../Galleries/CreateGallery";
 
  
 export default observer(function NoticiaEdit() {
@@ -20,30 +20,25 @@ export default observer(function NoticiaEdit() {
   const [popupStatusFather, setPopupStatusFather] = useState(false);
   const [targetGallery, setTargetGallery] = useState('');
   const [loadingComponent, setLoadingComponent] = useState(false);
+  const [openCreateGallery, setOpenCreateGallery] = useState(false);
+
   const [noticiaForm, setNoticiaForm] = useState<NoticiaFormValues>(
     new NoticiaFormValues()
   );
-  const { loadNoticiaByUrl, loadingInitial,selectedNoticia: noticia, changeImageOrder, deleteImage, promoteGallery, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = noticiaStore;
+  const { loadNoticiaByUrl, loadingInitial,selectedNoticia: noticia, addToGallery, changeImageOrder, deleteImage, promoteGallery, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = noticiaStore;
   
-  async function handleGalleryCreate(myData: any[], title: string, galleryId: string) {
-    if (!myData)
-      return null;
-    await noticiaStore.createGallery(myData, noticia as Noticia, galleryId, title);
-}
   async function handleGalleryDelete() 
     {
       setLoadingComponent(true);
       setPopupStatusFather(false);
         if (targetGallery !== '')
           await noticiaStore.deleteGallery(noticia as Noticia,targetGallery);
-          setLoadingComponent(false);
-        
-        setTargetGallery('');
+      setLoadingComponent(false);
+      setTargetGallery('');
     }
     const handlePromoteGallery = async (gallery:Gallery) => {
       setLoadingComponent(true);
       await promoteGallery(gallery, noticia as Noticia);
-      
       setLoadingComponent(false);
     }
     async function handleSetMain(image: ImageDto) {
@@ -69,18 +64,13 @@ export default observer(function NoticiaEdit() {
     }
     const handleChangeGalleryVisibility = async (gallery: Gallery) => {
       setLoadingComponent(true);
-      
         await changeGalleryVisibility(noticia!.id, gallery.id, gallery);
-      
-        //await changeGalleryVisibilityNoticia(entity!.id, galleryId, gallery);  
-      
       setLoadingComponent(false);
     }
     const handleAddImages = async (myData: any[], galleryId: string) => {
       if (!myData) return null;
-  
       setLoadingComponent(true);
-      await noticiaStore.addToGallery(myData, noticia as Noticia, galleryId);
+      await addToGallery(myData, noticia as Noticia, galleryId);
       setLoadingComponent(false);
       myData =[];
     };
@@ -93,6 +83,9 @@ export default observer(function NoticiaEdit() {
       setLoadingComponent(true);
         await deleteImage(noticia as Noticia, image, gallery);
       setLoadingComponent(false);
+    }
+    const switchOpenCreateGallery = () => {
+      setOpenCreateGallery(!openCreateGallery);
     }
   useEffect(() => {
     if (url) {
@@ -113,10 +106,21 @@ export default observer(function NoticiaEdit() {
   return (
     <> 
       <NoticiaForm noticia={noticiaForm} />
-      {noticia.id && 
-      <Segment>
-          <ImagesDropzone galleryId={''} entity={noticia} handleGalleryCreate={handleGalleryCreate} />
-      </Segment>
+      {noticia.id && openCreateGallery &&
+        <Segment basic style={{padding:0}} >
+          <Segment attached='top' as={Button} onClick={switchOpenCreateGallery}>
+            <Header sub content="Ocultar" />
+          </Segment>
+          <Segment attached='bottom' basic fluid>
+            <CreateGallery switchOpenCreateGallery={switchOpenCreateGallery} entityId={noticia.id} entityType={"Noticia"} />
+          </Segment>
+        </Segment>
+      } 
+      {noticia.id && !openCreateGallery &&
+        
+        <Segment as={Button} onClick={switchOpenCreateGallery} fluid basic>
+          <Header icon='add' textAlign='center' content='Crear Colección nueva' />
+        </Segment>
       } 
       {noticia.galleries &&
         noticia.galleries.map(gallery => (

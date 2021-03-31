@@ -10,6 +10,7 @@ export interface Gallery {
     order: number,
 }
 
+
 export class GalleryFormValues {
     eventoId: string = '';
     id :string = '';

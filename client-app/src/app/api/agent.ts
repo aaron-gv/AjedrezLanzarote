@@ -106,6 +106,7 @@ const Images = {
 const Galleries = {
     get: (id: string) => requests.get<Gallery>(`/gallery/${id}`),
     create: (images: FormData, entityId: string, galleryId: string) => axios.post<void>(`/gallery/${entityId}/${galleryId}`, images).then(responseBody),
+    create2: (formData: FormData) => axios.post<string>(`/gallery/create2/`, formData).then(responseBody),
     delete: (galleryId: string, entityId: string, data: FormData) => axios.put(`/gallery/gallerydel/${galleryId}/${entityId}`, data).then(responseBody),
     deleteImage: (imageId: string, galleryId:string, data: FormData) => axios.put<void>(`/gallery/imagedel/${imageId}/${galleryId}`, data).then(responseBody),
     addImages: (images: FormData, galleryId: string) => axios.put<void>(`/gallery/addImages/${galleryId}`, images).then(responseBody),
@@ -114,7 +115,8 @@ const Galleries = {
     renameImage: (idGallery: string, idImage: string, data: FormData) => axios.put<void>(`/gallery/imagerename/${idGallery}/${idImage}`, data).then(responseBody),
     setMainImage: (entityId: string, imageId: string, data: FormData) => axios.put<void>(`/gallery/setmainimage/${entityId}/${imageId}`, data).then(responseBody),
     changeGalleryVisibility: (eventoId: string, galleryId: string, data: FormData) => axios.put<void>(`/gallery/changegalleryvisibility/${eventoId}/${galleryId}`, data).then(responseBody),
-    promoteGallery: (eventoId: string, galleryId: string, data: FormData) => axios.put<void>(`/gallery/promotegallery/${eventoId}/${galleryId}`, data).then(responseBody)
+    promoteGallery: (eventoId: string, galleryId: string, data: FormData) => axios.put<void>(`/gallery/promotegallery/${eventoId}/${galleryId}`, data).then(responseBody),
+    list: () => requests.get<Gallery[]>('/gallery/list')
 }
 const agent = {
     Eventos,

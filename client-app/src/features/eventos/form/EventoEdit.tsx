@@ -3,14 +3,14 @@ import { observer } from "mobx-react-lite";
 import  React ,{ useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {  Confirm,    Segment } from "semantic-ui-react";
+import {  Button, Confirm,    Header,    Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import {  Evento, EventoFormValues } from "../../../app/models/evento";
 import { Gallery } from "../../../app/models/gallery";
 import { ImageDto } from "../../../app/models/image";
 import { useStore } from "../../../app/stores/store";
+import CreateGallery from "../../Galleries/CreateGallery";
 import EntityEditGallery from "../../Galleries/EntityEditGallery";
-import ImagesDropzone from "../../images/ImagesDropzone";
 import EventoForm from "./EventoForm";
  
 export default observer(function EventoEdit() {
@@ -19,10 +19,11 @@ export default observer(function EventoEdit() {
   const [popupStatusFather, setPopupStatusFather] = useState(false);
   const [targetGallery, setTargetGallery] = useState('');
   const [loadingComponent, setLoadingComponent] = useState(false);
+  const [openCreateGallery, setOpenCreateGallery] = useState(false);
   const [eventoForm, setEventoForm] = useState<EventoFormValues>(
     new EventoFormValues()
   );
-  const { loadEventoByUrl, loadingInitial, selectedEvento: evento,  promoteGallery, createGallery, deleteImage, changeImageOrder, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = eventoStore;
+  const { loadEventoByUrl, loadingInitial, selectedEvento: evento,  promoteGallery, addToGallery, deleteImage, changeImageOrder, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = eventoStore;
   
 
   useEffect(() => {
@@ -34,14 +35,6 @@ export default observer(function EventoEdit() {
     }
   }, [url, loadEventoByUrl]);
 
-  async function handleGalleryCreate(myData: any[], title: string, galleryId: string) {
-    if (!myData)
-      return null;
-    setLoadingComponent(true);
-      await createGallery(myData, evento as Evento, galleryId, title);
-    setLoadingComponent(false);
-  }
-  
   async function handleGalleryDelete() 
     {
       setLoadingComponent(true);
@@ -91,7 +84,7 @@ export default observer(function EventoEdit() {
       if (!myData) return null;
   
       setLoadingComponent(true);
-        await eventoStore.addToGallery(myData, evento as Evento, galleryId);
+        await addToGallery(myData, evento as Evento, galleryId);
         //await noticiaStore.addToGallery(myData, entity, gallery.id);
       setLoadingComponent(false);
       myData =[];
@@ -106,11 +99,15 @@ export default observer(function EventoEdit() {
         await deleteImage(evento as Evento, image, gallery);
       setLoadingComponent(false);
     }
+    const switchOpenCreateGallery = () => {
+      setOpenCreateGallery(!openCreateGallery);
+    }
   /*
     if (!user?.roles && !user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ))
     {
       return NotFound();
     }
+    <ImagesDropzone galleryId={''} entity={evento} handleGalleryCreate={handleGalleryCreate} />
   */
   
   if (loadingInitial || !evento ) return <LoadingComponent content='Cargando...' />;
@@ -118,11 +115,23 @@ export default observer(function EventoEdit() {
   return (
     <> 
       <EventoForm evento={eventoForm} />
-      {evento.id && 
-      <Segment>
-          <ImagesDropzone galleryId={''} entity={evento} handleGalleryCreate={handleGalleryCreate} />
-      </Segment>
+      {evento.id && openCreateGallery &&
+        <Segment basic style={{padding:0}} >
+          <Segment attached='top' as={Button} onClick={switchOpenCreateGallery}>
+            <Header sub content="Ocultar" />
+          </Segment>
+          <Segment attached='bottom' basic fluid>
+            <CreateGallery switchOpenCreateGallery={switchOpenCreateGallery} entityId={evento.id} entityType={"Evento"} />
+          </Segment>
+        </Segment>
       } 
+      {evento.id && !openCreateGallery &&
+        
+        <Segment as={Button} onClick={switchOpenCreateGallery} fluid basic>
+          <Header icon='add' textAlign='center' content='Crear Colección nueva' />
+        </Segment>
+      } 
+      
       {evento.galleries &&
         evento.galleries.map(gallery => (
           <EntityEditGallery handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={evento.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />

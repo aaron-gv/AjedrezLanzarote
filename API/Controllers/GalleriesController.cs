@@ -14,6 +14,18 @@ namespace API.Controllers
     public class GalleryController : BaseApiController
     {
         [Authorize(Policy = "IsAdmin")]
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> getGallery(string Id)
+        {
+            return HandleResult(await Mediator.Send(new Details.Query{Id = Guid.Parse(Id)}));
+        }
+        [Authorize(Policy = "IsAdmin")]
+        [HttpGet("list/")]
+        public async Task<IActionResult> getAllGalleries(string Id)
+        {
+            return HandleResult(await Mediator.Send(new List.Query{}));
+        }
+        [Authorize(Policy = "IsAdmin")]
         [HttpPut("gallerydel/{galleryId}/{entityId}")]
         public async Task<IActionResult> DeleteGallery(string galleryId, string entityId)
         {
@@ -26,6 +38,31 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteImageGallery(string imageId, string galleryId)
         {
             return HandleResult(await Mediator.Send(new DeleteImage.Command{ImageId = Guid.Parse(imageId),GalleryId = Guid.Parse(galleryId)}));
+        }
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPost("create2/")]
+        public async Task<IActionResult> create2(IFormCollection? Files, IFormCollection? Add)
+        {
+            var form = Request.HttpContext.Request.Form;
+            form.TryGetValue("title", out StringValues title);
+            form.TryGetValue("entityId", out StringValues entityId);
+            form.TryGetValue("entityType", out StringValues entityType);
+            Console.WriteLine("TITULO: "+title+" ENTITYID: "+entityId);
+            Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new CloudinaryUpload.Query {Images = Files});
+             // Local storage version: 
+                //Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new ImageUpload.Query {Images = Images});
+            if (!imgCollectionResult.IsSuccess)  
+            {
+                return BadRequest("Ha ocurrido un problema subiendo los archivos, compruebe que los archivos estén en un formato de imagen válido.");
+            }
+            /*if (imgCollectionResult.Value.Count < 1)
+            {
+                return BadRequest("No se han enviado imágenes válidas");
+            }
+            */
+            return HandleResult(await Mediator.Send(new Create2.Command {NewImages = imgCollectionResult.Value, ReuseImages = Add, EntityId = Guid.Parse(entityId), Title = title, EntityType = entityType}));
+            
+            //return HandleResult(await Mediator.Send(new DeleteImage.Command{ImageId = Guid.Parse(imageId),GalleryId = Guid.Parse(galleryId)}));
         }
 
         [Authorize(Policy = "IsAdmin")]
@@ -42,13 +79,6 @@ namespace API.Controllers
             Request.Form.TryGetValue("title", out StringValues title);
             Request.Form.TryGetValue("entityType", out StringValues entityType);
             return HandleResult(await Mediator.Send(new RenameGallery.Command{GalleryId = Guid.Parse(galleryId), EntityId = Guid.Parse(entityId), Title = title, EntityType = entityType}));
-        }
-        
-        [Authorize(Policy = "IsAdmin")]
-        [HttpGet("{Id}")]
-        public async Task<IActionResult> getGallery(string Id)
-        {
-            return HandleResult(await Mediator.Send(new Details.Query{Id = Guid.Parse(Id)}));
         }
 
         [Authorize(Policy = "IsAdmin")]

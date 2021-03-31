@@ -66,7 +66,7 @@ export default observer(function EditGalleryImageZone({
         setLoading(false);
         setTargetGallery("");
         setTargetImage("");
-      })
+      });
     
   }
 
@@ -74,8 +74,10 @@ export default observer(function EditGalleryImageZone({
     if (!myData) return null;
     setLoading(true);
     await handleAddImages(myData,gallery.id);
-    setLoading(false);
-    setMyData([]);
+    runInAction(() => {
+      setLoading(false);
+      setMyData([]);
+    });
   };
 
   const onDrop = useCallback(
@@ -103,12 +105,17 @@ export default observer(function EditGalleryImageZone({
   const handlePrevOrder = async (image: ImageDto) => {
     setLoading(true);
     await handleImageOrder(image, gallery, -1);
-    setLoading(false);
+    runInAction(() => {
+      setLoading(false);
+    })
+    
   }
   const handleNextOrder = async (image: ImageDto) => {
     setLoading(true);
     await handleImageOrder(image, gallery, 1);
-    setLoading(false);
+    runInAction(() => {
+      setLoading(false);
+    })
   }
   
   //if (loading) return <LoadingComponent  content='Cargando colección...' />

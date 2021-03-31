@@ -190,6 +190,41 @@ export default class NoticiaStore {
       })
     }
   }
+  createGalleryNew = async (formData: FormData, galleryTitle: string, noticiaId: string) => {
+    this.loading = true;
+    var noticia = this.selectedNoticia;
+    if (noticia === undefined) return null;
+      try {
+        var newGalId = await agent.Galleries.create2(formData);
+        
+        runInAction(async () => {
+          let newGallery = await agent.Galleries.get(newGalId);
+          
+            runInAction(() => {
+              newGallery.noticiaId = noticiaId;
+              newGallery.title = galleryTitle;
+              
+
+              if (noticia!.galleries && noticia!.galleries.length > 0) {
+                newGallery.order = noticia!.galleries.length;
+                noticia!.galleries.push(newGallery);
+              } else {
+                newGallery.order = 0;
+                noticia!.galleries = [newGallery];
+              }
+              this.reOrderImages(noticia!.galleries.find(x => x.id === newGallery.id)!);
+              this.noticiasRegistry.set(noticia!.id, noticia as Noticia);
+              this.selectedNoticia = noticia;
+              this.loading = false;
+            });
+        })
+      } catch (error) {
+        console.log(error);
+        runInAction(() => {
+          this.loading = false;
+        });
+      }
+  }
   createGallery = async (myData: any[], noticia: Noticia, galleryId: string, galleryTitle: string) => {
     
     if (!noticia || !galleryId || !myData)

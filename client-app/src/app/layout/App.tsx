@@ -17,11 +17,11 @@ import { observer } from "mobx-react-lite";
 import RegisterForm from "../../features/users/RegisterForm"; 
 import NoticiaDetails from "../../features/noticias/details/NoticiaDetails";
 import NoticiaDashboard from "../../features/noticias/dashboard/NoticiaDashboard";
-import ImagesDropzone from "../../features/images/ImagesDropzone";
 import EventoEdit from "../../features/eventos/form/EventoEdit";
 import EventoCreate from "../../features/eventos/form/EventoCreate";
 import NoticiaCreate from "../../features/noticias/form/NoticiaCreate";
 import NoticiaEdit from "../../features/noticias/form/NoticiaEdit";
+import CreateGallery from "../../features/Galleries/CreateGallery";
 require('typeface-montserrat');
 
 export default observer(function App() {
@@ -70,7 +70,15 @@ export default observer(function App() {
                     path={"/crearEvento"}
                     component={EventoCreate}
                     />
-              }
+                }
+                
+                {user?.roles && user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ) &&
+                  <Route 
+                    key={location.key}
+                    path={"/adminGalerias"}
+                    component={CreateGallery}
+                    />
+                }
               {user?.roles && user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ) &&
                   <Route 
                     key={location.key}
@@ -91,7 +99,6 @@ export default observer(function App() {
                 <Route path='/server-error' component={ServerError} />
                 <Route path='/login' component={LoginForm} />
                 <Route path='/register' component={RegisterForm} />
-                <Route path='/crearColeccion' component={ImagesDropzone} />
                 <Route component={NotFound} />
               </Switch>
               
