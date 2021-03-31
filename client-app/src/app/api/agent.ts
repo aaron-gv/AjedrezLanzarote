@@ -105,8 +105,7 @@ const Images = {
 }
 const Galleries = {
     get: (id: string) => requests.get<Gallery>(`/gallery/${id}`),
-    create: (images: FormData, entityId: string, galleryId: string) => axios.post<void>(`/gallery/${entityId}/${galleryId}`, images).then(responseBody),
-    create2: (formData: FormData) => axios.post<string>(`/gallery/create2/`, formData).then(responseBody),
+    create: (formData: FormData) => axios.post<string>(`/gallery/create/`, formData).then(responseBody),
     delete: (galleryId: string, entityId: string, data: FormData) => axios.put(`/gallery/gallerydel/${galleryId}/${entityId}`, data).then(responseBody),
     deleteImage: (imageId: string, galleryId:string, data: FormData) => axios.put<void>(`/gallery/imagedel/${imageId}/${galleryId}`, data).then(responseBody),
     addImages: (images: FormData, galleryId: string) => axios.put<void>(`/gallery/addImages/${galleryId}`, images).then(responseBody),

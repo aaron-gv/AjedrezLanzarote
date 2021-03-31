@@ -28,7 +28,7 @@ export default class GalleryStore {
     createGallery = async (formData: FormData) => {
       this.loadingInitial = true;
       try {
-        await agent.Galleries.create2(formData);
+        await agent.Galleries.create(formData);
         runInAction(() => {
           this.loadingInitial = false;
         });

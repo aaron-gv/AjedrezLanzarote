@@ -40,29 +40,28 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new DeleteImage.Command{ImageId = Guid.Parse(imageId),GalleryId = Guid.Parse(galleryId)}));
         }
         [Authorize(Policy = "IsAdmin")]
-        [HttpPost("create2/")]
-        public async Task<IActionResult> create2(IFormCollection? Files, IFormCollection? Add)
+        [HttpPost("create/")]
+        public async Task<IActionResult> create(IFormCollection Files, IFormCollection Add)
         {
             var form = Request.HttpContext.Request.Form;
             form.TryGetValue("title", out StringValues title);
             form.TryGetValue("entityId", out StringValues entityId);
             form.TryGetValue("entityType", out StringValues entityType);
+            if (entityType != "Evento" || entityType != "Noticia")
+                BadRequest("Solicitud incorrecta");
+
             Console.WriteLine("TITULO: "+title+" ENTITYID: "+entityId);
             Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new CloudinaryUpload.Query {Images = Files});
-             // Local storage version: 
-                //Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new ImageUpload.Query {Images = Images});
             if (!imgCollectionResult.IsSuccess)  
             {
                 return BadRequest("Ha ocurrido un problema subiendo los archivos, compruebe que los archivos estén en un formato de imagen válido.");
             }
-            /*if (imgCollectionResult.Value.Count < 1)
+            if (imgCollectionResult.Value.Count < 1 && Add.Count < 1)
             {
                 return BadRequest("No se han enviado imágenes válidas");
             }
-            */
-            return HandleResult(await Mediator.Send(new Create2.Command {NewImages = imgCollectionResult.Value, ReuseImages = Add, EntityId = Guid.Parse(entityId), Title = title, EntityType = entityType}));
             
-            //return HandleResult(await Mediator.Send(new DeleteImage.Command{ImageId = Guid.Parse(imageId),GalleryId = Guid.Parse(galleryId)}));
+            return HandleResult(await Mediator.Send(new Create.Command {NewImages = imgCollectionResult.Value, ReuseImages = Add, EntityId = Guid.Parse(entityId), Title = title, EntityType = entityType}));
         }
 
         [Authorize(Policy = "IsAdmin")]
@@ -105,34 +104,6 @@ namespace API.Controllers
             Request.Form.TryGetValue("entityType", out StringValues entityType);
             //var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             return HandleResult(await Mediator.Send(new PromoteGallery.Command { EntityId = entityId, GalleryId = galleryId, EntityType = entityType }));
-        }
-
-        [Authorize(Policy = "IsAdmin")]
-        [HttpPost("{entityId}/{gallery}")]
-        public async Task<ActionResult> CreateGallery(IFormCollection Images, Guid entityId, Guid gallery)
-        {
-            Request.HttpContext.Request.Form.TryGetValue("collectionTitle",out Microsoft.Extensions.Primitives.StringValues titulo);
-            Request.HttpContext.Request.Form.TryGetValue("entityType", out StringValues entityType);
-            if (entityType != "Evento" || entityType != "Noticia")
-                BadRequest("Solicitud incorrecta");
-
-            //ActionResult<List<Domain.Image>> Result, Guid GalleryId
-            if (gallery == Guid.Parse("00000000-0000-0000-0000-000000000000")) 
-                return BadRequest("Solicitud incorrecta.");
-             // Cloudinary image management version
-                Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new CloudinaryUpload.Query {Images = Images});
-             // Local storage version: 
-                //Result<List<Domain.Image>> imgCollectionResult = await Mediator.Send(new ImageUpload.Query {Images = Images});
-            if (!imgCollectionResult.IsSuccess)  
-            {
-                return BadRequest("Ha ocurrido un problema subiendo los archivos, compruebe que los archivos estén en un formato de imagen válido.");
-            }
-            if (imgCollectionResult.Value.Count < 1)
-            {
-                return BadRequest("No se han enviado imágenes válidas");
-            }
-
-            return HandleResult(await Mediator.Send(new Create.Command {Images = imgCollectionResult.Value, GalleryId = gallery,EntityId = entityId, Title = titulo, EntityType = entityType}));
         }
 
         [Authorize(Policy = "IsAdmin")]

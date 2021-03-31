@@ -103,10 +103,10 @@ export default observer(function CreateGallery({entityId, entityType,switchOpenC
         myForm.append("entityType", entityType);
         if (entityType === "Evento")
         {
-            await eventoStore.createGalleryNew(myForm, values.title,entityId);
+            await eventoStore.createGallery(myForm, values.title,entityId);
         } else if (entityType === "Noticia") 
         {
-            await noticiaStore.createGalleryNew(myForm, values.title,entityId);
+            await noticiaStore.createGallery(myForm, values.title,entityId);
         }
         
         runInAction(() => {
@@ -229,7 +229,7 @@ export default observer(function CreateGallery({entityId, entityType,switchOpenC
                     }
                 </Segment>
                 </Segment>
-                {imagesToAdd.length > 0 &&
+                {(imagesToAdd.length > 0 || FormItems.length > 0) &&
                 <Button type='submit' floated='right' positive content={`Confirmar ${imagesToAdd.length+FormItems.length} imágenes`} />
                 }
                 </Form>

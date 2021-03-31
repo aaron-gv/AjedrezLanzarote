@@ -238,12 +238,12 @@ export default class EventoStore {
       
     }
   }
-  createGalleryNew = async (formData: FormData, galleryTitle: string, eventoId: string) => {
+  createGallery = async (formData: FormData, galleryTitle: string, eventoId: string) => {
     this.loading = true;
     var evento = this.selectedEvento;
     if (evento === undefined) return null;
       try {
-        var newGalId = await agent.Galleries.create2(formData);
+        var newGalId = await agent.Galleries.create(formData);
         
         runInAction(async () => {
           let newGallery = await agent.Galleries.get(newGalId);
@@ -273,50 +273,7 @@ export default class EventoStore {
         });
       }
   }
-  createGallery = async (myData: any[], evento: Evento, galleryId: string, galleryTitle: string) => {
-    
-    if (!evento || !galleryId || !myData)
-      throw new Error("Alguno de los parámetros es incorrecto.");
-    this.loading = true;
-    var myForm = new FormData();
-    myData.map((data) => 
-      myForm.append("Images", data)
-    );
-    
-    myForm.append("collectionTitle", galleryTitle); 
-    myForm.append("entityType", "Evento"); 
-    
-    try { 
-      await agent.Galleries.create(myForm,evento.id,galleryId);
-      
-      runInAction(async () => {
-        let newGallery = await agent.Galleries.get(galleryId);
-        
-          runInAction(() => {
-            newGallery.eventoId = evento.id;
-            newGallery.title = galleryTitle;
-            if (evento.galleries && evento.galleries.length > 0) {
-              newGallery.order = evento.galleries.length;
-              evento.galleries.push(newGallery);
-            } else {
-              newGallery.order = 0;
-              evento.galleries = [newGallery];
-            }
-            this.reOrderImages(evento.galleries.find(x => x.id === newGallery.id)!);
-            this.eventosRegistry.set(evento.id, evento as Evento);
-            this.selectedEvento = evento;
-            
-            this.loading = false;
-          });
-      })
-    } catch(error) {
-      console.log(error);
-      runInAction(() => {
-        this.loading = false;
-      })
-    }
-  }
-
+  
   addToGallery = async (myData: any[], evento: Evento, galleryId: string) => {
     
     if (!evento || !galleryId || !myData)

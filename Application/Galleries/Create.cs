@@ -15,22 +15,25 @@ using Persistence;
 using System.Drawing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 
 namespace Application.Galleries
 {
     public class Create
     {
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IRequest<Result<string>>
         {
-            public List<Domain.Image> Images { get; set; }
+            public List<Domain.Image> NewImages { get; set; }
+            public IFormCollection ReuseImages { get; set; }
             public string Title { get; set; }
             public string EntityType { get; set; }
-            public Guid GalleryId { get; set; }
             public Guid EntityId { get; set; }
+            public Guid? GalleryId { get; set; }
+            
         }
 
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<string>>
         {
             private readonly DataContext _context;
             private readonly IUserAccessor _userAccessor;
@@ -42,62 +45,69 @@ namespace Application.Galleries
                 _context = context;
 
             }
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var userId = _userAccessor.GetUserId();
-
+                var galleryId = Guid.NewGuid();
                 var Gallery = await _context.Galleries.FindAsync (request.GalleryId);    
                 if (Gallery == null)
                 {
                     //return Result<Unit>.Failure("La URL '"+(request.Evento.Url).Substring(0,20)+"' ya existe, y debe ser única. Por favor prueba otra diferente.");
-                    Gallery = new Gallery { Id = request.GalleryId, Title = request.Title, AppUserId = userId};
-                    _context.Galleries.Add(Gallery);
+                    Gallery = new Gallery { Id = galleryId, Title = request.Title, AppUserId = userId};
+                    Console.WriteLine("GAllery ID : " + Gallery.Id);
+                    await _context.Galleries.AddAsync(Gallery);
                 }
 
-                List<Domain.Image> images = request.Images;
+                List<Domain.Image> images = request.NewImages;
                 var orderCount = 0;
-                images.ForEach(image =>
-                {
-                    _context.Images.Add(image);
-                    //Console.WriteLine(image.Title+" - "+image.Filename+" - "+image.H+" - "+image.Id+" - "+image.Src+" - "+image.Thumbnail+" - "+image);
-                    //637508478995547212.png - 637508478995547212.png - 949 - 64def9b9-3d59-4f18-b54b-31900067d304 - /assets/galleryImages/637508478995547212.png - /assets/galleryImages/637508478995547212_thumb.png - 1600
-                    Console.WriteLine("------------------");
-                    Console.WriteLine(request.GalleryId+ " and "+ image.Id);
-                    Console.WriteLine("------------------");
-                    _context.GalleryImages.Add(new GalleryImage { GalleryId = request.GalleryId, ImageId = image.Id, Gallery = Gallery, Image = image, Order = orderCount, Title = "" });
+                foreach (var image in images) {
+                    await _context.Images.AddAsync(image);
+                    await _context.GalleryImages.AddAsync(new GalleryImage { GalleryId = galleryId, ImageId = image.Id, Gallery = Gallery, Image = image, Order = orderCount, Title = "" });
                     orderCount++;
-                });
+                }
+                
+                request.ReuseImages.TryGetValue("Add", out StringValues reuseImages);
+                foreach (var reuseImage in reuseImages)
+                {
+                    var image = await _context.Images.FindAsync(Guid.Parse(reuseImage));
+                    await _context.GalleryImages.AddAsync(new GalleryImage { GalleryId = galleryId, ImageId = image.Id, Gallery = Gallery, Image = image, Order = orderCount, Title = "" });
+                    orderCount++;
+                }
+        
                 var result = await _context.SaveChangesAsync() > 0;
+                if (!result)
+                    return Result<string>.Failure("Error Al crear Galerias o galleryimages");
+
                 if (result && request.EntityType == "Evento")
                 {
-                    
-                    var galleryEvento = _context.GalleryEventos.Where(x => x.EventoId == request.EntityId).OrderByDescending(x => x.Order);
+
+                    var galleryEvento = await _context.GalleryEventos.Where(x => x.EventoId == request.EntityId).OrderByDescending(x => x.Order).ToListAsync();
                     var order = 0;
                     if (galleryEvento.Count() > 0) {
-                        var lastItem = await galleryEvento.FirstAsync();
+                        var lastItem = galleryEvento.First();
                         order = lastItem.Order+1;
                     }
-                    
-                    _context.GalleryEventos.Add(new GalleryEvento { GalleryId = request.GalleryId, EventoId = request.EntityId, Title = request.Title, Order = order });
+                    await _context.GalleryEventos.AddAsync(new GalleryEvento { GalleryId = galleryId, EventoId = request.EntityId, Title = request.Title, Order = order });
+
                     
                 }
                 else if (result && request.EntityType == "Noticia")
                 {
-                    var galleryNoticia = _context.GalleryNoticias.Where(x => x.NoticiaId == request.EntityId).OrderByDescending(x => x.Order);
+                    var galleryNoticia = await _context.GalleryNoticias.Where(x => x.NoticiaId == request.EntityId).OrderByDescending(x => x.Order).ToListAsync();
                     var order = 0;
                     if (galleryNoticia.Count() > 0) {
-                        var lastItem = await galleryNoticia.FirstAsync();
+                        var lastItem = galleryNoticia.First();
                         order = lastItem.Order+1;
                     }
                     
-                    _context.GalleryNoticias.Add(new GalleryNoticia { GalleryId = request.GalleryId, NoticiaId = request.EntityId, Title = request.Title, Order = order });
+                    await _context.GalleryNoticias.AddAsync(new GalleryNoticia { GalleryId = galleryId, NoticiaId = request.EntityId , Title = request.Title, Order = order });
                 }
-                
                 result = await _context.SaveChangesAsync() > 0;
                 if (result)
-                    return Result<Unit>.Success(Unit.Value);
+                    return Result<string>.Success(galleryId.ToString());
                 else
-                    return Result<Unit>.Failure("Error Al crear entidades");
+                    return Result<string>.Failure("Error Al crear entidades");
+                
             }
 
         }
