@@ -87,10 +87,8 @@ namespace API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
             var roles = await _userManager.GetRolesAsync(user);
-
             return CreateUserObject(user, roles);
         }
-
         private UserDto CreateUserObject(AppUser user, IList<string> roles)
         { 
             return new UserDto {
@@ -101,6 +99,7 @@ namespace API.Controllers
                     Roles = roles
                 };
         }
+        
     }
     
 }

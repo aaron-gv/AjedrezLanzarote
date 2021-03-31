@@ -12,42 +12,54 @@ import {
   Label,
   Segment,
 } from "semantic-ui-react";
-import { Evento } from "../../../app/models/evento";
-import { Gallery } from "../../../app/models/gallery";
-import { useStore } from "../../../app/stores/store";
+import { Evento } from "../../app/models/evento";
+import { Gallery } from "../../app/models/gallery";
+import { useStore } from "../../app/stores/store";
 import { v4 as uuid } from "uuid";
 
 import GalleryModifyImageItem from "./GalleryModifyImageItem";
-import { ImageDto } from "../../../app/models/image";
+import { ImageDto } from "../../app/models/image";
+import { Noticia } from "../../app/models/noticia";
+import { FormikHelpers } from "formik";
 
 interface Props {
   gallery: Gallery;
-  evento: Evento;
+  entity: Evento | Noticia;
   loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  handleSetMain: (image: ImageDto) => Promise<void>,
+  handleRenameImage: (galleryId: string, imageId: string, title: string, actions: FormikHelpers<{comment: string;}>) => Promise<void>,
+  
+  entityPortraitId?: string,
 }
 
-export default observer(function EventoEditGalleryImageZone({
+export default observer(function EditGalleryImageZone({
   gallery,
-  evento,
+  entity,
   loading,
-  setLoading
+  setLoading,
+  handleSetMain,
+  handleRenameImage,
+  entityPortraitId
 }: Props) {
   const [popupStatus, setPopupStatus] = useState(false);
   const [targetImage, setTargetImage] = useState("");
   const [targetGallery, setTargetGallery] = useState("");
-  const { eventoStore } = useStore();
+  const { eventoStore, noticiaStore } = useStore();
   
   const [myData, setMyData] = useState<any[]>([]);
   const [hasItems, setHasItems] = useState(false);
   // responsive :
   //const { height, width } = useWindowDimensions();
-  const { addToGallery } = eventoStore;
 
   async function handleImageDelete() {
     setLoading(true);
     setPopupStatus(false);
-    await eventoStore.deleteImage(evento, targetImage, targetGallery);
+    if((entity instanceof Evento)){
+      await eventoStore.deleteImage(entity, targetImage, targetGallery);
+    } else if ((entity instanceof Noticia)) {
+      await noticiaStore.deleteImage(entity, targetImage, targetGallery);
+    }
     setLoading(false);
     setTargetGallery("");
     setTargetImage("");
@@ -57,7 +69,14 @@ export default observer(function EventoEditGalleryImageZone({
     if (!myData) return null;
 
     setLoading(true);
-    await addToGallery(myData, evento, gallery.id);
+    console.log("hola");
+    if((entity instanceof Evento)){
+      await eventoStore.addToGallery(myData, entity, gallery.id);
+      
+    } else if ((entity instanceof Noticia)) {
+      await noticiaStore.addToGallery(myData, entity, gallery.id);
+      
+    }
     setLoading(false);
     setMyData([]);
     setMyData([]);
@@ -77,6 +96,7 @@ export default observer(function EventoEditGalleryImageZone({
     
   }
 */
+
   const onDrop = useCallback(
     (acceptedFiles) => {
       const formData = myData;
@@ -102,22 +122,30 @@ export default observer(function EventoEditGalleryImageZone({
   const handlePrevOrder = async (image: ImageDto, galleryId: string) => {
       
     setLoading(true);
-    await eventoStore.changeImageOrder(eventoStore.selectedEvento as Evento, galleryId, image.id, image.order-1, gallery)
+    if((entity instanceof Evento)){
+      await eventoStore.changeImageOrder(eventoStore.selectedEvento as Evento, galleryId, image.id, image.order-1, gallery);
+    } else if ((entity instanceof Noticia)) {
+      await noticiaStore.changeImageOrder(noticiaStore.selectedNoticia as Noticia, galleryId, image.id, image.order-1, gallery);
+    }
     setLoading(false);
   }
   const handleNextOrder = async (image: ImageDto, galleryId: string) => {
     
     setLoading(true);
-    await eventoStore.changeImageOrder(eventoStore.selectedEvento as Evento,galleryId, image.id, image.order+1, gallery)
+    if((entity instanceof Evento)){
+    await eventoStore.changeImageOrder(eventoStore.selectedEvento as Evento,galleryId, image.id, image.order+1, gallery);
+  } else if ((entity instanceof Noticia)) {
+    await noticiaStore.changeImageOrder(noticiaStore.selectedNoticia as Noticia,galleryId, image.id, image.order+1, gallery);
+  }
     setLoading(false);
   }
   
   //if (loading) return <LoadingComponent  content='Cargando colección...' />
 
   if (
-    !eventoStore ||
-    !eventoStore.selectedEvento ||
-    !eventoStore.selectedEvento.galleries ||
+    (!eventoStore && !noticiaStore) ||
+    (!eventoStore.selectedEvento && !noticiaStore.selectedNoticia) ||
+    (!eventoStore.selectedEvento?.galleries && !noticiaStore.selectedNoticia?.galleries) ||
     !gallery ||
     !gallery.id
   )
@@ -194,7 +222,7 @@ export default observer(function EventoEditGalleryImageZone({
          
                 gallery.images.map((image, key) => (
                   <Grid.Column key={image.id} >
-                    <GalleryModifyImageItem image={image} gallery={gallery} setTargetGallery={setTargetGallery} setTargetImage={setTargetImage} setPopupStatus={setPopupStatus} setLoading={setLoading} handlePrevOrder={handlePrevOrder} handleNextOrder={handleNextOrder} first={key===0 ? true : false} last={gallery.images.length===key+1 ? true : false} />
+                    <GalleryModifyImageItem handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={entity} image={image} gallery={gallery} setTargetGallery={setTargetGallery} setTargetImage={setTargetImage} setPopupStatus={setPopupStatus} setLoading={setLoading} handlePrevOrder={handlePrevOrder} handleNextOrder={handleNextOrder} first={key===0 ? true : false} last={gallery.images.length===key+1 ? true : false} />
                   </Grid.Column>
                 ))
               }

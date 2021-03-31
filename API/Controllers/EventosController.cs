@@ -122,27 +122,5 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new Cancel.Command { Url = url }));
         }
-        [Authorize(Policy = "IsAdmin")]
-        [HttpPut("setmainimage/{eventoId}/{imageId}")]
-        public async Task<ActionResult> setMainImage(Guid eventoId, Guid imageId)
-        {
-
-            //var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            return HandleResult(await Mediator.Send(new SetMainImage.Command { EventoId = eventoId, ImageId = imageId }));
-        }
-        [Authorize(Policy = "IsAdmin")]
-        [HttpPut("changegalleryvisibility/{eventoId}/{galleryId}")]
-        public async Task<ActionResult> ChangeGalleryVisibility(Guid eventoId, Guid galleryId)
-        {
-            //var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            return HandleResult(await Mediator.Send(new ChangeGalleryVisibility.Command { EventoId = eventoId, GalleryId = galleryId }));
-        }
-        [Authorize(Policy = "IsAdmin")]
-        [HttpPut("promotegallery/{eventoId}/{galleryId}")]
-        public async Task<ActionResult> promoteGallery(Guid eventoId, Guid galleryId)
-        {
-            //var Ip = HttpContext.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            return HandleResult(await Mediator.Send(new PromoteGallery.Command { EventoId = eventoId, GalleryId = galleryId }));
-        }
     }
 }

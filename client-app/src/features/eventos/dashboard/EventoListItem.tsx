@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button,  Item, Label, Segment } from "semantic-ui-react";
 import { Evento } from "../../../app/models/evento";
@@ -21,9 +21,11 @@ export default observer(function EventoListItem({
   evento,
   
 }: Props) {
+  const [hasInnerImages, setHasInnerImages] = useState(false);
   var customImageDecorator = (
     decoratedURL: string
     ): ReactNode => {
+      setHasInnerImages(true);
     return (
       <div style={{float:'left',margin:3,marginLeft:20}}>
         <a href={`/eventos/${evento.url}`}>
@@ -93,7 +95,7 @@ export default observer(function EventoListItem({
         </Item.Group>
       </Segment>
       <Segment style={{whiteSpace: 'pre-line',maxHeight:'250px',overflow:'hidden'}}>
-       {evento.description.length>300 && <Link color='blue' to={`/eventos/${evento.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link>}
+       {(evento.description.length>300 || hasInnerImages) && <Link color='blue' to={`/eventos/${evento.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link>}
         <ReactTextFormat
           allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
           imageDecorator={customImageDecorator}

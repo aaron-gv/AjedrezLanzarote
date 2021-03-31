@@ -13,7 +13,7 @@ export default observer(function NoticiaDetailedInfo({noticia}: Props) {
         decoratedURL: string
         ): ReactNode => {
         return (
-            <div style={{float:'left',margin:2}}>
+            <div style={{float:'left',margin:2, width:'100%'}}>
             <a href={decoratedURL} rel="noreferrer" target="_blank">
             <Image src={decoratedURL}  rel='noopener' style={{maxWidth:'300px',maxHeight:'200px'}} className='customImage' />
             </a>

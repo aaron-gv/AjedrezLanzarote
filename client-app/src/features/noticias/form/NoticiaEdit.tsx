@@ -1,71 +1,60 @@
-import { FormikHelpers, FormikState } from "formik";
 import { observer } from "mobx-react-lite";
 import  React ,{ useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {  Confirm,    Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
-import {  Evento, EventoFormValues } from "../../../app/models/evento";
+import {  Noticia, NoticiaFormValues } from "../../../app/models/noticia";
 import { Gallery } from "../../../app/models/gallery";
-import { ImageDto } from "../../../app/models/image";
 import { useStore } from "../../../app/stores/store";
 import EntityEditGallery from "../../Galleries/EntityEditGallery";
 import ImagesDropzone from "../../images/ImagesDropzone";
-import EventoForm from "./EventoForm";
+import NoticiaForm from "./NoticiaForm";
+import { ImageDto } from "../../../app/models/image";
+import { FormikHelpers, FormikState } from "formik";
+import { toast } from "react-toastify";
+
  
-export default observer(function EventoEdit() {
+export default observer(function NoticiaEdit() {
   const { url } = useParams<{ url: string }>();
-  const { eventoStore } = useStore();
+  const { noticiaStore } = useStore();
   const [popupStatusFather, setPopupStatusFather] = useState(false);
   const [targetGallery, setTargetGallery] = useState('');
   const [loadingComponent, setLoadingComponent] = useState(false);
-  const [eventoForm, setEventoForm] = useState<EventoFormValues>(
-    new EventoFormValues()
+  const [noticiaForm, setNoticiaForm] = useState<NoticiaFormValues>(
+    new NoticiaFormValues()
   );
-  const { loadEventoByUrl, loadingInitial, selectedEvento: evento,  promoteGallery, createGallery, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = eventoStore;
+  const { loadNoticiaByUrl, loadingInitial,selectedNoticia: noticia, promoteGallery, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = noticiaStore;
   
-
-  useEffect(() => {
-    if (url) {
-      loadEventoByUrl(url).then((evento) => {
-        setEventoForm(new EventoFormValues(evento));
-        
-      });
-    }
-  }, [url, loadEventoByUrl]);
-
   async function handleGalleryCreate(myData: any[], title: string, galleryId: string) {
     if (!myData)
       return null;
-    setLoadingComponent(true);
-      await createGallery(myData, evento as Evento, galleryId, title);
-    setLoadingComponent(false);
-  }
-  
+    await noticiaStore.createGallery(myData, noticia as Noticia, galleryId, title);
+}
   async function handleGalleryDelete() 
     {
       setLoadingComponent(true);
       setPopupStatusFather(false);
         if (targetGallery !== '')
-          await eventoStore.deleteGallery(evento as Evento,targetGallery);
+          await noticiaStore.deleteGallery(noticia as Noticia,targetGallery);
           setLoadingComponent(false);
         
         setTargetGallery('');
     }
     const handlePromoteGallery = async (gallery:Gallery) => {
       setLoadingComponent(true);
-      await promoteGallery(gallery, evento as Evento);
+      await promoteGallery(gallery, noticia as Noticia);
       
       setLoadingComponent(false);
     }
     async function handleSetMain(image: ImageDto) {
+      
       setLoadingComponent(true);
-        await setMainImage(image, eventoStore.selectedEvento!.id, image.id, image.src);
+      await setMainImage(image, noticia!.id, image.id, image.src);
       setLoadingComponent(false);
     }
     async function handleRenameGallery(galleryId: string, title: string) {
       setLoadingComponent(true);
-      await renameGallery(evento!.id,galleryId,title);
+      await renameGallery(noticia!.id,galleryId,title);
       setLoadingComponent(false);
     }
     async function handleRenameImage(galleryId:string, imageId:string,title:string, actions: FormikHelpers<{ comment: string }>)  {
@@ -81,12 +70,19 @@ export default observer(function EventoEdit() {
     const handleChangeGalleryVisibility = async (gallery: Gallery) => {
       setLoadingComponent(true);
       
-        await changeGalleryVisibility(evento!.id, gallery.id, gallery);
+        await changeGalleryVisibility(noticia!.id, gallery.id, gallery);
       
         //await changeGalleryVisibilityNoticia(entity!.id, galleryId, gallery);  
       
       setLoadingComponent(false);
     }
+  useEffect(() => {
+    if (url) {
+        loadNoticiaByUrl(url).then((noticia) => {
+            setNoticiaForm(new NoticiaFormValues(noticia));
+      });
+    }
+  }, [url, loadNoticiaByUrl]);
   /*
     if (!user?.roles && !user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ))
     {
@@ -94,19 +90,19 @@ export default observer(function EventoEdit() {
     }
   */
   
-  if (loadingInitial || !evento ) return <LoadingComponent content='Cargando...' />;
+  if (loadingInitial || !noticia ) return <LoadingComponent content='Cargando...' />;
 
   return (
     <> 
-      <EventoForm evento={eventoForm} />
-      {evento.id && 
+      <NoticiaForm noticia={noticiaForm} />
+      {noticia.id && 
       <Segment>
-          <ImagesDropzone galleryId={''} entity={evento} handleGalleryCreate={handleGalleryCreate} />
+          <ImagesDropzone galleryId={''} entity={noticia} handleGalleryCreate={handleGalleryCreate} />
       </Segment>
       } 
-      {evento.galleries &&
-        evento.galleries.map(gallery => (
-          <EntityEditGallery handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={evento.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
+      {noticia.galleries &&
+        noticia.galleries.map(gallery => (
+          <EntityEditGallery handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={noticia.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={noticia} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
         ))}
        <Confirm
                 open={popupStatusFather}

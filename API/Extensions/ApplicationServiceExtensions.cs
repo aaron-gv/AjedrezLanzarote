@@ -34,7 +34,8 @@ namespace API.Extensions
             services.AddMediatR(typeof(Application.Eventos.ListAll.Handler).Assembly);
             //services.AddMediatR(typeof(Infrastructure.Images.ImageUpload.Handler).Assembly);
             services.AddMediatR(typeof(Infrastructure.Images.CloudinaryUpload.Handler).Assembly);
-            services.AddMediatR(typeof(Application.Noticias.List.Handler).Assembly);
+            services.AddMediatR(typeof(Application.Noticias.ListPublic.Handler).Assembly);
+            services.AddMediatR(typeof(Application.Noticias.ListAll.Handler).Assembly);
             services.AddMediatR(typeof(Application.Eventos.ListPublic.Handler).Assembly);
             services.AddMediatR(typeof(Application.Patrocinadores.List.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);

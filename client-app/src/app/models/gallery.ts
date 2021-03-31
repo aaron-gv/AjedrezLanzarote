@@ -5,7 +5,8 @@ export interface Gallery {
     images: ImageDto[],
     title: string,
     public: boolean,
-    eventoId: string,
+    eventoId?: string,
+    noticiaId?:string,
     order: number,
 }
 

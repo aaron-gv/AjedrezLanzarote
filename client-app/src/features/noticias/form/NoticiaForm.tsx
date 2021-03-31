@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import React from "react";
+import { Link, useHistory } from "react-router-dom";
 import { Button, Header, Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
@@ -10,22 +10,22 @@ import * as Yup from 'yup';
 import MyTextInput from "../../../app/common/form/MyTextInput";
 import MyTextArea from "../../../app/common/form/MyTextArea";
 import MyDateInput from "../../../app/common/form/MyDateInput";
-import { Noticia } from "../../../app/models/noticia";
+import {  NoticiaFormValues } from "../../../app/models/noticia";
 import ValidationErrors from "../../errors/ValidationErrors";
 
-export default observer(function NoticiaForm() {
+interface Props {
+  noticia: NoticiaFormValues;
+}
+
+export default observer(function NoticiaForm({noticia} : Props) {
   const history = useHistory();
   const { noticiaStore } = useStore();
   const {
-    loadNoticiaByUrl,
     loadingInitial,
-    setLoadingInitial,
     createNoticia,
     updateNoticia
   } = noticiaStore;
-  const { url } = useParams<{ url: string }>();
 
-  const [noticia, setNoticia] = useState<Noticia>(new Noticia());
 
   const validationSchema = Yup.object({
     title: Yup.string().required('El título de la noticia es obligatorio'),
@@ -34,21 +34,16 @@ export default observer(function NoticiaForm() {
     date: Yup.string().required('La fecha de la noticia es obligatorio').nullable(),
   })
 
-  useEffect(() => {
-    if (url) {
-      loadNoticiaByUrl(url).then((noticia) => setNoticia(new Noticia(noticia)));
-    } else {
-      setLoadingInitial(false);
-    }
-  }, [url, loadNoticiaByUrl, setLoadingInitial]);
 
-  function handleFormSubmit(noticia: Noticia, actions: FormikHelpers<{
-    error: any;
-    id: string;
-    title: string;
+
+  function handleFormSubmit(noticia: NoticiaFormValues, actions: FormikHelpers<{
+    error: null;
+    id?: string | undefined;
     url: string;
-    date: Date;
+    title: string;
     body: string;
+    date: Date | null;
+    appUserId: string;
 }>
 ) {
     if (!noticia.id) {
@@ -80,7 +75,7 @@ export default observer(function NoticiaForm() {
   return (
     <Segment clearing>
       <Header content='Detalles la Noticia' sub color='teal' />
-      <Formik validationSchema={validationSchema} enableReinitialize initialValues={{...noticia, error: null}} onSubmit={(values, actions) => handleFormSubmit(values, actions)}>
+      <Formik validationSchema={validationSchema} enableReinitialize initialValues={{...noticia, error: null}} onSubmit={(values, actions) => handleFormSubmit(values as NoticiaFormValues, actions)}>
         {({ handleSubmit, isValid, dirty, isSubmitting, errors }) => (
           <Form className='ui form error'  onSubmit={handleSubmit} autoComplete='off'>
             <ErrorMessage

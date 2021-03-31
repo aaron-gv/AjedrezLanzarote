@@ -44,6 +44,7 @@ namespace Application.Noticias
                 }
                 var noticia = await _context.Noticias.FindAsync(request.Noticia.Id);
                 _mapper.Map(request.Noticia, noticia);
+                
                 var result = await _context.SaveChangesAsync() > 0;
                 if (!result) return Result<Unit>.Failure("Fallo al editar noticia");
 

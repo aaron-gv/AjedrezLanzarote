@@ -8,5 +8,8 @@ namespace Domain
         public Gallery Gallery { get; set; }
         public Guid NoticiaId { get; set; }
         public Noticia Noticia { get; set; }
+        public string Title { get; set; }
+        public Boolean Public { get; set; }
+        public int Order { get; set; }
     }
 }

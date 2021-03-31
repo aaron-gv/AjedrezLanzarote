@@ -1,31 +1,34 @@
-import { Form, Formik, FormikHelpers, FormikState } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import React from 'react'
 import { Card, Icon, Image, Label } from 'semantic-ui-react';
-import { Gallery } from '../../../app/models/gallery';
-import { ImageDto } from '../../../app/models/image';
-import { useStore } from '../../../app/stores/store';
-import { toast } from "react-toastify";
-import MyTextInput from '../../../app/common/form/MyTextInput';
+import { Gallery } from '../../app/models/gallery';
+import { ImageDto } from '../../app/models/image';
+import MyTextInput from '../../app/common/form/MyTextInput';
 import { observer } from 'mobx-react-lite';
+import { Evento } from '../../app/models/evento';
+import { Noticia } from '../../app/models/noticia';
 
 
 interface Props {
     image : ImageDto,
     gallery: Gallery,
+    entity: Evento | Noticia;
     setTargetImage: (value: React.SetStateAction<string>) => void,
     setTargetGallery:  (value: React.SetStateAction<string>) => void,
     setPopupStatus: (value: React.SetStateAction<boolean>) => void,
     setLoading: (value: React.SetStateAction<boolean>) => void,
     handlePrevOrder: (image: ImageDto, galleryId: string) => Promise<void>,
     handleNextOrder: (image: ImageDto, galleryId: string) => Promise<void>,
+    entityPortraitId?: string,
     last: boolean,
-    first: boolean
+    first: boolean,
+    handleSetMain: (image: ImageDto) => Promise<void>,
+    handleRenameImage: (galleryId: string, imageId: string, title: string, actions: FormikHelpers<{comment: string;}>) => Promise<void>
 }
 
 
 
-export default observer(function GalleryModifyImageItem({image, last, first, gallery, setTargetGallery, setTargetImage, setPopupStatus, setLoading, handleNextOrder, handlePrevOrder} : Props) {
-    const {eventoStore} = useStore();
+export default observer(function GalleryModifyImageItem({handleRenameImage,  entityPortraitId, handleSetMain, entity, image, last, first, gallery, setTargetGallery, setTargetImage, setPopupStatus, setLoading, handleNextOrder, handlePrevOrder} : Props) {
     /*const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
       // "type" is required. It is used by the "accept" specification of drop targets.
       type: 'CARD',
@@ -37,29 +40,8 @@ export default observer(function GalleryModifyImageItem({image, last, first, gal
     }))
     */
     
-    async function handleSetMain(image: ImageDto) {
-      console.log(image.id);
-      console.log(eventoStore.selectedEvento!.id);
-      setLoading(true);
-      await eventoStore.setMainImage(image, eventoStore.selectedEvento!.id, image.id, image.src);
-      setLoading(false);
-    }
-
-    async function handleRenameImage (
-        imageId: string,
-        title: string,
-        actions: FormikHelpers<{ comment: string }>
-      ) {
-        setLoading(true);
-        await eventoStore.renameImage(gallery.id, imageId, title).then(() => {
-          toast.success("Ok");
-          actions.resetForm({
-            comment: "KAKAKA",
-          } as Partial<FormikState<{ comment: string }>>);
-        });
     
-        setLoading(false);
-      }
+
     return (
         <Card style={{ height: "170px", verticalAlign: "middle" }} draggable={true}  >
                   <Card.Header
@@ -105,6 +87,7 @@ export default observer(function GalleryModifyImageItem({image, last, first, gal
                       }}
                       onSubmit={async (values, actions) => {
                         await handleRenameImage(
+                          gallery.id,
                           image.id,
                           values.comment,
                           actions
@@ -135,7 +118,10 @@ export default observer(function GalleryModifyImageItem({image, last, first, gal
                       
                       {!last && <Icon name="arrow right" style={{position:'relative',float:'right',cursor:'pointer',marginTop:'5px'}} onClick={() => handleNextOrder(image,gallery.id)} />}
                     </div>
-                    {eventoStore.selectedEvento?.portrait?.id !== image.id && <Label content='Portada' size='mini' style={{display:'flex',position:'absolute',bottom:'2px', left:'30%', cursor:'pointer'}} onClick={() => handleSetMain(image)} />}
+                    {
+                      entityPortraitId !== image.id && 
+                        <Label content='Portada' size='mini' style={{display:'flex',position:'absolute',bottom:'2px', left:'30%', cursor:'pointer'}} onClick={() => handleSetMain(image)} />
+                    }
                   </Card.Content>
                 </Card>
     )

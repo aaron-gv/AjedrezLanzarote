@@ -17,10 +17,11 @@ import { observer } from "mobx-react-lite";
 import RegisterForm from "../../features/users/RegisterForm"; 
 import NoticiaDetails from "../../features/noticias/details/NoticiaDetails";
 import NoticiaDashboard from "../../features/noticias/dashboard/NoticiaDashboard";
-import NoticiaForm from "../../features/noticias/form/NoticiaForm";
 import ImagesDropzone from "../../features/images/ImagesDropzone";
 import EventoEdit from "../../features/eventos/form/EventoEdit";
 import EventoCreate from "../../features/eventos/form/EventoCreate";
+import NoticiaCreate from "../../features/noticias/form/NoticiaCreate";
+import NoticiaEdit from "../../features/noticias/form/NoticiaEdit";
 require('typeface-montserrat');
 
 export default observer(function App() {
@@ -73,10 +74,17 @@ export default observer(function App() {
               {user?.roles && user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ) &&
                   <Route 
                     key={location.key}
-                    path={["/crearNoticia", "/editarNoticia/:url"]}
-                    component={NoticiaForm}
+                    path={["/crearNoticia"]}
+                    component={NoticiaCreate}
                   /> 
-            }
+              }
+              {user?.roles && user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ) &&
+                  <Route 
+                    key={location.key}
+                    path={[ "/editarNoticia/:url"]}
+                    component={NoticiaEdit}
+                  /> 
+              }
                 <Route path='/eventos/:url' component={EventoDetails} />
                 <Route path='/noticias/:url' component={NoticiaDetails} />
                 <Route path='/errors' component={TestErrors} />

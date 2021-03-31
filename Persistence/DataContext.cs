@@ -20,6 +20,7 @@ namespace Persistence
         public DbSet<Image> Images {get; set;}
         public DbSet<Gallery> Galleries {get; set;}
         public DbSet<GalleryEvento> GalleryEventos {get; set;}
+        public DbSet<GalleryNoticia> GalleryNoticias {get; set;}
         public DbSet<GalleryImage> GalleryImages {get; set;}
         public DbSet<EventoAsistente> EventoAsistentes {get; set;}
 
@@ -81,6 +82,11 @@ namespace Persistence
             .WithMany()
             .HasForeignKey(p => p.ImageId).HasForeignKey(p => p.ImageId).OnDelete(DeleteBehavior.SetNull);
 
+            builder.Entity<Noticia>()
+            .HasOne(p => p.Image)
+            .WithMany()
+            .HasForeignKey(p => p.ImageId).HasForeignKey(p => p.ImageId).OnDelete(DeleteBehavior.SetNull);
+
             builder.Entity<Gallery>()
             .HasOne(p => p.AppUser)
             .WithMany(b => b.Galleries)
@@ -91,15 +97,6 @@ namespace Persistence
             .WithMany(b => b.Images)
             .HasForeignKey(p => p.AppUserId).IsRequired();
 
-
-            /* builder.Entity<Gallery>()
-            .HasMany(i => i.Images)
-            .WithMany(i => i.Galleries)
-            .UsingEntity<GalleryImage>(
-                j => j.HasOne(gi => gi.Image).WithMany(g => g.GalleryImages).HasForeignKey(gi => gi.ImageId), 
-                j => j.HasOne(gi => gi.Gallery).WithMany(i => i.GalleryImages).HasForeignKey(gi => gi.GalleryId),
-                j => j.HasKey(g => new {g.ImageId, g.GalleryId})
-            ); */
 
 
 

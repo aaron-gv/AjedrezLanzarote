@@ -2,16 +2,16 @@ import { Formik, FormikHelpers } from 'formik';
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
 import { Button, Dimmer, Form, Grid, Icon, Loader, Segment } from 'semantic-ui-react';
-import MyTextInput from '../../../app/common/form/MyTextInput';
-import { Evento } from '../../../app/models/evento';
-import { Gallery } from '../../../app/models/gallery';
-import { ImageDto } from '../../../app/models/image';
-import { useStore } from '../../../app/stores/store';
-import EditGalleryImageZone from '../../Galleries/EditGalleryImageZone';
+import MyTextInput from '../../app/common/form/MyTextInput';
+import { Evento } from '../../app/models/evento';
+import { Gallery } from '../../app/models/gallery';
+import { ImageDto } from '../../app/models/image';
+import { Noticia } from '../../app/models/noticia';
+import EventoEditGalleryImageZone from './EditGalleryImageZone';
 
 interface Props {
     setTargetGallery: (value: React.SetStateAction<string>) => void,
-    evento: Evento,
+    entity: Evento | Noticia,
     gallery: Gallery,
     targetGallery: string,
     loadingComponent: boolean,
@@ -19,35 +19,18 @@ interface Props {
     handlePromoteGallery: (gallery: Gallery) => Promise<void>
     handleRenameImage: (galleryId: string, imageId: string, title: string, actions: FormikHelpers<{comment: string;}>) => Promise<void>,
     entityPortraitId?: string,
+    handleSetMain: (image: ImageDto) => Promise<void>
+    handleRenameGallery: (galleryId: string, title: string) => Promise<void>,
+    handleChangeGalleryVisibility: (gallery: Gallery) => Promise<void>
 }
 
 
-export default observer(function EventoEditGallery({handleRenameImage, entityPortraitId, setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
-    const [loading, setLoading] = useState(false);
-    const {eventoStore} = useStore();
-    const {renameGallery,changeGalleryVisibility} = eventoStore;
-    async function handleFormSubmit(galleryId:string, values: any, actions: FormikHelpers<{title: string;}>
-        ) {
-            setTargetGallery(galleryId);
-            setLoading(true);
-            await renameGallery(evento!.id, galleryId, values.title);
-            setLoading(false);
-            setTargetGallery('');
-            actions.resetForm();
-          }
+export default observer(function EventoEditGallery({handleChangeGalleryVisibility, handleRenameGallery, handleSetMain, handleRenameImage, entityPortraitId, setTargetGallery, entity, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
 
-    const handleChangeGalleryVisibility = async (galleryId: string) => {
-      setLoading(true);
-      await changeGalleryVisibility(evento.id, galleryId, gallery);
-      setLoading(false);
-    }
-    async function handleSetMain(image: ImageDto) {
-      setLoading(true);
-        await eventoStore.setMainImage(image, eventoStore.selectedEvento!.id, image.id, image.src);
-      setLoading(false);
-    }
-
-    console.log(gallery);
+  const [loading, setLoading] = useState(false);
+   
+    
+  
     return (
         <Segment key={gallery.id} clearing >
             {(loading || loadingComponent)  && targetGallery===gallery.id &&
@@ -62,7 +45,7 @@ export default observer(function EventoEditGallery({handleRenameImage, entityPor
                   title: gallery.title ? gallery.title : ""}}
                 enableReinitialize
                 onSubmit={async (values, actions) => {
-                  await handleFormSubmit(gallery.id, values, actions);
+                  await handleRenameGallery(gallery.id, values.title);
                 }}
               >{({dirty, handleSubmit}) => (
               <Form className='ui form' onSubmit={handleSubmit} >
@@ -74,7 +57,7 @@ export default observer(function EventoEditGallery({handleRenameImage, entityPor
                         style={{cursor:'pointer'}}
                         onClick={() => handlePromoteGallery(gallery)}
                         />
-                      }
+                      } {gallery.order}
                     </Grid.Column>
                     <Grid.Column width={7} style={{paddingRight:'0px'}}>
                       <MyTextInput
@@ -101,7 +84,7 @@ export default observer(function EventoEditGallery({handleRenameImage, entityPor
                         size='large'
                         type='button'
                         onClick={() => {
-                          handleChangeGalleryVisibility(gallery.id); 
+                          handleChangeGalleryVisibility(gallery); 
                         }} /> 
                       
                     </Grid.Column>
@@ -122,8 +105,8 @@ export default observer(function EventoEditGallery({handleRenameImage, entityPor
                 </Form>
               )}
               </Formik>
-            </div> 
-              <EditGalleryImageZone handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={new Evento(evento)} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
+            </div>
+              <EventoEditGalleryImageZone handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={entity} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
           </Segment>
     )
 })

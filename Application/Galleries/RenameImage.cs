@@ -13,14 +13,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Galleries
 {
-    public class RenameEventoGallery
+    public class RenameImage
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid EventoId { get; set; }
             public Guid GalleryId { get; set; }
+            public Guid ImageId { get; set; }
             public string Title { get; set; }
-
         }
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
@@ -40,14 +39,18 @@ namespace Application.Galleries
                 
                 
                 //if (evento == null) return null;
-                var galleryEvento = await _context.GalleryEventos.FindAsync(request.GalleryId, request.EventoId);
-                if (galleryEvento == null)
+                var GalleryImage = await _context.GalleryImages.FindAsync(request.GalleryId, request.ImageId);
+                if (GalleryImage == null)
                     return Result<Unit>.Failure("El evento o la galería no existen");
-                galleryEvento.Title = request.Title;
+
+                Console.WriteLine("///////////////////////");
+                Console.WriteLine(request.Title);
+ 
+                GalleryImage.Title = request.Title;
                 var result = await _context.SaveChangesAsync() > 0;
                 if (!result)
                 {
-                    return Result<Unit>.Failure("No ha habido cambios");
+                    return Result<Unit>.Failure("Fallo al editar descripcion de imagen");
                 }
                 else
                 {

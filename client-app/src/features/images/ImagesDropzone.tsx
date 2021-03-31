@@ -2,22 +2,24 @@ import { observer } from 'mobx-react-lite';
 import  React, { useCallback, useState } from 'react'
 import {useDropzone} from 'react-dropzone'
 import { Button,  Dimmer,  Divider, Grid, Image, Input, Label,  Loader,  Segment } from 'semantic-ui-react';
-import { useStore } from '../../app/stores/store';
 import { v4 as uuid } from "uuid";
 import { Evento } from '../../app/models/evento';
+import { Noticia } from '../../app/models/noticia';
 
 interface Props {
-  evento: Evento;
+  entity: Evento | Noticia;
   galleryId: string;
+  handleGalleryCreate: (myData: any[], title: string, galleryId: string) => Promise<null | undefined>
 }
-export default observer(function ImagesDropzone({evento, galleryId} : Props) {
+export default observer(function ImagesDropzone({entity, galleryId, handleGalleryCreate} : Props) {
     const [myData, setMyData] = useState<any[]>([]);
-    const [items, setItems] = useState([]);
+    
     const [newGalleryTitle, setNewGalleryTitle] = useState('');
     const [inputElement, setInputElement] = useState<EventTarget & HTMLInputElement>();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasItems, setHasItems] = useState(false);
-    const {eventoStore: {createGallery}} = useStore();
+    
+
     const onDrop = useCallback(acceptedFiles => {
         const formData = myData;
         acceptedFiles.map((file: any) => {
@@ -38,25 +40,23 @@ export default observer(function ImagesDropzone({evento, galleryId} : Props) {
           if (!myData)
             return null;
           setIsSubmitting(true);
-          let title = newGalleryTitle;
-          console.log(title);
-          await createGallery(myData, evento, galleryId, title); 
+          await handleGalleryCreate(myData, newGalleryTitle,galleryId);
+          
           if (inputElement)
             inputElement.value='';
+
+          setNewGalleryTitle("");
           setIsSubmitting(false);
           setMyData([]);
-          setItems([]);
-          
-          
       }
       function handleChange(event : React.ChangeEvent<HTMLInputElement>) {
         setNewGalleryTitle(event.currentTarget.value);
         setInputElement(event.currentTarget);
       }
     
-      if (!evento.id) return null;
+      if (!entity.id) return null;
       return (
-        <Segment clearing key={evento.id}>
+        <Segment clearing key={entity.id}>
           {isSubmitting && 
             <Dimmer active inverted>
             <Loader>Subiendo archivos ...</Loader>
@@ -67,9 +67,9 @@ export default observer(function ImagesDropzone({evento, galleryId} : Props) {
           <input {...getInputProps()} />
           {
             isDragActive ?
-                items.length < 1 ?
+                myData.length < 1 ?
               <p>Suelta los archivos ahora para subirlos ...</p> : <p>Puede añadir más archivos, o crear la colección actual</p> :
-              items.length < 1 ? <p>Para crear una colección nueva, arrastra las imágenes hasta aqui, o pincha en ésta caja</p>: <><p>Puede añadir más archivos, o crear la colección actual</p></> 
+              myData.length < 1 ? <p>Para crear una colección nueva, arrastra las imágenes hasta aqui, o pincha en ésta caja</p>: <><p>Puede añadir más archivos, o crear la colección actual</p></> 
           }
           {myData.length < 1 && 
             
@@ -94,7 +94,7 @@ export default observer(function ImagesDropzone({evento, galleryId} : Props) {
                 </Grid.Column> 
                 
             </Grid>
-        } {items &&
+        } {myData &&
             <>
             <Grid doubling columns={6}  id='griddy'> 
                 {myData?.map((item) => (
@@ -123,8 +123,9 @@ export default observer(function ImagesDropzone({evento, galleryId} : Props) {
               <Button size='small' type='submit' style={{width:'100%'}} positive content='Crear colección' floated='right' id='collectionTitle' onClick={() => handleSubmit()} disabled={myData!.length < 1 || isSubmitting} loading={isSubmitting} />
               </Grid.Column>
             </Grid>
-
+          
         </Segment>
+        
       )
     
 })
