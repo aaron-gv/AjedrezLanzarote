@@ -21,15 +21,16 @@ interface Props {
     entityPortraitId?: string,
     handleSetMain: (image: ImageDto) => Promise<void>
     handleRenameGallery: (galleryId: string, title: string) => Promise<void>,
-    handleChangeGalleryVisibility: (gallery: Gallery) => Promise<void>
+    handleChangeGalleryVisibility: (gallery: Gallery) => Promise<void>,
+    handleAddImages: (myData: any[], galleryId: any) => Promise<null | undefined>,
+    handleImageOrder: (image: ImageDto, gallery: Gallery, orderOperator: number) => Promise<void>,
+    handleImageDelete(image: string, gallery: string): Promise<void>
 }
 
 
-export default observer(function EventoEditGallery({handleChangeGalleryVisibility, handleRenameGallery, handleSetMain, handleRenameImage, entityPortraitId, setTargetGallery, entity, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
+export default observer(function EventoEditGallery({handleImageDelete, handleImageOrder, handleAddImages, handleChangeGalleryVisibility, handleRenameGallery, handleSetMain, handleRenameImage, entityPortraitId, setTargetGallery, entity, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
 
   const [loading, setLoading] = useState(false);
-   
-    
   
     return (
         <Segment key={gallery.id} clearing >
@@ -106,7 +107,7 @@ export default observer(function EventoEditGallery({handleChangeGalleryVisibilit
               )}
               </Formik>
             </div>
-              <EventoEditGalleryImageZone handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={entity} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
+              <EventoEditGalleryImageZone handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={entity} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
           </Segment>
     )
 })

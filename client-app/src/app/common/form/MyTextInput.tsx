@@ -11,6 +11,8 @@ interface Props {
     fluid?:boolean;
     autoComplete?:string;
     size?:any;
+    style?:any;
+    className?: any;
 }
 
 export default function MyTextInput(props: Props) {

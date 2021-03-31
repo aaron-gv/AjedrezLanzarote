@@ -22,7 +22,7 @@ export default observer(function EventoEdit() {
   const [eventoForm, setEventoForm] = useState<EventoFormValues>(
     new EventoFormValues()
   );
-  const { loadEventoByUrl, loadingInitial, selectedEvento: evento,  promoteGallery, createGallery, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = eventoStore;
+  const { loadEventoByUrl, loadingInitial, selectedEvento: evento,  promoteGallery, createGallery, deleteImage, changeImageOrder, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = eventoStore;
   
 
   useEffect(() => {
@@ -87,6 +87,25 @@ export default observer(function EventoEdit() {
       
       setLoadingComponent(false);
     }
+    const handleAddImages = async (myData: any[], galleryId: string) => {
+      if (!myData) return null;
+  
+      setLoadingComponent(true);
+        await eventoStore.addToGallery(myData, evento as Evento, galleryId);
+        //await noticiaStore.addToGallery(myData, entity, gallery.id);
+      setLoadingComponent(false);
+      myData =[];
+    };
+    const handleImageOrder = async (image: ImageDto, gallery:Gallery, orderOperator: number) => {
+      setLoadingComponent(true);
+        await changeImageOrder(evento as Evento, gallery.id, image.id, image.order+orderOperator, gallery);
+      setLoadingComponent(false);
+    }
+    async function handleImageDelete(image: string, gallery: string) {
+      setLoadingComponent(true);
+        await deleteImage(evento as Evento, image, gallery);
+      setLoadingComponent(false);
+    }
   /*
     if (!user?.roles && !user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ))
     {
@@ -106,7 +125,7 @@ export default observer(function EventoEdit() {
       } 
       {evento.galleries &&
         evento.galleries.map(gallery => (
-          <EntityEditGallery handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={evento.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
+          <EntityEditGallery handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={evento.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
         ))}
        <Confirm
                 open={popupStatusFather}

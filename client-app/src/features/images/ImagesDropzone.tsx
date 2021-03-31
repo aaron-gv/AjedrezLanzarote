@@ -1,8 +1,10 @@
+import { Form, Formik, FormikHelpers } from 'formik';
 import { observer } from 'mobx-react-lite';
 import  React, { useCallback, useState } from 'react'
 import {useDropzone} from 'react-dropzone'
-import { Button,  Dimmer,  Divider, Grid, Image, Input, Label,  Loader,  Segment } from 'semantic-ui-react';
+import { Button,  Dimmer,  Divider, Grid, Image,  Label,  Loader,  Segment } from 'semantic-ui-react';
 import { v4 as uuid } from "uuid";
+import MyTextInput from '../../app/common/form/MyTextInput';
 import { Evento } from '../../app/models/evento';
 import { Noticia } from '../../app/models/noticia';
 
@@ -13,9 +15,6 @@ interface Props {
 }
 export default observer(function ImagesDropzone({entity, galleryId, handleGalleryCreate} : Props) {
     const [myData, setMyData] = useState<any[]>([]);
-    
-    const [newGalleryTitle, setNewGalleryTitle] = useState('');
-    const [inputElement, setInputElement] = useState<EventTarget & HTMLInputElement>();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasItems, setHasItems] = useState(false);
     
@@ -36,23 +35,18 @@ export default observer(function ImagesDropzone({entity, galleryId, handleGaller
         galleryId = uuid();
       }
       
-      async function handleSubmit() {
+      async function handleFormikSubmit(values: {title: string}, actions: FormikHelpers<{title: string;}>) {
           if (!myData)
             return null;
+          console.log(values.title);
           setIsSubmitting(true);
-          await handleGalleryCreate(myData, newGalleryTitle,galleryId);
+          await handleGalleryCreate(myData, values.title,galleryId);
           
-          if (inputElement)
-            inputElement.value='';
-
-          setNewGalleryTitle("");
+          actions.resetForm();
           setIsSubmitting(false);
           setMyData([]);
       }
-      function handleChange(event : React.ChangeEvent<HTMLInputElement>) {
-        setNewGalleryTitle(event.currentTarget.value);
-        setInputElement(event.currentTarget);
-      }
+      
     
       if (!entity.id) return null;
       return (
@@ -112,17 +106,24 @@ export default observer(function ImagesDropzone({entity, galleryId, handleGaller
         </div>
         
         <Divider />
-            <Grid columns={3}>
+        <Formik initialValues={{title:''}} onSubmit={(values, actions) => handleFormikSubmit(values, actions)}>
+        {({ handleSubmit, isSubmitting, setSubmitting }) => (
+          <Form onSubmit={handleSubmit}>
+          <Grid columns={3}>
               <Grid.Column width={4} verticalAlign='middle' textAlign='right'>
               <Label floated='right' content='Introduzca un titulo para la colección'   />
               </Grid.Column>
               <Grid.Column width={9}>
-              <Input autoComplete='off' type='text' id='newGalleryTitle' value={newGalleryTitle} style={{width:'100%'}}  placeholder='Titulo' className={"ui small input"} onChange={(value) => handleChange(value)} />
+              <MyTextInput autoComplete='off' type='text' name='title' style={{width:'100%'}}  placeholder='Titulo' className={"ui small input"} />
               </Grid.Column>
               <Grid.Column width={3}>
-              <Button size='small' type='submit' style={{width:'100%'}} positive content='Crear colección' floated='right' id='collectionTitle' onClick={() => handleSubmit()} disabled={myData!.length < 1 || isSubmitting} loading={isSubmitting} />
+              <Button size='small' type='submit' style={{width:'100%'}} positive content='Crear colección' floated='right' disabled={myData!.length < 1 || isSubmitting} loading={isSubmitting} />
               </Grid.Column>
             </Grid>
+          </Form>
+        )}
+        </Formik>
+            
           
         </Segment>
         

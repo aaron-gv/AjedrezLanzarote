@@ -21,6 +21,7 @@ import GalleryModifyImageItem from "./GalleryModifyImageItem";
 import { ImageDto } from "../../app/models/image";
 import { Noticia } from "../../app/models/noticia";
 import { FormikHelpers } from "formik";
+import { runInAction } from "mobx";
 
 interface Props {
   gallery: Gallery;
@@ -29,8 +30,10 @@ interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   handleSetMain: (image: ImageDto) => Promise<void>,
   handleRenameImage: (galleryId: string, imageId: string, title: string, actions: FormikHelpers<{comment: string;}>) => Promise<void>,
-  
+  handleAddImages: (myData: any[], galleryId: any) => Promise<null | undefined>,
   entityPortraitId?: string,
+  handleImageOrder: (image: ImageDto, gallery: Gallery, orderOperator: number) => Promise<void>,
+  handleImageDelete(image: string, gallery: string): Promise<void>
 }
 
 export default observer(function EditGalleryImageZone({
@@ -40,7 +43,10 @@ export default observer(function EditGalleryImageZone({
   setLoading,
   handleSetMain,
   handleRenameImage,
-  entityPortraitId
+  entityPortraitId,
+  handleAddImages,
+  handleImageOrder,
+  handleImageDelete
 }: Props) {
   const [popupStatus, setPopupStatus] = useState(false);
   const [targetImage, setTargetImage] = useState("");
@@ -52,50 +58,25 @@ export default observer(function EditGalleryImageZone({
   // responsive :
   //const { height, width } = useWindowDimensions();
 
-  async function handleImageDelete() {
+  async function handleImgDelete() {
     setLoading(true);
     setPopupStatus(false);
-    if((entity instanceof Evento)){
-      await eventoStore.deleteImage(entity, targetImage, targetGallery);
-    } else if ((entity instanceof Noticia)) {
-      await noticiaStore.deleteImage(entity, targetImage, targetGallery);
-    }
-    setLoading(false);
-    setTargetGallery("");
-    setTargetImage("");
+      await handleImageDelete(targetImage, targetGallery);
+      runInAction(() => {
+        setLoading(false);
+        setTargetGallery("");
+        setTargetImage("");
+      })
+    
   }
 
   const handleUploadFiles = async () => {
     if (!myData) return null;
-
     setLoading(true);
-    console.log("hola");
-    if((entity instanceof Evento)){
-      await eventoStore.addToGallery(myData, entity, gallery.id);
-      
-    } else if ((entity instanceof Noticia)) {
-      await noticiaStore.addToGallery(myData, entity, gallery.id);
-      
-    }
+    await handleAddImages(myData,gallery.id);
     setLoading(false);
     setMyData([]);
-    setMyData([]);
   };
-  /*
-  function dropHandler(e : any) {
-    var movingItem = e.target;
-    var x = e.pageX;
-    var y = e.pageY;
-    
-    var prevSibling = e.target.previousSibling?.offsetLeft;
-    var nextSibling = e.target.nextSibling?.offsetLeft;
-    console.log(e);
-    console.log("dropped at previous:"+prevSibling+" next:"+nextSibling);
-    e.target = e.nextSibling;
-    e.nextSibling = e.target;
-    
-  }
-*/
 
   const onDrop = useCallback(
     (acceptedFiles) => {
@@ -119,24 +100,14 @@ export default observer(function EditGalleryImageZone({
 
   
 
-  const handlePrevOrder = async (image: ImageDto, galleryId: string) => {
-      
+  const handlePrevOrder = async (image: ImageDto) => {
     setLoading(true);
-    if((entity instanceof Evento)){
-      await eventoStore.changeImageOrder(eventoStore.selectedEvento as Evento, galleryId, image.id, image.order-1, gallery);
-    } else if ((entity instanceof Noticia)) {
-      await noticiaStore.changeImageOrder(noticiaStore.selectedNoticia as Noticia, galleryId, image.id, image.order-1, gallery);
-    }
+    await handleImageOrder(image, gallery, -1);
     setLoading(false);
   }
-  const handleNextOrder = async (image: ImageDto, galleryId: string) => {
-    
+  const handleNextOrder = async (image: ImageDto) => {
     setLoading(true);
-    if((entity instanceof Evento)){
-    await eventoStore.changeImageOrder(eventoStore.selectedEvento as Evento,galleryId, image.id, image.order+1, gallery);
-  } else if ((entity instanceof Noticia)) {
-    await noticiaStore.changeImageOrder(noticiaStore.selectedNoticia as Noticia,galleryId, image.id, image.order+1, gallery);
-  }
+    await handleImageOrder(image, gallery, 1);
     setLoading(false);
   }
   
@@ -189,7 +160,6 @@ export default observer(function EditGalleryImageZone({
               verticalAlign='middle'
               textAlign='center'
               key={uuid()}
-              clearing
             >
               <Card
                 style={{
@@ -234,7 +204,7 @@ export default observer(function EditGalleryImageZone({
             setTargetImage("");
             setPopupStatus(false);
           }}
-          onConfirm={() => handleImageDelete()}
+          onConfirm={() => handleImgDelete()}
           content='Está a punto de borrar la imagen. ¿está seguro?'
         />
       </Segment>

@@ -17,18 +17,18 @@ interface Props {
     setTargetGallery:  (value: React.SetStateAction<string>) => void,
     setPopupStatus: (value: React.SetStateAction<boolean>) => void,
     setLoading: (value: React.SetStateAction<boolean>) => void,
-    handlePrevOrder: (image: ImageDto, galleryId: string) => Promise<void>,
-    handleNextOrder: (image: ImageDto, galleryId: string) => Promise<void>,
+    handlePrevOrder: (image: ImageDto) => Promise<void>
+    handleNextOrder: (image: ImageDto) => Promise<void>
     entityPortraitId?: string,
     last: boolean,
     first: boolean,
     handleSetMain: (image: ImageDto) => Promise<void>,
-    handleRenameImage: (galleryId: string, imageId: string, title: string, actions: FormikHelpers<{comment: string;}>) => Promise<void>
+    handleRenameImage: (galleryId: string, imageId: string, title: string, actions: FormikHelpers<{comment: string;}>) => Promise<void>,
 }
 
 
 
-export default observer(function GalleryModifyImageItem({handleRenameImage,  entityPortraitId, handleSetMain, entity, image, last, first, gallery, setTargetGallery, setTargetImage, setPopupStatus, setLoading, handleNextOrder, handlePrevOrder} : Props) {
+export default observer(function GalleryModifyImageItem({  handleRenameImage,  entityPortraitId, handleSetMain, entity, image, last, first, gallery, setTargetGallery, setTargetImage, setPopupStatus, setLoading, handleNextOrder, handlePrevOrder} : Props) {
     /*const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
       // "type" is required. It is used by the "accept" specification of drop targets.
       type: 'CARD',
@@ -61,6 +61,7 @@ export default observer(function GalleryModifyImageItem({handleRenameImage,  ent
                       onClick={() => {
                         setTargetImage(image.id);
                         setTargetGallery(gallery.id);
+                        
                         setPopupStatus(true);
                       }}
                     >
@@ -114,9 +115,9 @@ export default observer(function GalleryModifyImageItem({handleRenameImage,  ent
                       )}
                     </Formik>
                     <div style={{position:'absolute',left:'2px',right:'0'}}>
-                      {!first && <Icon name="arrow left" style={{position:'relative',float:'left', cursor:'pointer',marginLeft:'2px',marginTop:'5px'}} onClick={() => handlePrevOrder(image,gallery.id)} />}
+                      {!first && <Icon name="arrow left" style={{position:'relative',float:'left', cursor:'pointer',marginLeft:'2px',marginTop:'5px'}} onClick={() => handlePrevOrder(image)} />}
                       
-                      {!last && <Icon name="arrow right" style={{position:'relative',float:'right',cursor:'pointer',marginTop:'5px'}} onClick={() => handleNextOrder(image,gallery.id)} />}
+                      {!last && <Icon name="arrow right" style={{position:'relative',float:'right',cursor:'pointer',marginTop:'5px'}} onClick={() => handleNextOrder(image)} />}
                     </div>
                     {
                       entityPortraitId !== image.id && 

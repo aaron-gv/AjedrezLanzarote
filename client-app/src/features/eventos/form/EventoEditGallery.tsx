@@ -18,11 +18,14 @@ interface Props {
     setPopupStatusFather: (value: React.SetStateAction<boolean>) => void,
     handlePromoteGallery: (gallery: Gallery) => Promise<void>
     handleRenameImage: (galleryId: string, imageId: string, title: string, actions: FormikHelpers<{comment: string;}>) => Promise<void>,
+    handleAddImages: (myData: any[], galleryId: any) => Promise<null | undefined>,
+    handleImageOrder: (image: ImageDto, gallery: Gallery, orderOperator: number) => Promise<void>,
+    handleImageDelete(image: string, gallery: string): Promise<void>,
     entityPortraitId?: string,
 }
 
 
-export default observer(function EventoEditGallery({handleRenameImage, entityPortraitId, setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
+export default observer(function EventoEditGallery({handleImageDelete, handleImageOrder, handleAddImages, handleRenameImage, entityPortraitId, setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
     const [loading, setLoading] = useState(false);
     const {eventoStore} = useStore();
     const {renameGallery,changeGalleryVisibility} = eventoStore;
@@ -123,7 +126,7 @@ export default observer(function EventoEditGallery({handleRenameImage, entityPor
               )}
               </Formik>
             </div> 
-              <EditGalleryImageZone handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={new Evento(evento)} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
+              <EditGalleryImageZone handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={new Evento(evento)} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
           </Segment>
     )
 })
