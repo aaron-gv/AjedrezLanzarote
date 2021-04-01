@@ -455,6 +455,10 @@ export default class EventoStore {
           toReplace!.order = originalOrder;
           gallery.images[moveFrom] = toReplace!;
         }
+        evento.galleries = evento.galleries!.filter(x => x.id !== gallery.id);
+        evento.galleries.push(gallery);
+        this.selectedEvento = evento;
+        this.eventosRegistry.set(evento.id, evento);
         this.loading = false;
       });
     } catch(error) {
@@ -480,7 +484,7 @@ export default class EventoStore {
         if (evento !== undefined) {
           evento.portraitUrl = source;
           evento.portrait = image;
-          
+          this.selectedEvento = evento;
           this.eventosRegistry.set(evento.id, evento);
         }
         this.loading = false;

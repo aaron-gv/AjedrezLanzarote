@@ -403,6 +403,10 @@ export default class NoticiaStore {
           toReplace!.order = originalOrder;
           gallery.images[moveFrom] = toReplace!;
         }
+        noticia.galleries = noticia.galleries!.filter(x => x.id !== gallery.id);
+        noticia.galleries.push(gallery);
+        this.selectedNoticia = noticia;
+        this.noticiasRegistry.set(noticia.id, noticia);
         this.loading = false;
       });
     } catch(error) {
@@ -427,6 +431,7 @@ export default class NoticiaStore {
         if (noticia !== undefined) {
           noticia.portraitUrl = source;
           noticia.portrait = image;
+          this.selectedNoticia = noticia;
           this.noticiasRegistry.set(noticia.id, noticia);
         }
         this.loading = false;
