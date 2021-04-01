@@ -1,25 +1,22 @@
 import { format } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom';
-import {Button,   Segment, Image, Label, Confirm, Grid} from 'semantic-ui-react'
+import {Button,   Segment, Image, Label, Grid} from 'semantic-ui-react'
 import { Evento } from '../../../app/models/evento';
 import { useStore } from '../../../app/stores/store';
 
 
 
 interface Props {
-    evento: Evento
+    evento: Evento,
+    setPopupStatus: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default observer (function EventoDetailedHeader({evento}: Props) {
-    const {userStore, eventoStore: {updateAsistencia, deleteEvento, cancelEventoToggle, loading}} = useStore();
-    const [popupStatus, setPopupStatus] = useState(false);
+export default observer (function EventoDetailedHeader({evento, setPopupStatus}: Props) {
+    const {userStore, eventoStore: {updateAsistencia, cancelEventoToggle, loading}} = useStore();
 
-    function handleEventoDelete() {
-        
-        deleteEvento(evento.id);
-    }
+    
 
     return (
         <>
@@ -77,12 +74,7 @@ export default observer (function EventoDetailedHeader({evento}: Props) {
                         Editar evento
                     </Button>
                     
-                    <Confirm
-                        open={popupStatus}
-                        onCancel={() => setPopupStatus(false)}
-                        onConfirm={handleEventoDelete}
-                        content="Está a punto de borrar el evento. ¿está seguro?"
-                    />
+                    
                     </>
                 }
             </Segment>

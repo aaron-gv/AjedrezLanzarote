@@ -158,8 +158,8 @@ export default class NoticiaStore {
       await agent.Noticias.delete(id);
       runInAction(() => {
         this.noticiasRegistry.delete(id);
+        this.selectedNoticia = undefined;
         this.loading = false;
-        
       });
       history.push("/noticias");
     } catch (error) {

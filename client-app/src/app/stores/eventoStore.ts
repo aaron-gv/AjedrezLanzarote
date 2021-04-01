@@ -185,8 +185,8 @@ export default class EventoStore {
       await agent.Eventos.delete(id);
       runInAction(() => {
         this.eventosRegistry.delete(id);
+        this.selectedEvento=undefined;
         this.loading = false;
-        
       });
       history.push("/eventos");
     } catch (error) {

@@ -76,7 +76,7 @@
   background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 18%, rgba(255,255,255,0.7) 42%, rgba(255,255,255,0.55) 61%, rgba(255,255,255,0) 100%);
   margin-top:140px;
   height:180px;
-  z-index: 1000;
+  z-index: 30;
   position:absolute;
   top: 0;
   width: 100%;

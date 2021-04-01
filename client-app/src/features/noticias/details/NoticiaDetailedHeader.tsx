@@ -1,24 +1,22 @@
 import { format } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom';
-import {Button, Header, Item, Segment, Confirm, Icon} from 'semantic-ui-react'
+import {Button, Header, Item, Segment,  Icon} from 'semantic-ui-react'
 import { Noticia } from '../../../app/models/noticia';
 import { useStore } from '../../../app/stores/store';
 
 
 interface Props {
-    noticia: Noticia
+    noticia: Noticia,
+    setPopupStatus: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default observer (function NoticiaDetailedHeader({noticia}: Props) {
-    const {userStore, noticiaStore: { deleteNoticia,  loading}} = useStore();
-    const [popupStatus, setPopupStatus] = useState(false);
-
-    function handleNoticiaDelete() {
-        
-        deleteNoticia(noticia.id);
-    }
+export default observer (function NoticiaDetailedHeader({noticia, setPopupStatus}: Props) {
+    const {userStore, noticiaStore: { loading}} = useStore();
+    
+    
+    
 
     return (
         <Segment.Group style={{background:'white'}}>
@@ -65,12 +63,7 @@ export default observer (function NoticiaDetailedHeader({noticia}: Props) {
                         Editar noticia
                     </Button>
                     
-                    <Confirm
-                        open={popupStatus}
-                        onCancel={() => setPopupStatus(false)}
-                        onConfirm={handleNoticiaDelete}
-                        content="Está a punto de borrar la noticia. ¿está seguro?"
-                    />
+                    
                     </>
                 
             </Segment>

@@ -92,7 +92,7 @@ const Noticias = {
     details: (url: string) => requests.get<Noticia>(`/noticias/${url}`),
     create: (noticia: NoticiaFormValues) => axios.post<void>(`/noticias`, noticia).then(responseBody),
     update: (noticia: NoticiaFormValues) => axios.put<void>(`/noticias/${noticia.id}`, noticia).then(responseBody),
-    delete: (id: string) => axios.delete(`/eventos/${id}`)
+    delete: (id: string) => axios.delete(`/noticias/${id}`)
 }
 const Account = {
     current: () => requests.get<User>('/account'),
