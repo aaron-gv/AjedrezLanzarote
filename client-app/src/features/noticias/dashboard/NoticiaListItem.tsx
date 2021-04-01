@@ -28,10 +28,10 @@ export default observer(function EventoListItem({
     ): ReactNode => {
     setHasInnerImages(true);
     return (
-      <div style={{float:'left',margin:3,marginLeft:20,width:'100%'}}>
-        <a href={`/noticias/${noticia.url}`}>
+      <div style={{float:'right',margin:"5px",marginRight:"20px"}}>
+        
           <Image src={decoratedURL}  rel='noopener' style={{maxWidth:'300px',maxHeight:'200px',zIndex:2}} className='customImage' />
-        </a>
+        
       </div>
     )
     };

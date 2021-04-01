@@ -177,10 +177,9 @@ export default observer(function CreateGallery({gallery, entityId, entityType,sw
                 <Label content='Colección: ' />
                     <Segment style={{ overflow: "auto", maxHeight: "250px" }}>
                         
-                        
                             <List selection celled verticalAlign='middle' >
                             
-                            {todas?.map(gallery => (
+                            {todas && todas.length > 0 ? todas.map(gallery => (
                                     <>
                                     <Button type='button' floated='left' style={{ overflow:'hidden'}} size='mini' icon='add'  />
                                    
@@ -190,7 +189,9 @@ export default observer(function CreateGallery({gallery, entityId, entityType,sw
                                             </List.Content>
                                         </List.Item>
                                 </>
-                            ))}
+                            )) : <Label>
+                                    No existe aún ninguna colección.
+                                </Label> }
                             
                             
                             </List>
@@ -201,7 +202,7 @@ export default observer(function CreateGallery({gallery, entityId, entityType,sw
                 
                 <Grid.Column>
                 <Label content='Imágenes: ' />
-                    <Segment style={{ overflow: "auto", maxHeight: "250px" }}>
+                    <Segment style={{width:'100%', overflow:'auto' , maxHeight: "250px",wordWrap:"break-word" ,overflowX:"hidden"}}>
                     {selected?.images && selected.images.length > 0 ?
                     <>
                         
@@ -213,7 +214,10 @@ export default observer(function CreateGallery({gallery, entityId, entityType,sw
                                 ))}
                         </List>
                     </>
-                    : <><Label content='Imágenes: ' /><span>Seleccione una colección</span></>}
+                    :    <Label>
+                                Seleccione una galería que tenga imágenes
+                        </Label>
+                        }
                 </Segment>
                 </Grid.Column>
                 

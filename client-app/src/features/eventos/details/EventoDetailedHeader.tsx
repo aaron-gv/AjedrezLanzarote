@@ -1,10 +1,11 @@
 import { format } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import React from 'react'
+import React, { ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom';
-import {Button,   Segment, Image, Label, Grid} from 'semantic-ui-react'
+import {Button,   Segment, Image, Label,  Icon} from 'semantic-ui-react'
 import { Evento } from '../../../app/models/evento';
 import { useStore } from '../../../app/stores/store';
+import ReactTextFormat from 'react-text-format';
 
 
 
@@ -15,8 +16,27 @@ interface Props {
 
 export default observer (function EventoDetailedHeader({evento, setPopupStatus}: Props) {
     const {userStore, eventoStore: {updateAsistencia, cancelEventoToggle, loading}} = useStore();
-
-    
+    const [readAll,setReadAll] = useState(false);
+    const handleReadMore = () => {
+        console.log(document.getElementById('infoSegment'));
+        if (document.getElementById('infoSegment')!.style.maxHeight !== "")
+            document.getElementById('infoSegment')!.style.maxHeight = "";
+        else
+            document.getElementById('infoSegment')!.style.maxHeight = "332px";
+        setReadAll(!readAll);
+    }
+    var customImageDecorator = (
+        decoratedURL: string
+        ): ReactNode => {
+        return (
+            <div style={{float:'right',margin:12, padding:'5px'}}>
+            <a href={decoratedURL} rel="noreferrer" target="_blank">
+                <Image src={decoratedURL}  rel='noopener' style={{maxWidth:'300px',maxHeight:'200px'}} className='customImage' />
+            </a>
+          </div>
+        )
+        };
+  
 
     return (
         <>
@@ -24,25 +44,34 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
                 {evento.isCancelled && 
                     <Label style={{position:'absolute', zIndex: 1000, left: -14, top:20}} ribbon color='red' content='Cancelado' />
                 }
-                            <Grid style={{}}>
-                                <Grid.Column width={3} >
-                                    <Image src={evento.portraitUrl || '/assets/calendar.png'} style={{margin:'0 auto'}} />
-                                </Grid.Column>
-                                <Grid.Column width={12} style={{alignItems:'left'}}>
-                                    <div style={{marginTop:'5px',marginBottom:'5px', fontSize:'16px', fontWeight:'bold'}}>
-                                        <h1>{evento.title}</h1>
-                                    </div>
-                                    <div style={{marginTop:'5px',marginBottom:'5px'}}>
-                                        ¿ Cuando ? <span style={{marginLeft:'10px',marginRight:'10px',fontWeight:'bold'}}>{format(evento.startDate!, 'dd MMM yyyy H:mm')}</span> - hasta el - <span style={{marginLeft:'10px',fontWeight:'bold'}}>{format(evento.endDate!, 'dd MMM yyyy H:mm')}</span>
-                                    </div>
-                
-                                    <div style={{marginTop:'5px',marginBottom:'5px'}}>
-                                        ¿ Donde ? <span style={{marginLeft:'10px',marginRight:'10px',fontWeight:'bold'}}>{evento.venue} &nbsp;&nbsp;, &nbsp;&nbsp; [{evento.city}]</span>
-                                    </div>
-                                    
-                                </Grid.Column>
-
-                            </Grid>
+                <Segment id={'infoSegment'}  style={evento.description.length > 2000 ? {whiteSpace: 'pre-line',maxHeight:'332px', overflow:'hidden',textAlign:'justify'} : {whiteSpace: 'pre-line',overflow:'hidden'}} clearing>
+                <Image src={evento.portraitUrl ? evento.portraitUrl : '/assets/calendar.png'} size='small' floated='left' style={{marginRight:'20px',maxWidth:'25%',marginTop:'20px'}} />
+                <h2>{evento.title}</h2>
+                 {evento.startDate !=null && (<>Comienza :<b>{format(evento.startDate, 'd / M / yyyy')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>Finaliza :<b>{format(evento.startDate, 'd / M / yyyy')}</b></>)} 
+                <br /><br />
+                <ReactTextFormat 
+                    allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
+                    imageDecorator={customImageDecorator}
+                    
+                >{
+                    evento.description.length > 700 ? <>
+                                                        {evento.description}
+                                                        {!readAll ?
+                                                        <div className='readMoreDimmer' onClick={handleReadMore} style={{height:'200px'}}>
+                                                            <Icon name="arrow down" /> Ver todo el contenido
+                                                        </div>
+                                                        :
+                                                        <div className='readMoreDimmer noDim' onClick={handleReadMore}>
+                                                            <Icon name="arrow up" /> Contraer 
+                                                        </div>}
+                                                        
+                                                        
+                                                       </> 
+                                                    : evento.description
+                }
+                </ReactTextFormat>
+                </Segment>
+                           
                             
             </Segment>
             {userStore.user && 
@@ -60,8 +89,9 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
                 
                 { userStore.user.roles && userStore.user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' )  &&
                     <>
-                    <Button loading={loading} onClick={cancelEventoToggle} content={evento.isCancelled ? 'Re-Activar evento' : 'Cancelar evento'} />
+                    <Button size='mini' loading={loading} onClick={cancelEventoToggle} content={evento.isCancelled ? 'Re-Activar evento' : 'Cancelar evento'} />
                     <Button
+                    size='mini'
                     name={evento.id}
                     loading={loading}
                     onClick={() => setPopupStatus(true)}
@@ -70,7 +100,7 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
                     icon='trash'
                     basic
                     />
-                    <Button disabled={evento.isCancelled} as={Link} to={`/editarEvento/${evento.url}`} color='orange' floated='right'>
+                    <Button size='mini' disabled={evento.isCancelled} as={Link} to={`/editarEvento/${evento.url}`} color='orange' floated='right'>
                         Editar evento
                     </Button>
                     

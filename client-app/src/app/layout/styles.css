@@ -93,9 +93,10 @@
 .noDim{
   background: transparent;
   align-items: flex-end;
-  bottom: 0;
   top:unset;
-  
+  margin-top: 20px;
+  height:30px;
+  position: relative;
 }
 .listItemDimmer{
   background: transparent;

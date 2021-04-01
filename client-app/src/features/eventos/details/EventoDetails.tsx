@@ -7,7 +7,6 @@ import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
 import EventoDetailedChat from "./EventoDetailedChat";
 import EventoDetailedHeader from "./EventoDetailedHeader";
-import EventoDetailedInfo from "./EventoDetailedInfo";
 import EventoDetailedSidebar from "./EventoDetailedSidebar";
 
 export default observer(function EventoDetails() {
@@ -44,7 +43,6 @@ export default observer(function EventoDetails() {
                 }
       <Grid.Column width={16}>
           <EventoDetailedHeader setPopupStatus={setPopupStatus} evento={evento} />
-          <EventoDetailedInfo evento={evento} />
         <EventoDetailedSidebar evento={evento} />
         <EventoDetailedChat />
       </Grid.Column>

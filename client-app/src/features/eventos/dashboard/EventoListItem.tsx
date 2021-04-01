@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import React, { ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button,  Item, Label, Segment } from "semantic-ui-react";
+import { Button,  Image,  Item, Label, Segment } from "semantic-ui-react";
 import { Evento } from "../../../app/models/evento";
 import EventoListItemAsistente from "./EventoListItemAsistente";
 import ReactTextFormat from 'react-text-format';
@@ -27,11 +27,11 @@ export default observer(function EventoListItem({
     ): ReactNode => {
       setHasInnerImages(true);
     return (
-      <div style={{float:'left',margin:3,marginLeft:20}}>
-        <a href={`/eventos/${evento.url}`}>
-           [  foto  ]
-        </a>
-      </div>
+      <div style={{float:'right',padding:"5px", marginRight:'20px'}}>
+            
+            <Image src={decoratedURL}  rel='noopener' style={{maxWidth:'300px',maxHeight:'200px'}} className='customImage' />
+            
+          </div>
     )
     };
     

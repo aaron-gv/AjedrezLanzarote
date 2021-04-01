@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import  React ,{ useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {  Button, Confirm,    Header,    Segment } from "semantic-ui-react";
+import {  Button, Confirm,    Divider,    Header,    Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import {  Noticia, NoticiaFormValues } from "../../../app/models/noticia";
 import { Gallery } from "../../../app/models/gallery";
@@ -119,6 +119,12 @@ export default observer(function NoticiaEdit() {
           <Header icon='add' textAlign='center' content='Crear Colección nueva' />
         </Segment>
       } 
+      {noticia.galleries && noticia.galleries?.length > 0 &&
+        <Divider horizontal style={{paddingTop:'10px',paddingBottom:'10px'}}>
+          Colecciones incluidas en la noticia: 
+        </Divider>
+      }
+      
       {noticia.galleries &&
         noticia.galleries.map(gallery => {
           if (gallery.id === editModeGallery)

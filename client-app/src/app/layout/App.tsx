@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Container } from "semantic-ui-react";
+import { Container, Divider } from "semantic-ui-react";
 import NavBar from "./NavBar";
 import EventoDashboard from "../../features/eventos/dashboard/EventoDashboard";
 import { Route, Switch, useLocation } from "react-router-dom";
@@ -101,7 +101,7 @@ export default observer(function App() {
                 <Route path='/register' component={RegisterForm} />
                 <Route component={NotFound} />
               </Switch>
-              
+              <Divider horizontal style={{padding:'5px'}} />
             </Container>
           </>
         )}
