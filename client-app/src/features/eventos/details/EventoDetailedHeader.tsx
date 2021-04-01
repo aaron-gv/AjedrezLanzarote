@@ -29,7 +29,7 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
         decoratedURL: string
         ): ReactNode => {
         return (
-            <div style={{float:'right',margin:12, padding:'5px'}}>
+            <div style={{float:'right',marginRight:"20px", padding:'15px', width:'300px'}}>
             <a href={decoratedURL} rel="noreferrer" target="_blank">
                 <Image src={decoratedURL}  rel='noopener' style={{maxWidth:'300px',maxHeight:'200px'}} className='customImage' />
             </a>

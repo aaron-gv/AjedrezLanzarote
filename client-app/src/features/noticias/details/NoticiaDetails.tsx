@@ -3,7 +3,7 @@ import { runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { ReactNode, useEffect, useState } from "react";
 import {  Link, useParams } from "react-router-dom";
-import { Button, Confirm, Dimmer, Divider, Grid, Icon, Image, Loader, Segment } from "semantic-ui-react";
+import { Button, Confirm, Dimmer,  Grid, Icon, Image, Loader, Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
 import NoticiaDetailedChat from "./NoticiaDetailedChat";
