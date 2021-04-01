@@ -43,7 +43,7 @@ export default observer(function EventoDetailedInfo({evento}: Props) {
                             evento.description.length > 700 ? <>
                                                                 {evento.description}
                                                                 {!readAll ?
-                                                                <div className='readMoreDimmer' onClick={handleReadMore}>
+                                                                <div className='readMoreDimmer' onClick={handleReadMore} style={{height:'200px'}}>
                                                                     <Icon name="arrow down" /> Ver todo el contenido
                                                                 </div>
                                                                 :

@@ -456,7 +456,9 @@ export default class EventoStore {
           gallery.images[moveFrom] = toReplace!;
         }
         evento.galleries = evento.galleries!.filter(x => x.id !== gallery.id);
+        this.reOrderImages(gallery);
         evento.galleries.push(gallery);
+        this.reOrderGalleries(evento);
         this.selectedEvento = evento;
         this.eventosRegistry.set(evento.id, evento);
         this.loading = false;

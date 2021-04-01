@@ -404,7 +404,9 @@ export default class NoticiaStore {
           gallery.images[moveFrom] = toReplace!;
         }
         noticia.galleries = noticia.galleries!.filter(x => x.id !== gallery.id);
+        this.reOrderImages(gallery);
         noticia.galleries.push(gallery);
+        this.reOrderGalleries(noticia);
         this.selectedNoticia = noticia;
         this.noticiasRegistry.set(noticia.id, noticia);
         this.loading = false;
