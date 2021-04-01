@@ -115,7 +115,7 @@ export default observer(function NoticiaDetails() {
                         }
                   
                 </ReactTextFormat>
-                <Divider horizontal section />
+                
             </Segment>
         </Segment.Group>
         <NoticiaDetailedChat />
