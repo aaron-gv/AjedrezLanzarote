@@ -39,43 +39,10 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
   
 
     return (
-        <>
-            <Segment basic attached='top' style={{padding: '0'}}>
-                {evento.isCancelled && 
-                    <Label style={{position:'absolute', zIndex: 1000, left: -14, top:20}} ribbon color='red' content='Cancelado' />
-                }
-                <Segment id={'infoSegment'}  style={evento.description.length > 2000 ? {whiteSpace: 'pre-line',maxHeight:'332px', overflow:'hidden',textAlign:'justify'} : {whiteSpace: 'pre-line',overflow:'hidden'}} clearing>
-                <Image src={evento.portraitUrl ? evento.portraitUrl : '/assets/calendar.png'} size='small' floated='left' style={{marginRight:'20px',maxWidth:'25%',marginTop:'20px'}} />
-                <h2>{evento.title}</h2>
-                 {evento.startDate !=null && (<>Comienza :<b>{format(evento.startDate, 'd / M / yyyy')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>Finaliza :<b>{format(evento.startDate, 'd / M / yyyy')}</b></>)} 
-                <br /><br />
-                <ReactTextFormat 
-                    allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
-                    imageDecorator={customImageDecorator}
-                    
-                >{
-                    evento.description.length > 700 ? <>
-                                                        {evento.description}
-                                                        {!readAll ?
-                                                        <div className='readMoreDimmer' onClick={handleReadMore} style={{height:'200px'}}>
-                                                            <Icon name="arrow down" /> Ver todo el contenido
-                                                        </div>
-                                                        :
-                                                        <div className='readMoreDimmer noDim' onClick={handleReadMore}>
-                                                            <Icon name="arrow up" /> Contraer 
-                                                        </div>}
-                                                        
-                                                        
-                                                       </> 
-                                                    : evento.description
-                }
-                </ReactTextFormat>
-                </Segment>
-                           
-                            
-            </Segment>
+        <Segment.Group>
+            <Segment basic style={{padding: '0',borderColor:'#fafafa'}}>
             {userStore.user && 
-            <Segment clearing attached secondary>
+            <Segment attached='top' secondary clearing style={{}} >
                 {evento.category === "online" && 
                 <>
                     { evento.isGoing && evento.hostUsername !== userStore.user.username &&
@@ -109,6 +76,40 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
                 }
             </Segment>
         }
-        </>
+                {evento.isCancelled && 
+                    <Label style={{position:'absolute', zIndex: 1000, left: -14, top:20}} ribbon color='red' content='Cancelado' />
+                }
+                <Segment id={'infoSegment'}  style={evento.description.length > 2000 ? {borderColor:'#fafafa',whiteSpace: 'pre-line',maxHeight:'332px', overflow:'hidden',textAlign:'justify'} : {borderColor:'#fafafa',whiteSpace: 'pre-line',overflow:'hidden'}} clearing>
+                <Image src={evento.portraitUrl ? evento.portraitUrl : '/assets/calendar.png'} size='small' floated='left' style={{marginRight:'20px',maxWidth:'25%',marginTop:'20px'}} />
+                <h2>{evento.title}</h2>
+                 {evento.startDate !=null && (<>Comienza :<b>{format(evento.startDate, 'd / M / yyyy')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>Finaliza :<b>{format(evento.startDate, 'd / M / yyyy')}</b></>)} 
+                <br /><br />
+                <ReactTextFormat 
+                    allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
+                    imageDecorator={customImageDecorator}
+                    
+                >{
+                    evento.description.length > 700 ? <>
+                                                        {evento.description}
+                                                        {!readAll ?
+                                                        <div className='readMoreDimmer' onClick={handleReadMore} style={{height:'200px'}}>
+                                                            <Icon name="arrow down" /> Ver todo el contenido
+                                                        </div>
+                                                        :
+                                                        <div className='readMoreDimmer noDim' onClick={handleReadMore}>
+                                                            <Icon name="arrow up" /> Contraer 
+                                                        </div>}
+                                                        
+                                                        
+                                                       </> 
+                                                    : evento.description
+                }
+                </ReactTextFormat>
+                </Segment>
+                           
+                            
+            </Segment>
+            
+        </Segment.Group>
     )
 })
