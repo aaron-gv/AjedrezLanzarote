@@ -37,8 +37,8 @@ namespace Application.Galleries
 
                 var galleryImages = await _context.GalleryImages.Where(x => x.GalleryId == gallery.Id).ToListAsync();
 
-                var relationsNoticia = _context.GalleryNoticias.AnyAsync(x => x.GalleryId == gallery.Id && x.NoticiaId != request.EntityId).Result;
-                var relationsEvento = _context.GalleryEventos.AnyAsync(x => x.GalleryId == gallery.Id && x.EventoId != request.EntityId).Result;
+                var relationsNoticia = await _context.GalleryNoticias.AnyAsync(x => x.GalleryId == gallery.Id && x.NoticiaId != request.EntityId);
+                var relationsEvento = await _context.GalleryEventos.AnyAsync(x => x.GalleryId == gallery.Id && x.EventoId != request.EntityId);
                 var wipeGallery = true;
                 if (relationsNoticia || relationsEvento) wipeGallery = false;
 
@@ -79,13 +79,16 @@ namespace Application.Galleries
                         break;
                 }
                 if (wipeGallery) {
+                    Console.WriteLine("wipe Gallery...");
                     foreach (var galleryImage in galleryImages)
                     {
+                        Console.WriteLine("this image..."+galleryImage.ImageId);
                         var imageObject = await _context.Images.Where(x => x.Id == galleryImage.ImageId).FirstOrDefaultAsync();
 
                         var relatedimages = await _context.GalleryImages.AnyAsync(x => x.ImageId == imageObject.Id && x.GalleryId != gallery.Id);
                         if (relatedimages == false)
                         {
+                            Console.WriteLine(" image will be wipped");
                             // Cloud image management: 
                             
                             if (imageObject.CloudId != imageObject.CloudThumbId)
@@ -101,10 +104,14 @@ namespace Application.Galleries
                                 System.IO.File.Delete(thumbfile);
                             */
                             _context.Remove(imageObject);
+                        } else {
+                            Console.WriteLine("image wont be wipped...");
                         }
                         _context.Remove(galleryImage);
+                        Console.WriteLine("relation galleryImage wiped...");
                     }
                     _context.Remove(gallery);
+                    Console.WriteLine("Gallery wipped...");
                 }
 
                 var result = await _context.SaveChangesAsync() > 0;

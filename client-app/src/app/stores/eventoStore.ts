@@ -274,24 +274,19 @@ export default class EventoStore {
       }
   }
   
-  addToGallery = async (myData: any[], evento: Evento, galleryId: string) => {
+  addToGallery = async (formData: FormData, galleryId: string) => {
     
-    if (!evento || !galleryId || !myData)
-      throw new Error("Alguno de los parámetros es incorrecto.");
     this.loading = true;
-    var myForm = new FormData();
-    myData.map((data) => 
-      myForm.append("Images", data)
-    );
-    myForm.append("entityType", "Evento");
+    var evento = this.selectedEvento;
+    if (evento === undefined) return false;
     try { 
-      await agent.Galleries.addImages(myForm,galleryId); //change to update
+      await agent.Galleries.addImages(formData,galleryId); //change to update
       runInAction(async () => {
         let newGallery = await agent.Galleries.get(galleryId);
           runInAction(() => {
-            evento.galleries!.find(x => x.id === newGallery.id)!.images = newGallery.images;
-            this.reOrderImages(evento.galleries!.find(x => x.id === newGallery.id)!);
-            this.eventosRegistry.set(evento.id, evento as Evento);
+            evento!.galleries!.find(x => x.id === newGallery.id)!.images = newGallery.images;
+            this.reOrderImages(evento!.galleries!.find(x => x.id === newGallery.id)!);
+            this.eventosRegistry.set(evento!.id, evento as Evento);
             this.selectedEvento = evento;
             this.loading = false;
           });

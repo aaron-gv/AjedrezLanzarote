@@ -15,7 +15,7 @@ interface Props {
     entityType: string,
     switchOpenCreateGallery: () => void,
     gallery?: Gallery,
-    handleSetEditModeGallery?: (id: string) => void
+    handleSetEditModeGallery: (id: string) => void
 }
 export default observer(function CreateGallery({gallery, entityId, entityType,switchOpenCreateGallery, handleSetEditModeGallery} : Props) {
 
@@ -91,7 +91,7 @@ export default observer(function CreateGallery({gallery, entityId, entityType,sw
         todas.push(gallery);
     })
 
-    const handleFormSubmit = async (values: {title: string;}, actions: FormikHelpers<{title: string;}>) => {
+    const handleCreateSubmit = async (values: {title: string;}, actions: FormikHelpers<{title: string;}>) => {
         setLoading(true);
         var myForm = new FormData();
         FormItems.forEach(newImage => {
@@ -116,22 +116,47 @@ export default observer(function CreateGallery({gallery, entityId, entityType,sw
             switchOpenCreateGallery();
         });
     }
-    
+    const handleUpdateSubmit = async (values: {title: string;}, actions: FormikHelpers<{title: string;}>) => {
+        if (gallery === undefined) return false;
+        setLoading(true);
+        var myForm = new FormData();
+        FormItems.forEach(newImage => {
+            myForm.append("Files", newImage);
+        });
+        imagesToAdd.forEach(image => {
+            myForm.append("Add", image.id);
+        });
+        myForm.append("title", values.title);
+        myForm.append("entityId", entityId);
+        myForm.append("entityType", entityType);
+        if (entityType === "Evento")
+        {
+            await eventoStore.addToGallery(myForm, gallery.id);
+        } else if (entityType === "Noticia") 
+        {
+            await noticiaStore.addToGallery(myForm, gallery.id);
+        }
+        
+        runInAction(() => {
+            setLoading(false);
+            handleSetEditModeGallery("");
+        });
+    }
 
     return (
         <>
             <Segment clearing basic={gallery!==undefined ? false : true} fluid>
                 {gallery!==undefined && handleSetEditModeGallery!==undefined &&
-                    <Label as={Button} typ content='Cancelar' attached='top' onClick={() => handleSetEditModeGallery!("")} />
+                    <Label as={Button} style={{fontSize:'14px'}} content='Cancelar' attached='top' onClick={() => handleSetEditModeGallery!("")} />
                 }
                 {loading &&
                 <Dimmer inverted active>
                 <Loader content="Cargando..." />
                 </Dimmer>
                 }
-                <Formik initialValues={{title:''}} onSubmit={(values, actions) => handleFormSubmit(values, actions)} enableReinitialize >
+                <Formik initialValues={{title:''}} onSubmit={(values, actions)  => {if (gallery===undefined) { handleCreateSubmit(values, actions)} else {handleUpdateSubmit(values, actions)}}} enableReinitialize >
                 {({ handleSubmit, isValid, dirty, isSubmitting, setSubmitting, errors }) => (
-                <Form>
+                <Form autoComplete="off">
                 
                 
                 {gallery===undefined && 

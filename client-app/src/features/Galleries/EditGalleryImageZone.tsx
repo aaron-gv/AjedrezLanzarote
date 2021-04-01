@@ -26,7 +26,6 @@ interface Props {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   handleSetMain: (image: ImageDto) => Promise<void>,
   handleRenameImage: (galleryId: string, imageId: string, title: string, actions: FormikHelpers<{comment: string;}>) => Promise<void>,
-  handleAddImages: (myData: any[], galleryId: any) => Promise<null | undefined>,
   entityPortraitId?: string,
   handleImageOrder: (image: ImageDto, gallery: Gallery, orderOperator: number) => Promise<void>,
   handleImageDelete(image: string, gallery: string): Promise<void>,
@@ -114,13 +113,13 @@ export default observer(function EditGalleryImageZone({
             onClick={() => handleSetEditModeGallery(gallery.id)}
           >
             <Icon
-              name='images'
+              name='add'
               size='big'
               style={{ display: "flex" }}
               color='green'
             />
             <Divider horizontal />
-            <Label size='mini' content='Pulse para agregar imágenes' />
+            <Label size='mini' content='Agregar imágenes' />
           </div>
 
           {gallery.images &&

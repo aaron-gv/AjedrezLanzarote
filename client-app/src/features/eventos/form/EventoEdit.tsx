@@ -24,7 +24,7 @@ export default observer(function EventoEdit() {
   const [eventoForm, setEventoForm] = useState<EventoFormValues>(
     new EventoFormValues()
   );
-  const { loadEventoByUrl, loadingInitial, selectedEvento: evento,  promoteGallery, addToGallery, deleteImage, changeImageOrder, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = eventoStore;
+  const { loadEventoByUrl, loadingInitial, selectedEvento: evento,  promoteGallery,  deleteImage, changeImageOrder, renameImage, setMainImage, renameGallery, changeGalleryVisibility } = eventoStore;
   
 
   useEffect(() => {
@@ -81,15 +81,7 @@ export default observer(function EventoEdit() {
       
       setLoadingComponent(false);
     }
-    const handleAddImages = async (myData: any[], galleryId: string) => {
-      if (!myData) return null;
-  
-      setLoadingComponent(true);
-        await addToGallery(myData, evento as Evento, galleryId);
-        //await noticiaStore.addToGallery(myData, entity, gallery.id);
-      setLoadingComponent(false);
-      myData =[];
-    };
+    
     const handleImageOrder = async (image: ImageDto, gallery:Gallery, orderOperator: number) => {
       setLoadingComponent(true);
         await changeImageOrder(evento as Evento, gallery.id, image.id, image.order+orderOperator, gallery);
@@ -125,7 +117,7 @@ export default observer(function EventoEdit() {
             <Header sub content="Ocultar" />
           </Segment>
           <Segment attached='bottom' basic>
-            <CreateGallery key={evento.id} switchOpenCreateGallery={switchOpenCreateGallery} entityId={evento.id} entityType={"Evento"} />
+            <CreateGallery handleSetEditModeGallery={handleSetEditModeGallery} key={evento.id} switchOpenCreateGallery={switchOpenCreateGallery} entityId={evento.id} entityType={"Evento"} />
           </Segment>
         </Segment>
       } 
@@ -141,7 +133,7 @@ export default observer(function EventoEdit() {
           if (gallery.id === editModeGallery)
             return <CreateGallery handleSetEditModeGallery={handleSetEditModeGallery} gallery={gallery} key={gallery.id} entityId={evento.id} entityType="Evento" switchOpenCreateGallery={switchOpenCreateGallery} />
           else 
-           return <EntityEditGallery handleSetEditModeGallery={handleSetEditModeGallery} handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={evento.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
+           return <EntityEditGallery handleSetEditModeGallery={handleSetEditModeGallery} handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={evento.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
           
           })}
        <Confirm

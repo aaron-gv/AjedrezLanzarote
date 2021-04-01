@@ -227,24 +227,19 @@ export default class NoticiaStore {
   }
   
 
-  addToGallery = async (myData: any[], noticia: Noticia, galleryId: string) => {
+  addToGallery = async (formData: FormData, galleryId: string) => {
     
-    if (!noticia || !galleryId || !myData)
-      throw new Error("Alguno de los parámetros es incorrecto.");
     this.loading = true;
-    var myForm = new FormData();
-    myData.map((data) => 
-      myForm.append("Images", data)
-    );
-    myForm.append("entityType", "Noticia");
+    var noticia = this.selectedNoticia;
+    if (noticia === undefined) return false;
     try { 
-      await agent.Galleries.addImages(myForm,galleryId); //change to update
+      await agent.Galleries.addImages(formData,galleryId); //change to update
       runInAction(async () => {
         let newGallery = await agent.Galleries.get(galleryId);
           runInAction(() => {
-            noticia.galleries!.find(x => x.id === newGallery.id)!.images = newGallery.images;
-            this.reOrderImages(noticia.galleries!.find(x => x.id === newGallery.id)!);
-            this.noticiasRegistry.set(noticia.id, noticia as Noticia);
+            noticia!.galleries!.find(x => x.id === newGallery.id)!.images = newGallery.images;
+            this.reOrderImages(noticia!.galleries!.find(x => x.id === newGallery.id)!);
+            this.noticiasRegistry.set(noticia!.id, noticia as Noticia);
             this.selectedNoticia = noticia;
             this.loading = false;
           });
