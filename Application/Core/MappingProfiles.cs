@@ -53,14 +53,28 @@ namespace Application.Core
             CreateMap<Gallery, GalleryNoticiaDto>()
                 .ForMember(ed => ed.Images, opt => opt.MapFrom(e => e.GalleryImages.Select(eg => eg.Image)));
 
+            CreateMap<GalleryImage, ImageDto>()
+                .ForMember(d => d.Id, opt => opt.MapFrom(x => x.Image.Id))
+                .ForMember(d => d.Src , opt => opt.MapFrom(x => x.Image.Source))
+                .ForMember(d => d.W, o => o.MapFrom(s => s.Image.Width))
+                .ForMember(d => d.H, o => o.MapFrom(s => s.Image.Height))
+                .ForMember(d => d.Thumbnail, o => o.MapFrom(s => s.Image.Thumbnail))
+                .ForMember(d => d.smallHeight, o => o.MapFrom(s => s.Image.smallHeight))
+                .ForMember(d => d.smallWidth, o => o.MapFrom(s => s.Image.smallWidth))
+                .ForMember(d => d.Description, o => o.MapFrom(s => s.Image.Description))
+                .ForMember(d => d.Filename, o => o.MapFrom(s => s.Image.Filename))
+                .ForMember(d => d.Order , o => o.MapFrom(d => d.Order))
+                .ForMember(d => d.Title , o => o.MapFrom(d => d.Title));
+
+
             CreateMap<GalleryEvento, GalleryEventoDto>()
                 .ForMember(d => d.Id, opt => opt.MapFrom(s => s.GalleryId))
-                .ForMember(d => d.Images, opt => opt.MapFrom(s => s.Gallery.Images))
+                .ForMember(d => d.Images, opt => opt.MapFrom(s => s.Gallery.GalleryImages.Where(x => x.GalleryId == s.GalleryId)))
                 .ForMember(d => d.Public, opt => opt.MapFrom(s => s.Public));
 
             CreateMap<GalleryNoticia, GalleryNoticiaDto>()
                 .ForMember(d => d.Id, opt => opt.MapFrom(s => s.GalleryId))
-                .ForMember(d => d.Images, opt => opt.MapFrom(s => s.Gallery.Images))
+                .ForMember(d => d.Images, opt => opt.MapFrom(s => s.Gallery.GalleryImages.Where(x => x.GalleryId == s.GalleryId)))
                 .ForMember(d => d.Public, opt => opt.MapFrom(s => s.Public));
             
             CreateMap<Evento, Evento>()
