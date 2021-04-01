@@ -8,6 +8,7 @@ import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
 import NoticiaDetailedChat from "./NoticiaDetailedChat";
 import ReactTextFormat from 'react-text-format';
+import Gallery from "../../Galleries/Gallery";
 
 export default observer(function NoticiaDetails() {
     const {noticiaStore} = useStore();
@@ -118,6 +119,18 @@ export default observer(function NoticiaDetails() {
                 
             </Segment>
         </Segment.Group>
+        
+        { noticia.galleries && noticia.galleries.length > 0 &&
+      <>
+        <Segment secondary clearing >
+          <h4 >Imágenes :</h4>
+          {noticia.galleries.map(gallery => (
+            <Gallery title={gallery.title} key={gallery.id} id={gallery.id} items={gallery.images} />
+          ))}
+        </Segment>
+        </>
+      }
+
         <NoticiaDetailedChat />
       </Grid.Column>
       <Confirm
