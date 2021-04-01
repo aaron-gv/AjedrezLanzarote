@@ -130,7 +130,7 @@ namespace API.Controllers
             {
                 return BadRequest("Ha ocurrido un problema subiendo los archivos, compruebe que los archivos estén en un formato de imagen válido.");
             }
-            if (imgCollectionResult.Value.Count < 1)
+            if (imgCollectionResult.Value.Count < 1 && Add.Count < 1)
             {
                 return BadRequest("No se han enviado imágenes válidas");
             }
