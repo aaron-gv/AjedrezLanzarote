@@ -22,10 +22,11 @@ interface Props {
     handleImageOrder: (image: ImageDto, gallery: Gallery, orderOperator: number) => Promise<void>,
     handleImageDelete(image: string, gallery: string): Promise<void>,
     entityPortraitId?: string,
+    handleSetEditModeGallery: (id: string) => void
 }
 
 
-export default observer(function EventoEditGallery({handleImageDelete, handleImageOrder, handleAddImages, handleRenameImage, entityPortraitId, setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
+export default observer(function EventoEditGallery({handleSetEditModeGallery, handleImageDelete, handleImageOrder, handleAddImages, handleRenameImage, entityPortraitId, setTargetGallery, evento, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
     const [loading, setLoading] = useState(false);
     const {eventoStore} = useStore();
     const {renameGallery,changeGalleryVisibility} = eventoStore;
@@ -126,7 +127,7 @@ export default observer(function EventoEditGallery({handleImageDelete, handleIma
               )}
               </Formik>
             </div> 
-              <EditGalleryImageZone handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={new Evento(evento)} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
+              <EditGalleryImageZone handleSetEditModeGallery={handleSetEditModeGallery} handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={new Evento(evento)} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
           </Segment>
     )
 })

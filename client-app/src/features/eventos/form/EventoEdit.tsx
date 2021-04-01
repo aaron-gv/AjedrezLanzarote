@@ -20,6 +20,7 @@ export default observer(function EventoEdit() {
   const [targetGallery, setTargetGallery] = useState('');
   const [loadingComponent, setLoadingComponent] = useState(false);
   const [openCreateGallery, setOpenCreateGallery] = useState(false);
+  const [editModeGallery, setEditModeGallery] = useState("");
   const [eventoForm, setEventoForm] = useState<EventoFormValues>(
     new EventoFormValues()
   );
@@ -102,6 +103,9 @@ export default observer(function EventoEdit() {
     const switchOpenCreateGallery = () => {
       setOpenCreateGallery(!openCreateGallery);
     }
+    const handleSetEditModeGallery = (id: string) => {
+      setEditModeGallery(id);
+    }
   /*
     if (!user?.roles && !user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ))
     {
@@ -120,8 +124,8 @@ export default observer(function EventoEdit() {
           <Segment attached='top' as={Button} onClick={switchOpenCreateGallery}>
             <Header sub content="Ocultar" />
           </Segment>
-          <Segment attached='bottom' basic fluid>
-            <CreateGallery switchOpenCreateGallery={switchOpenCreateGallery} entityId={evento.id} entityType={"Evento"} />
+          <Segment attached='bottom' basic>
+            <CreateGallery key={evento.id} switchOpenCreateGallery={switchOpenCreateGallery} entityId={evento.id} entityType={"Evento"} />
           </Segment>
         </Segment>
       } 
@@ -133,9 +137,13 @@ export default observer(function EventoEdit() {
       } 
       
       {evento.galleries &&
-        evento.galleries.map(gallery => (
-          <EntityEditGallery handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={evento.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
-        ))}
+        evento.galleries.map(gallery => {
+          if (gallery.id === editModeGallery)
+            return <CreateGallery handleSetEditModeGallery={handleSetEditModeGallery} gallery={gallery} key={gallery.id} entityId={evento.id} entityType="Evento" switchOpenCreateGallery={switchOpenCreateGallery} />
+          else 
+           return <EntityEditGallery handleSetEditModeGallery={handleSetEditModeGallery} handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={evento.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={evento} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
+          
+          })}
        <Confirm
                 open={popupStatusFather}
                 onCancel={() => {

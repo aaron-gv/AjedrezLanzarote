@@ -13,9 +13,11 @@ import { runInAction } from 'mobx';
 interface Props {
     entityId: string,
     entityType: string,
-    switchOpenCreateGallery: () => void
+    switchOpenCreateGallery: () => void,
+    gallery?: Gallery,
+    handleSetEditModeGallery?: (id: string) => void
 }
-export default observer(function CreateGallery({entityId, entityType,switchOpenCreateGallery} : Props) {
+export default observer(function CreateGallery({gallery, entityId, entityType,switchOpenCreateGallery, handleSetEditModeGallery} : Props) {
 
     
 
@@ -118,7 +120,10 @@ export default observer(function CreateGallery({entityId, entityType,switchOpenC
 
     return (
         <>
-            <Segment clearing basic fluid>
+            <Segment clearing basic={gallery!==undefined ? false : true} fluid>
+                {gallery!==undefined && handleSetEditModeGallery!==undefined &&
+                    <Label as={Button} typ content='Cancelar' attached='top' onClick={() => handleSetEditModeGallery!("")} />
+                }
                 {loading &&
                 <Dimmer inverted active>
                 <Loader content="Cargando..." />
@@ -128,10 +133,16 @@ export default observer(function CreateGallery({entityId, entityType,switchOpenC
                 {({ handleSubmit, isValid, dirty, isSubmitting, setSubmitting, errors }) => (
                 <Form>
                 
-                <Header content='Crear colección' />
-                <Header sub content='Título' />
-                <MyTextInput placeholder='Titulo de la galeria' style={{width:'100%'}} name='title' />
-                <Header content='Añadir imágenes' />
+                
+                {gallery===undefined && 
+                    <>
+                    <Header content={'Crear colección'} />
+                    <Header sub content='Título' />
+                    <MyTextInput placeholder='Titulo de la galeria' style={{width:'100%'}} name='title' />
+                    </>
+                }
+                
+                <Header content={gallery!==undefined ? `Añadir imágenes a la colección: ${gallery?.title ? gallery.title : gallery?.id}` : 'Añadir imágenes'} />
                 <Header sub content='Puedes usar colecciones existentes' />
                 <Label  basic size='small' content='Puedes reutilizar imágenes subidas anteriormente ahorrando espacio y agilizando el proceso.' style={{border:'none', color:'darkgrey'}} />
                 <Divider horizontal hidden={false} />
@@ -186,7 +197,7 @@ export default observer(function CreateGallery({entityId, entityType,switchOpenC
                 
                 <Segment basic>
                 <Segment attached='top'>
-                    <Label size='medium' attached='top' content='Colección nueva: ' />
+                    <Label size='medium' attached='top' content={gallery!==undefined ? 'Imágenes a añadir: ' : 'Colección nueva: '} />
                 </Segment>
                 <Segment clearing attached='bottom' basic>
                 <div
@@ -211,7 +222,7 @@ export default observer(function CreateGallery({entityId, entityType,switchOpenC
                 />
                 <input {...getInputProps()} />
                 <Divider horizontal />
-                <Label size='mini' content='Arrastre sus archivos aqui o pulse' />
+                <Label size='small' content='Arrastre sus archivos o pulse aquí' />
             </div>
                     {
                         FormItems.map(item => (

@@ -21,7 +21,7 @@ export default observer(function NoticiaEdit() {
   const [targetGallery, setTargetGallery] = useState('');
   const [loadingComponent, setLoadingComponent] = useState(false);
   const [openCreateGallery, setOpenCreateGallery] = useState(false);
-
+  const [editModeGallery, setEditModeGallery] = useState("");
   const [noticiaForm, setNoticiaForm] = useState<NoticiaFormValues>(
     new NoticiaFormValues()
   );
@@ -87,6 +87,9 @@ export default observer(function NoticiaEdit() {
     const switchOpenCreateGallery = () => {
       setOpenCreateGallery(!openCreateGallery);
     }
+    const handleSetEditModeGallery = (id: string) => {
+      setEditModeGallery(id);
+    }
   useEffect(() => {
     if (url) {
         loadNoticiaByUrl(url).then((noticia) => {
@@ -123,9 +126,12 @@ export default observer(function NoticiaEdit() {
         </Segment>
       } 
       {noticia.galleries &&
-        noticia.galleries.map(gallery => (
-          <EntityEditGallery handleImageOrder={handleImageOrder} handleImageDelete={handleImageDelete} handleAddImages={handleAddImages} handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={noticia.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={noticia} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
-        ))}
+        noticia.galleries.map(gallery => {
+          if (gallery.id === editModeGallery)
+          return <CreateGallery handleSetEditModeGallery={handleSetEditModeGallery} gallery={gallery} key={gallery.id} entityId={noticia.id} entityType="Noticia" switchOpenCreateGallery={switchOpenCreateGallery} />
+          else
+          return <EntityEditGallery handleSetEditModeGallery={handleSetEditModeGallery} handleImageOrder={handleImageOrder} handleImageDelete={handleImageDelete} handleAddImages={handleAddImages} handleChangeGalleryVisibility={handleChangeGalleryVisibility} handleRenameGallery={handleRenameGallery} handleSetMain={handleSetMain} handleRenameImage={handleRenameImage} entityPortraitId={noticia.portrait?.id} key={gallery.id} setTargetGallery={setTargetGallery} entity={noticia} gallery={gallery} targetGallery={targetGallery} setPopupStatusFather={setPopupStatusFather} loadingComponent={loadingComponent} handlePromoteGallery={handlePromoteGallery} />
+      })}
        <Confirm
                 open={popupStatusFather}
                 onCancel={() => {

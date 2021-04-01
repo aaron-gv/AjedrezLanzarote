@@ -24,11 +24,12 @@ interface Props {
     handleChangeGalleryVisibility: (gallery: Gallery) => Promise<void>,
     handleAddImages: (myData: any[], galleryId: any) => Promise<null | undefined>,
     handleImageOrder: (image: ImageDto, gallery: Gallery, orderOperator: number) => Promise<void>,
-    handleImageDelete(image: string, gallery: string): Promise<void>
+    handleImageDelete(image: string, gallery: string): Promise<void>,
+    handleSetEditModeGallery: (id: string) => void
 }
 
 
-export default observer(function EventoEditGallery({handleImageDelete, handleImageOrder, handleAddImages, handleChangeGalleryVisibility, handleRenameGallery, handleSetMain, handleRenameImage, entityPortraitId, setTargetGallery, entity, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
+export default observer(function EventoEditGallery({handleSetEditModeGallery, handleImageDelete, handleImageOrder, handleAddImages, handleChangeGalleryVisibility, handleRenameGallery, handleSetMain, handleRenameImage, entityPortraitId, setTargetGallery, entity, gallery, targetGallery, setPopupStatusFather, loadingComponent, handlePromoteGallery} : Props) {
 
   const [loading, setLoading] = useState(false);
   
@@ -107,7 +108,7 @@ export default observer(function EventoEditGallery({handleImageDelete, handleIma
               )}
               </Formik>
             </div>
-              <EventoEditGalleryImageZone handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={entity} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
+              <EventoEditGalleryImageZone handleSetEditModeGallery={handleSetEditModeGallery} handleImageDelete={handleImageDelete} handleImageOrder={handleImageOrder} handleAddImages={handleAddImages} handleRenameImage={handleRenameImage} entityPortraitId={entityPortraitId} handleSetMain={handleSetMain} entity={entity} key={gallery.id} gallery={gallery} loading={loading} setLoading={setLoading} />
           </Segment>
     )
 })
