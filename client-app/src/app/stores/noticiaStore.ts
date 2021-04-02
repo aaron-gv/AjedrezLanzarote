@@ -280,25 +280,27 @@ export default class NoticiaStore {
     }
   }
 
-  renameImage = async (galleryId:string, imageId: string, title: string) => {
+  renameImage = async (gallery:Gallery, imageId: string, title: string) => {
+    if (this.selectedNoticia === undefined || this.selectedNoticia.galleries === undefined || this.selectedNoticia.galleries.length < 1)
+      return null
+    else 
+      var noticia = this.selectedNoticia;
     this.loading = true;
     var myForm = new FormData();
     myForm.append("title", title);
-    myForm.append("entityType", "Noticia");
+    myForm.append("entityType", "Evento");
     
     try {
       
-      await agent.Galleries.renameImage(galleryId,imageId,myForm);
+      await agent.Galleries.renameImage(gallery.id,imageId,myForm);
       runInAction(async () => {
-            let noticia = this.selectedNoticia;
-            noticia?.galleries?.forEach( gallery => {
-              if (gallery.id === galleryId) { 
-                gallery.images.forEach(image => {
-                  if (image.id === imageId)
-                    image.title = title;
-                })
-              }
-            });
+            if (gallery.images.some(x => x.id === imageId)) 
+              gallery.images.find(x => x.id === imageId)!.title = title;
+
+            let galleryEvento = noticia.galleries?.find(x => x.id === gallery.id);
+            if (galleryEvento !== undefined)
+              galleryEvento = gallery;
+            
             this.noticiasRegistry.set(noticia!.id, noticia as Noticia);
             this.selectedNoticia = noticia;
             this.loading = false;
@@ -421,17 +423,21 @@ export default class NoticiaStore {
     }
   }
 
-  setMainImage = async (image:ImageDto,noticiaId:string, imageId: string, source: string) => {
+  setMainImage = async (image:ImageDto) => {
+    if (this.selectedNoticia === undefined)
+      return false;
+    else 
+      var noticiaId = this.selectedNoticia.id;
     this.loading = true;
     var myForm = new FormData();
     myForm.append("entityType", "Noticia");
     try {
-      await agent.Galleries.setMainImage(noticiaId, imageId, myForm);
+      await agent.Galleries.setMainImage(noticiaId, image.id, myForm);
       
       runInAction(() => {
         let noticia = this.noticiasRegistry.get(noticiaId);
         if (noticia !== undefined) {
-          noticia.portraitUrl = source;
+          noticia.portraitUrl = image.src;
           noticia.portrait = image;
           this.selectedNoticia = noticia;
           this.noticiasRegistry.set(noticia.id, noticia);

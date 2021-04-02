@@ -327,7 +327,11 @@ export default class EventoStore {
     }
   }
 
-  renameImage = async (galleryId:string, imageId: string, title: string) => {
+  renameImage = async (gallery:Gallery, imageId: string, title: string) => {
+    if (this.selectedEvento === undefined || this.selectedEvento.galleries === undefined || this.selectedEvento.galleries.length < 1)
+      return null
+    else 
+      var evento = this.selectedEvento;
     this.loading = true;
     var myForm = new FormData();
     myForm.append("title", title);
@@ -335,17 +339,23 @@ export default class EventoStore {
     
     try {
       
-      await agent.Galleries.renameImage(galleryId,imageId,myForm);
+      await agent.Galleries.renameImage(gallery.id,imageId,myForm);
       runInAction(async () => {
-            let evento = this.selectedEvento;
-            evento?.galleries?.forEach( gallery => {
+            /*evento?.galleries?.forEach( gallery => {
               if (gallery.id === galleryId) { 
                 gallery.images.forEach(image => {
                   if (image.id === imageId)
                     image.title = title;
                 })
               }
-            });
+            });*/
+            if (gallery.images.some(x => x.id === imageId)) 
+              gallery.images.find(x => x.id === imageId)!.title = title;
+
+            let galleryEvento = evento.galleries?.find(x => x.id === gallery.id);
+            if (galleryEvento !== undefined)
+              galleryEvento = gallery;
+            
             this.eventosRegistry.set(evento!.id, evento as Evento);
             this.selectedEvento = evento;
             this.loading = false;
@@ -473,18 +483,22 @@ export default class EventoStore {
     }
   }
 
-  setMainImage = async (image:ImageDto,eventoId:string, imageId: string, source: string) => {
+  setMainImage = async (image:ImageDto) => {
     this.loading = true;
     var myForm = new FormData();
     myForm.append("entityType", "Evento");
+    if (this.selectedEvento === undefined)
+      return null;
+    else
+      var eventoId = this.selectedEvento.id;
     try {
-      await agent.Galleries.setMainImage(eventoId, imageId, myForm);
+      await agent.Galleries.setMainImage(eventoId, image.id, myForm);
       
       runInAction(() => {
         let evento = this.eventosRegistry.get(eventoId);
         
         if (evento !== undefined) {
-          evento.portraitUrl = source;
+          evento.portraitUrl = image.src;
           evento.portrait = image;
           this.selectedEvento = evento;
           this.eventosRegistry.set(evento.id, evento);

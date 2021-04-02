@@ -17,7 +17,7 @@ interface Props {
     gallery?: Gallery,
     handleSetEditModeGallery: (id: string) => void
 }
-export default observer(function CreateGallery({gallery, entityId, entityType,switchOpenCreateGallery, handleSetEditModeGallery} : Props) {
+export default observer(function CreateImages({gallery, entityId, entityType,switchOpenCreateGallery, handleSetEditModeGallery} : Props) {
 
     
 

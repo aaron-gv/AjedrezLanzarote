@@ -1,5 +1,5 @@
-import { Form, Formik, FormikHelpers } from 'formik';
-import React from 'react'
+import { Form, Formik, FormikHelpers, FormikState } from 'formik';
+import React, { useState } from 'react'
 import { Card, Icon, Image, Label } from 'semantic-ui-react';
 import { Gallery } from '../../app/models/gallery';
 import { ImageDto } from '../../app/models/image';
@@ -7,6 +7,8 @@ import MyTextInput from '../../app/common/form/MyTextInput';
 import { observer } from 'mobx-react-lite';
 import { Evento } from '../../app/models/evento';
 import { Noticia } from '../../app/models/noticia';
+import { useStore } from '../../app/stores/store';
+import { toast } from 'react-toastify';
 
 
 interface Props {
@@ -17,31 +19,59 @@ interface Props {
     setTargetGallery:  (value: React.SetStateAction<string>) => void,
     setPopupStatus: (value: React.SetStateAction<boolean>) => void,
     setLoading: (value: React.SetStateAction<boolean>) => void,
-    handlePrevOrder: (image: ImageDto) => Promise<void>
-    handleNextOrder: (image: ImageDto) => Promise<void>
+    
     entityPortraitId?: string,
     last: boolean,
     first: boolean,
-    handleSetMain: (image: ImageDto) => Promise<void>,
-    handleRenameImage: (galleryId: string, imageId: string, title: string, actions: FormikHelpers<{comment: string;}>) => Promise<void>,
+    entityType: string;
 }
 
 
 
-export default observer(function GalleryModifyImageItem({  handleRenameImage,  entityPortraitId, handleSetMain, entity, image, last, first, gallery, setTargetGallery, setTargetImage, setPopupStatus, setLoading, handleNextOrder, handlePrevOrder} : Props) {
-    /*const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
-      // "type" is required. It is used by the "accept" specification of drop targets.
-      type: 'CARD',
-      // The collect function utilizes a "monitor" instance (see the Overview for what this is)
-      // to pull important pieces of state from the DnD system.
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging()
-      })
-    }))
-    */
+export default observer(function GalleryModifyImageItem({entityType,   entityPortraitId,  entity, image, last, first, gallery, setTargetGallery, setTargetImage, setPopupStatus, setLoading} : Props) {
     
+   const [loadingComponent, setLoadingComponent] = useState(false);
+   
+    const {eventoStore, noticiaStore} = useStore();
     
-
+    async function handleSetMain(image: ImageDto) {
+      if (entityType === "Evento")
+        await eventoStore.setMainImage(image)
+      else if (entityType === "Noticia")
+        await noticiaStore.setMainImage(image);
+    }
+    async function handleRenameImage(imageId:string,title:string, actions: FormikHelpers<{ comment: string }>)  {
+      setLoadingComponent(true);
+      if (entityType === "Evento")
+        await eventoStore.renameImage(gallery,imageId,title).then(() => {
+          toast.success("Ok");
+          actions.resetForm({
+            comment: "KAKAKA",
+          } as Partial<FormikState<{ comment: string }>>);
+        });
+      else if (entityType === "Noticia")
+      await noticiaStore.renameImage(gallery,imageId,title).then(() => {
+        toast.success("Ok");
+        actions.resetForm({
+          comment: "KAKAKA",
+        } as Partial<FormikState<{ comment: string }>>);
+      });
+      await 
+      setLoadingComponent(false);
+    }
+    
+    const handlePrevOrder = async (image: ImageDto) => {
+      await handleImageOrder(image, gallery, -1);
+    }
+    const handleNextOrder = async (image: ImageDto) => {
+      await handleImageOrder(image, gallery, 1);
+    }
+    const handleImageOrder = async (image: ImageDto, gallery:Gallery, orderOperator: number) => {
+        if (entityType === "Evento")
+          await eventoStore.changeImageOrder(entity as Evento, gallery.id, image.id, image.order+orderOperator, gallery);
+        else if (entityType === "Noticia")
+          await noticiaStore.changeImageOrder(entity as Noticia, gallery.id, image.id, image.order+orderOperator, gallery);
+    }
     return (
         <Card style={{ height: "170px", verticalAlign: "middle" }} draggable={true}  >
                   <Card.Header
@@ -88,7 +118,6 @@ export default observer(function GalleryModifyImageItem({  handleRenameImage,  e
                       }}
                       onSubmit={async (values, actions) => {
                         await handleRenameImage(
-                          gallery.id,
                           image.id,
                           values.comment,
                           actions

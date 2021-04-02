@@ -21,13 +21,14 @@ import EventoEdit from "../../features/eventos/form/EventoEdit";
 import EventoCreate from "../../features/eventos/form/EventoCreate";
 import NoticiaCreate from "../../features/noticias/form/NoticiaCreate";
 import NoticiaEdit from "../../features/noticias/form/NoticiaEdit";
-import CreateGallery from "../../features/Galleries/CreateGallery";
+import CreateImages from "../../features/Galleries/CreateImages";
 require('typeface-montserrat');
 
 export default observer(function App() {
   const location = useLocation(); 
   const {commonStore, userStore} = useStore();
   const {user} = userStore;
+  
   useEffect(() => {
     if (commonStore.token) {
       userStore.getUser().finally(()  => commonStore.setAppLoaded());
@@ -76,7 +77,7 @@ export default observer(function App() {
                   <Route 
                     key={location.key}
                     path={"/adminGalerias"}
-                    component={CreateGallery}
+                    component={CreateImages}
                     />
                 }
               {user?.roles && user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' ) &&

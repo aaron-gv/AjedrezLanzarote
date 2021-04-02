@@ -86,7 +86,7 @@ namespace Application.Galleries
                 if (result)
                     return Result<Unit>.Success(Unit.Value);
                 else
-                    return Result<Unit>.Failure("Error Al crear entidades");
+                    return Result<Unit>.Failure("Error Al crear entidades. ¿ Ya tiene esta imagen en la colección ?");
             }
 
         }

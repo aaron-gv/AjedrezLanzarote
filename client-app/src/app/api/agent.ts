@@ -8,12 +8,12 @@ import { Noticia, NoticiaFormValues } from '../models/noticia';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
-/*const sleep = (delay: number) => {
+const sleep = (delay: number) => {
     return new Promise((resolve) => {
         setTimeout(resolve, delay);
     })
 }
-*/
+
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
 
@@ -26,7 +26,7 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(async response => {
     //const {config, status} = response;
         
-        //await sleep(300);   
+        await sleep(300);   
         //if (response.status === 200)
         return response;
         
@@ -72,49 +72,49 @@ const responseBody = <T> (response: AxiosResponse<T>) => response.data;
 
 const requests = {
     get: <T> (url: string) => axios.get<T>(url).then(responseBody),
-    post: <T> (url: string, body: {}) => axios.post<T>(url).then(responseBody),
-    put: <T> (url: string, body: {}) => axios.put<T>(url).then(responseBody),
+    post: <T> (url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
+    put: <T> (url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
     del: <T> (url: string) => axios.delete<T>(url).then(responseBody)
 }
 
 const Eventos = {
     list: () => requests.get<Evento[]>('/eventos'),
     details: (url: string) => requests.get<Evento>(`/eventos/${url}`),
-    create: (evento: EventoFormValues) => axios.post<void>(`/eventos`, evento).then(responseBody),
-    update: (evento: EventoFormValues) => axios.put<void>(`/eventos/${evento.id}`, evento).then(responseBody),
-    delete: (id: string) => axios.delete(`/eventos/${id}`).then(responseBody),
-    asistir: (url: string) => axios.post<void>(`/eventos/${url}/asistir`).then(responseBody),
-    cancelar: (url: string) => axios.post<void>(`/eventos/${url}/cancelar`).then(responseBody),
+    create: (evento: EventoFormValues) => requests.post<void>(`/eventos`, evento),
+    update: (evento: EventoFormValues) => requests.put<void>(`/eventos/${evento.id}`, evento),
+    delete: (id: string) => requests.del(`/eventos/${id}`),
+    asistir: (url: string) => requests.post<void>(`/eventos/${url}/asistir`, {}),
+    cancelar: (url: string) => requests.post<void>(`/eventos/${url}/cancelar`, {}),
     
 }
 const Noticias = {
     list: () => requests.get<Noticia[]>('/noticias'),
     details: (url: string) => requests.get<Noticia>(`/noticias/${url}`),
-    create: (noticia: NoticiaFormValues) => axios.post<void>(`/noticias`, noticia).then(responseBody),
-    update: (noticia: NoticiaFormValues) => axios.put<void>(`/noticias/${noticia.id}`, noticia).then(responseBody),
-    delete: (id: string) => axios.delete(`/noticias/${id}`)
+    create: (noticia: NoticiaFormValues) => requests.post<void>(`/noticias`, noticia),
+    update: (noticia: NoticiaFormValues) => requests.put<void>(`/noticias/${noticia.id}`, noticia),
+    delete: (id: string) => requests.del(`/noticias/${id}`)
 }
 const Account = {
     current: () => requests.get<User>('/account'),
     login: (user: UserFormValues) => axios.post<User>('/account/login', user),
     register: (user: UserFormValues) => axios.post<User>('/account/register', user)
-} 
+}
 const Images = { 
     
     get: (id: string) => requests.get<ImageDto>(`/images/${id}`)
 }
 const Galleries = {
     get: (id: string) => requests.get<Gallery>(`/gallery/${id}`),
-    create: (formData: FormData) => axios.post<string>(`/gallery/create/`, formData).then(responseBody),
-    delete: (galleryId: string, entityId: string, data: FormData) => axios.put(`/gallery/gallerydel/${galleryId}/${entityId}`, data).then(responseBody),
-    deleteImage: (imageId: string, galleryId:string, data: FormData) => axios.put<void>(`/gallery/imagedel/${imageId}/${galleryId}`, data).then(responseBody),
-    addImages: (formData: FormData, galleryId: string) => axios.put<void>(`/gallery/addimages/${galleryId}`, formData).then(responseBody),
-    changeImageOrder: (imageId: string, galleryId:string, order: number) => {axios.put<void>(`/gallery/imageposition/${imageId}/${galleryId}/${order}`).then(responseBody)},
-    renameGallery: (idGallery: string, idEvento: string, data: FormData) => axios.put<void>(`/gallery/rename/${idEvento}/${idGallery}`, data).then(responseBody),
-    renameImage: (idGallery: string, idImage: string, data: FormData) => axios.put<void>(`/gallery/imagerename/${idGallery}/${idImage}`, data).then(responseBody),
-    setMainImage: (entityId: string, imageId: string, data: FormData) => axios.put<void>(`/gallery/setmainimage/${entityId}/${imageId}`, data).then(responseBody),
-    changeGalleryVisibility: (eventoId: string, galleryId: string, data: FormData) => axios.put<void>(`/gallery/changegalleryvisibility/${eventoId}/${galleryId}`, data).then(responseBody),
-    promoteGallery: (eventoId: string, galleryId: string, data: FormData) => axios.put<void>(`/gallery/promotegallery/${eventoId}/${galleryId}`, data).then(responseBody),
+    create: (formData: FormData) => requests.post<string>(`/gallery/create/`, formData),
+    delete: (galleryId: string, entityId: string, data: FormData) => requests.put(`/gallery/gallerydel/${galleryId}/${entityId}`, data),
+    deleteImage: (imageId: string, galleryId:string, data: FormData) => requests.put<void>(`/gallery/imagedel/${imageId}/${galleryId}`, data),
+    addImages: (formData: FormData, galleryId: string) => requests.put<void>(`/gallery/addimages/${galleryId}`, formData),
+    changeImageOrder: (imageId: string, galleryId:string, order: number) => {requests.put<void>(`/gallery/imageposition/${imageId}/${galleryId}/${order}`, {})},
+    renameGallery: (idGallery: string, idEvento: string, data: FormData) => requests.put<void>(`/gallery/rename/${idEvento}/${idGallery}`, data),
+    renameImage: (idGallery: string, idImage: string, data: FormData) => requests.put<void>(`/gallery/imagerename/${idGallery}/${idImage}`, data),
+    setMainImage: (entityId: string, imageId: string, data: FormData) => requests.put<void>(`/gallery/setmainimage/${entityId}/${imageId}`, data),
+    changeGalleryVisibility: (eventoId: string, galleryId: string, data: FormData) => requests.put<void>(`/gallery/changegalleryvisibility/${eventoId}/${galleryId}`, data),
+    promoteGallery: (eventoId: string, galleryId: string, data: FormData) => requests.put<void>(`/gallery/promotegallery/${eventoId}/${galleryId}`, data),
     list: () => requests.get<Gallery[]>('/gallery/list')
 }
 const agent = {
