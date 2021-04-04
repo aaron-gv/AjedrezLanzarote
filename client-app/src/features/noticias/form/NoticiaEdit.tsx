@@ -13,7 +13,6 @@ import CreateImages from "../../Galleries/CreateImages";
 export default observer(function NoticiaEdit() {
   const { url } = useParams<{ url: string }>();
   const { noticiaStore } = useStore();
-  const [targetGallery, setTargetGallery] = useState('');
   const [loadingComponent, setLoadingComponent] = useState(false);
   const [openCreateGallery, setOpenCreateGallery] = useState(false);
   const [editModeGallery, setEditModeGallery] = useState("");

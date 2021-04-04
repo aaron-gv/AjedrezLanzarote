@@ -94,7 +94,7 @@ export default observer(function EventoForm({evento} : Props) {
     <>
     <Segment clearing>
       <Header content='Detalles del evento' sub color='teal' />
-      <Formik validationSchema={validationSchema} enableReinitialize 
+      <Formik key={evento.id && evento.id?.length > 0 ? evento.id : 'createEventForm'} validationSchema={validationSchema} enableReinitialize 
       initialValues={{...evento, error: null}}
         onSubmit={(values, actions) => {
             handleFormSubmit(values, actions);

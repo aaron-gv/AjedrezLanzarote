@@ -1,6 +1,6 @@
 import { Form, Formik, FormikHelpers, FormikState } from 'formik';
-import React, { useState } from 'react'
-import { Card, Icon, Image, Label } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Card, Dimmer, Icon, Image, Label, Loader } from 'semantic-ui-react';
 import { Gallery } from '../../app/models/gallery';
 import { ImageDto } from '../../app/models/image';
 import MyTextInput from '../../app/common/form/MyTextInput';
@@ -18,30 +18,31 @@ interface Props {
     setTargetImage: (value: React.SetStateAction<string>) => void,
     setTargetGallery:  (value: React.SetStateAction<string>) => void,
     setPopupStatus: (value: React.SetStateAction<boolean>) => void,
-    setLoading: (value: React.SetStateAction<boolean>) => void,
-    
     entityPortraitId?: string,
     last: boolean,
     first: boolean,
+    loadingImage: boolean,
+    loadingImageId: string,
     entityType: string;
 }
 
 
 
-export default observer(function GalleryModifyImageItem({entityType,   entityPortraitId,  entity, image, last, first, gallery, setTargetGallery, setTargetImage, setPopupStatus, setLoading} : Props) {
+export default observer(function GalleryModifyImageItem({entityType, loadingImageId, loadingImage,  entityPortraitId,  entity, image, last, first, gallery, setTargetGallery, setTargetImage, setPopupStatus} : Props) {
     
-   const [loadingComponent, setLoadingComponent] = useState(false);
-   
+    const [localLoading, setLocalLoading] = useState(false);
     const {eventoStore, noticiaStore} = useStore();
     
     async function handleSetMain(image: ImageDto) {
+      setLocalLoading(true);
       if (entityType === "Evento")
         await eventoStore.setMainImage(image)
       else if (entityType === "Noticia")
         await noticiaStore.setMainImage(image);
+      setLocalLoading(false);
     }
     async function handleRenameImage(imageId:string,title:string, actions: FormikHelpers<{ comment: string }>)  {
-      setLoadingComponent(true);
+      setLocalLoading(true);
       if (entityType === "Evento")
         await eventoStore.renameImage(gallery,imageId,title).then(() => {
           toast.success("Ok");
@@ -56,8 +57,7 @@ export default observer(function GalleryModifyImageItem({entityType,   entityPor
           comment: "KAKAKA",
         } as Partial<FormikState<{ comment: string }>>);
       });
-      await 
-      setLoadingComponent(false);
+      setLocalLoading(false);
     }
     
     const handlePrevOrder = async (image: ImageDto) => {
@@ -67,13 +67,20 @@ export default observer(function GalleryModifyImageItem({entityType,   entityPor
       await handleImageOrder(image, gallery, 1);
     }
     const handleImageOrder = async (image: ImageDto, gallery:Gallery, orderOperator: number) => {
+      setLocalLoading(true);
         if (entityType === "Evento")
           await eventoStore.changeImageOrder(entity as Evento, gallery.id, image.id, image.order+orderOperator, gallery);
         else if (entityType === "Noticia")
           await noticiaStore.changeImageOrder(entity as Noticia, gallery.id, image.id, image.order+orderOperator, gallery);
+      setLocalLoading(false);
     }
     return (
-        <Card style={{ height: "170px", verticalAlign: "middle" }} draggable={true}  >
+        <Card style={{ height: "170px", verticalAlign: "middle" }} draggable={true}>
+                  {(loadingImage && loadingImageId ===image.id) || localLoading &&
+                    <Dimmer inverted active>
+                      <Loader content="Cargando..." />
+                    </Dimmer>
+                  }
                   <Card.Header
                     style={{
                       display: "flex",
@@ -91,7 +98,6 @@ export default observer(function GalleryModifyImageItem({entityType,   entityPor
                       onClick={() => {
                         setTargetImage(image.id);
                         setTargetGallery(gallery.id);
-                        
                         setPopupStatus(true);
                       }}
                     >

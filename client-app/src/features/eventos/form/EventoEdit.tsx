@@ -12,7 +12,6 @@ import EventoForm from "./EventoForm";
 export default observer(function EventoEdit() {
   const { url } = useParams<{ url: string }>();
   const { eventoStore } = useStore();
-  const [targetGallery, setTargetGallery] = useState('');
   const [loadingComponent, setLoadingComponent] = useState(false);
   const [openCreateGallery, setOpenCreateGallery] = useState(false);
   const [editModeGallery, setEditModeGallery] = useState("");
@@ -67,9 +66,9 @@ export default observer(function EventoEdit() {
       {evento.galleries &&
         evento.galleries.map(gallery => {
           if (gallery.id === editModeGallery)
-            return <CreateImages handleSetEditModeGallery={handleSetEditModeGallery} gallery={gallery} key={gallery.id} entityId={evento.id} entityType="Evento" switchOpenCreateGallery={switchOpenCreateGallery} />
+            return <CreateImages handleSetEditModeGallery={handleSetEditModeGallery} gallery={gallery} key={'eventoAddImagesToGallery_'+gallery.id} entityId={evento.id} entityType="Evento" switchOpenCreateGallery={switchOpenCreateGallery} />
           else 
-           return <EntityEditGallery entityType="Evento" handleSetEditModeGallery={handleSetEditModeGallery}    entityPortraitId={evento.portrait?.id} key={gallery.id}  entity={evento} gallery={gallery} loadingComponent={loadingComponent}  />
+           return <EntityEditGallery entityType="Evento" handleSetEditModeGallery={handleSetEditModeGallery}    entityPortraitId={evento.portrait?.id} key={'eventoEditGallery_'+gallery.id}  entity={evento} gallery={gallery} loadingComponent={loadingComponent}  />
           })}
     </>
   );

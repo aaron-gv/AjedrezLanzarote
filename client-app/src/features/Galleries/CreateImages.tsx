@@ -47,12 +47,8 @@ export default observer(function CreateImages({gallery, entityId, entityType,swi
           acceptedFiles.forEach((file: any) => {
             setFormItems(items => [...items, file]);
             console.log(file);
-          });
-          console.log(FormItems);
-        },
-    
-        [setFormItems, FormItems]
-      );
+          })
+        },[setFormItems]);
       const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
     if (!entityId || entityId.length < 1 || (entityType!== "Evento" && entityType!== "Noticia" ))
@@ -67,7 +63,6 @@ export default observer(function CreateImages({gallery, entityId, entityType,swi
             return null;
         }
         setImagesToAdd(images => [...images, image])
-        console.log(imagesToAdd);
     }
 
     if (user!= null && user.roles !==undefined && user.roles.some(x => x === 'Desarrollador' || x === 'Administrador' ) === false) {
@@ -84,7 +79,6 @@ export default observer(function CreateImages({gallery, entityId, entityType,swi
         }
         )
         setImages(tempImages);
-        console.log(images);
     }
 
     galleries?.forEach(gallery => {
@@ -143,6 +137,14 @@ export default observer(function CreateImages({gallery, entityId, entityType,swi
         });
     }
 
+    const removeFromForm = (i : number) => {
+        let newArr : any[] = FormItems.filter((val, index) => index !== i);
+        setFormItems(newArr);
+    }
+    const removeFromAdd = (i : number) => {
+        let newArr : ImageDto[] = imagesToAdd.filter((val, index) => index !== i);
+        setImagesToAdd(newArr);
+    }
     return (
         <>
             <Segment clearing basic={gallery!==undefined ? false : true} fluid>
@@ -254,16 +256,18 @@ export default observer(function CreateImages({gallery, entityId, entityType,swi
                 <Label size='small' content='Arrastre sus archivos o pulse aquí' />
             </div>
                     {
-                        FormItems.map(item => (
+                        FormItems.map((item, index) => (
                             <div key={uuid()} style={{float:'left', marginLeft:'10px',height:'70px', position:'relative', overflow:'hidden',alignItems:'center',display:'flex'}}>
-                                <Image key={uuid()} src={URL.createObjectURL(item)} style={{maxWidth:'70px',maxHeight:'70px'}} />
+                                <div className="deleteLayer" style={{fontSize:'14px'}} onClick={() => removeFromForm(index)}>cancelar</div>
+                                <Image key={uuid()} src={URL.createObjectURL(item)} style={{maxWidth:'70px',maxHeight:'70px', border:'5px solid #2df774'}} />
                             </div>
                         ))
                     }
                     {
-                        imagesToAdd.map(image => (
+                        imagesToAdd.map((image, index) => (
                             <div key={uuid()} style={{float:'left', marginLeft:'10px',height:'70px', position:'relative', overflow:'hidden',alignItems:'center',display:'flex'}}>
-                                <Image key={image.id} src={image.thumbnail} style={{maxWidth:'70px',maxHeight:'70px'}} />
+                                <div className="deleteLayer" style={{ fontSize:'14px'}} onClick={() => removeFromAdd(index)}>cancelar</div>
+                                <Image key={image.id} src={image.thumbnail} style={{maxWidth:'70px',maxHeight:'70px', border:'5px solid #42a1ff'}} />
                             </div>
                         ))
                     }

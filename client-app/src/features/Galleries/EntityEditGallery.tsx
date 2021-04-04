@@ -24,7 +24,8 @@ interface Props {
 export default observer(function EventoEditGallery({entityType,handleSetEditModeGallery,     entityPortraitId, entity, gallery} : Props) {
 
 
-  const [loading, setLoading] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
+  const [loadingImageId, setLoadingImageId] = useState("");
   const [popupStatusFather, setPopupStatusFather] = useState(false);
   const [loadingComponent, setLoadingComponent] = useState(false);
   const [popupStatus, setPopupStatus] = useState(false);
@@ -44,19 +45,21 @@ export default observer(function EventoEditGallery({entityType,handleSetEditMode
       setTargetGallery('');
     }
     async function handleImageDelete(image: string, gallery: string) {
-      setLoadingComponent(true);
+      
       if (entityType === "Evento")
         await eventoStore.deleteImage(entity as Evento, image, gallery);
         else if (entityType === "Noticia")
         await noticiaStore.deleteImage(entity as Noticia, image, gallery);
-      setLoadingComponent(false);
+      
     }
     async function handleImgDelete() {
-      setLoading(true);
+      setLoadingImage(true);
+      setLoadingImageId(targetImage);
       setPopupStatus(false);
         await handleImageDelete(targetImage, targetGallery);
         runInAction(() => {
-          setLoading(false);
+          setLoadingImage(false);
+          setLoadingImageId("");
           setTargetGallery("");
           setTargetImage("");
         });
@@ -91,7 +94,7 @@ export default observer(function EventoEditGallery({entityType,handleSetEditMode
     
     return (
         <Segment key={gallery.id} clearing >
-            {(loading || loadingComponent)  && targetGallery===gallery.id &&
+            {(loadingComponent)  && targetGallery===gallery.id &&
               <Dimmer inverted active>
               <Loader content="Cargando..." />
               </Dimmer>
@@ -167,7 +170,7 @@ export default observer(function EventoEditGallery({entityType,handleSetEditMode
               <Segment
         secondary
         style={{ overflow: "auto", maxHeight: "360px" }}
-        loading={loading}
+        loading={loadingComponent}
       >
         <Grid doubling columns={7}>
           <div
@@ -198,7 +201,7 @@ export default observer(function EventoEditGallery({entityType,handleSetEditMode
          
                 gallery.images.map((image, key) => (
                   <Grid.Column key={image.id} >
-                    <GalleryModifyImageItem entityType={entityType} entityPortraitId={entityPortraitId} entity={entity} image={image} gallery={gallery} setTargetGallery={setTargetGallery} setTargetImage={setTargetImage} setPopupStatus={setPopupStatus} setLoading={setLoading} first={key===0 ? true : false} last={gallery.images.length===key+1 ? true : false} />
+                    <GalleryModifyImageItem loadingImageId={loadingImageId} entityType={entityType} entityPortraitId={entityPortraitId} entity={entity} image={image} gallery={gallery} setTargetGallery={setTargetGallery} setTargetImage={setTargetImage} setPopupStatus={setPopupStatus} loadingImage={loadingImage} first={key===0 ? true : false} last={gallery.images.length===key+1 ? true : false} />
                   </Grid.Column>
                 ))
               }
