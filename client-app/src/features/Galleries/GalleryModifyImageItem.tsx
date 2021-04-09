@@ -76,7 +76,7 @@ export default observer(function GalleryModifyImageItem({entityType, loadingImag
     }
     return (
         <Card style={{ height: "170px", verticalAlign: "middle" }} draggable={true}>
-                  {(loadingImage && loadingImageId ===image.id) || localLoading &&
+                  {((loadingImage && loadingImageId ===image.id) || localLoading) &&
                     <Dimmer inverted active>
                       <Loader content="Cargando..." />
                     </Dimmer>

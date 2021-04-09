@@ -394,7 +394,7 @@ namespace Persistence
                     Title = "Gran Hotel Arrecife",
                     Url = "Gran-Hotel-Arrecife",
                     ExternalUrl = "https://www.aghotelspa.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/GranHotel 5e10830651c15.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -402,7 +402,7 @@ namespace Persistence
                     Title = "Ideas Deportivas Canarias",
                     Url = "Ideas-Deportivas-Canarias",
                     ExternalUrl = "https://mundochess.es/291-ideas-deportivas-canarias",
-                    ImageUrl = "",
+                    ImageUrl =  "/assets/patrocinadores/IdeasDepor5ede3aefc1938.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -410,7 +410,7 @@ namespace Persistence
                     Title = "KMADAChess",
                     Url = "KMADAChess",
                     ExternalUrl = "https://kmadachess.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/KMADAChess5f07858c86a6f.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -418,7 +418,7 @@ namespace Persistence
                     Title = "Lanzarote Deportes",
                     Url = "Lanzarote-Deportes",
                     ExternalUrl = "http://www.lanzarotedeportes.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/lanzaroteDeportes.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -426,7 +426,7 @@ namespace Persistence
                     Title = "Centros de Arte Cultura y Turismo",
                     Url = "CACT",
                     ExternalUrl = "http://www.centrosturisticos.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/arteCulturaTurismo.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -434,7 +434,7 @@ namespace Persistence
                     Title = "Cablido de Lanzarote",
                     Url = "Cabildo-Lanzarote",
                     ExternalUrl = "http://www.cabildodelanzarote.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/cabildolanzarote.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -442,7 +442,7 @@ namespace Persistence
                     Title = "Barber Shop Lanzarote",
                     Url = "Barber-Shop-Lanzarote",
                     ExternalUrl = "http://thebarbershoplanzarote.com",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/barberShop.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -450,7 +450,7 @@ namespace Persistence
                     Title = "Viajes La Molina",
                     Url = "Viajes-LaMolina",
                     ExternalUrl = "http://www.viajeslamolina.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/laMolina.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -458,7 +458,7 @@ namespace Persistence
                     Title = "Radio Marca Lanzarote",
                     Url = "Radio-Marca-Lanzarote",
                     ExternalUrl = "http://www.radiomarcalanzarote.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/radioMarca.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -466,7 +466,7 @@ namespace Persistence
                     Title = "Lancelot Medios",
                     Url = "Lancelot-Medios",
                     ExternalUrl = "http://www.lancelotdigital.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/lancelotMedios.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -474,7 +474,7 @@ namespace Persistence
                     Title = "Centro de Formación Canario",
                     Url = "CFC",
                     ExternalUrl = "http://www.centrodeformacioncanario.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/CFC.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -482,7 +482,7 @@ namespace Persistence
                     Title = "Hotel Lancelot",
                     Url = "Hotel-Lancelot",
                     ExternalUrl = "https://hotellancelot.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/hotelLancelot.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -490,7 +490,7 @@ namespace Persistence
                     Title = "Ayuntamiento de Arrecife",
                     Url = "Ayuntamiento-Arrecife",
                     ExternalUrl = "http://www.arrecife.es/portal/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/ayuntamientoArrecife.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -498,7 +498,7 @@ namespace Persistence
                     Title = "Estudio Jurídico B&B Abogados y Gestoría",
                     Url = "B&B-Abogados-Gestoria",
                     ExternalUrl = "http://bybjuridico.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/bybjuridico.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -506,7 +506,7 @@ namespace Persistence
                     Title = "CICAR Canary Islands Car",
                     Url = "CICAR-RENT",
                     ExternalUrl = "https://www.cicar.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/cicar.png",
                     Description = "",
                 },
                 new Patrocinador
@@ -514,7 +514,7 @@ namespace Persistence
                     Title = "Rayco Cancio Lasso",
                     Url = "Rayco-Cancio",
                     ExternalUrl = "https://drive.google.com/file/d/1bIPaoPkiRxyyQXib9DAYGLgsc-EeR1r2/view?usp=sharing",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/RaycoCancioLasso.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -522,7 +522,7 @@ namespace Persistence
                     Title = "Hotel Grand Teguise Playa",
                     Url = "Hotel-G-Teguise-Playa",
                     ExternalUrl = "https://www.teguiseplayahotel.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/hotelGranTeguisePlaya.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -530,7 +530,7 @@ namespace Persistence
                     Title = "Pampero Lanzarote",
                     Url = "Pampero-Lanzarote",
                     ExternalUrl = "https://es-la.facebook.com/pamperolanzarote1/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/pamperolanzarote.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -538,7 +538,7 @@ namespace Persistence
                     Title = "Queso Project",
                     Url = "Queso-Project",
                     ExternalUrl = "https://www.quesoproject.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/quesoproject.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -546,7 +546,7 @@ namespace Persistence
                     Title = "x3 Creaciones",
                     Url = "x3-Creaciones",
                     ExternalUrl = "https://www.x3creaciones.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/x3creaciones.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -554,7 +554,7 @@ namespace Persistence
                     Title = "Retracan",
                     Url = "Retracan",
                     ExternalUrl = "https://drive.google.com/file/d/1AVK8kK_YfKrjCcotGiTIUEt_WY7wxlTZ/view",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/retracan.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -562,7 +562,7 @@ namespace Persistence
                     Title = "Julián Bermúdez",
                     Url = "Julian-Bermudez",
                     ExternalUrl = "https://www.ajedrezlanzarote.com//",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/logo-julian-Bermudez.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -570,7 +570,7 @@ namespace Persistence
                     Title = "Ayuntamiento de Haría",
                     Url = "Ayuntamiento-Haría",
                     ExternalUrl = "http://www.ayuntamientodeharia.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/15565424325cc6f759a41dc.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -578,7 +578,7 @@ namespace Persistence
                     Title = "Ayuntamiento de Tías",
                     Url = "Ayuntamiento-Tías",
                     ExternalUrl = "http://www.ayuntamientodetias.es/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/15566302605cc84b2cc6327.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -586,7 +586,7 @@ namespace Persistence
                     Title = "Ayuntamiento de Teguise",
                     Url = "Ayuntamiento-Teguise",
                     ExternalUrl = "https://teguise.es/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/Ayuntamien5cc84d0400116.jpg",
                     Description = "",
                 },
                 new Patrocinador
@@ -594,7 +594,7 @@ namespace Persistence
                     Title = "Tirma",
                     Url = "Tirma",
                     ExternalUrl = "http://www.tirma.com/",
-                    ImageUrl = "",
+                    ImageUrl = "/assets/patrocinadores/Tirma5cc84d3d05f6d.jpg",
                     Description = "",
                 }
                 };

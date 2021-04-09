@@ -25,7 +25,7 @@ export default observer(function EventoEdit() {
     if (url) {
       loadEventoByUrl(url).then((evento) => {
         setEventoForm(new EventoFormValues(evento));
-        
+        setLoadingComponent(false);
       });
     }
   }, [url, loadEventoByUrl]);

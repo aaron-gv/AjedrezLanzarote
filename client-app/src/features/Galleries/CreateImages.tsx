@@ -28,7 +28,6 @@ export default observer(function CreateImages({gallery, entityId, entityType,swi
     const [loaded, setLoaded] = useState(false);
     const todas :   Gallery[] = [];
     const [selected, setSelected] = useState<Gallery>();
-    const [images, setImages] = useState<ImageDto[]>([]);
     const [imagesToAdd, setImagesToAdd] = useState<ImageDto[]>([]);
     const [FormItems, setFormItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -39,7 +38,6 @@ export default observer(function CreateImages({gallery, entityId, entityType,swi
             loadGalleries();
             setGalleries(galleriesRegistry);
             setLoaded(true);
-            console.log("entro");
         }
     }, [galleriesRegistry, loaded, loadGalleries, imagesToAdd, setImagesToAdd])
     const onDrop = useCallback(
@@ -72,13 +70,11 @@ export default observer(function CreateImages({gallery, entityId, entityType,swi
     const handleChange = (value: ListItemProps) => {
         console.log(value);
         setSelected(galleries?.get(value.value as string));
-        setImages([]);
         var tempImages : ImageDto[] = [];
         selected?.images.forEach(image => {
             tempImages.push(image);
         }
         )
-        setImages(tempImages);
     }
 
     galleries?.forEach(gallery => {
@@ -147,7 +143,7 @@ export default observer(function CreateImages({gallery, entityId, entityType,swi
     }
     return (
         <>
-            <Segment clearing basic={gallery!==undefined ? false : true} fluid>
+            <Segment clearing basic={gallery!==undefined ? false : true}>
                 {gallery!==undefined && handleSetEditModeGallery!==undefined &&
                     <Label as={Button} style={{fontSize:'14px'}} content='Cancelar' attached='top' onClick={() => handleSetEditModeGallery!("")} />
                 }

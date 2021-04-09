@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
-import { Grid } from "semantic-ui-react";
+import { Grid, Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
 import NoticiaFilters from "./NoticiaFilters";
@@ -19,6 +19,8 @@ export default observer(function NoticiaDashboard() {
   if (loadingInitial || loading) return <LoadingComponent content='Cargando noticias...' />;
 
   return (
+    <Segment basic>
+    
     <Grid>
       <Grid.Column width='10'>
         <NoticiaList />
@@ -27,5 +29,6 @@ export default observer(function NoticiaDashboard() {
         <NoticiaFilters />
       </Grid.Column>
     </Grid>
+  </Segment>
   );
 })

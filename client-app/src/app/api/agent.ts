@@ -5,6 +5,7 @@ import { Evento, EventoFormValues } from '../models/evento';
 import {Gallery} from '../models/gallery';
 import { ImageDto } from '../models/image';
 import { Noticia, NoticiaFormValues } from '../models/noticia';
+import { Patrocinador } from '../models/patrocinador';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
@@ -100,8 +101,10 @@ const Account = {
     register: (user: UserFormValues) => axios.post<User>('/account/register', user)
 }
 const Images = { 
-    
     get: (id: string) => requests.get<ImageDto>(`/images/${id}`)
+}
+const Patrocinadores = { 
+    list: () => requests.get<Patrocinador[]>(`/patrocinadores/`)
 }
 const Galleries = {
     get: (id: string) => requests.get<Gallery>(`/gallery/${id}`),
@@ -122,7 +125,8 @@ const agent = {
     Account,
     Noticias,
     Images,
-    Galleries
+    Galleries,
+    Patrocinadores
 }
 
 export default agent;

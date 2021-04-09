@@ -31,6 +31,7 @@ export default observer(function NoticiaEdit() {
     if (url) {
         loadNoticiaByUrl(url).then((noticia) => {
             setNoticiaForm(new NoticiaFormValues(noticia));
+            setLoadingComponent(false);
       });
     }
   }, [url, loadNoticiaByUrl]);

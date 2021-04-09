@@ -22,12 +22,14 @@ import EventoCreate from "../../features/eventos/form/EventoCreate";
 import NoticiaCreate from "../../features/noticias/form/NoticiaCreate";
 import NoticiaEdit from "../../features/noticias/form/NoticiaEdit";
 import CreateImages from "../../features/Galleries/CreateImages";
+import Slide from "../../features/patrocinadores/Slide";
 require('typeface-montserrat');
 
 export default observer(function App() {
   const location = useLocation(); 
   const {commonStore, userStore} = useStore();
   const {user} = userStore;
+  const pathname = window.location.pathname;
   
   useEffect(() => {
     if (commonStore.token) {
@@ -45,10 +47,15 @@ export default observer(function App() {
       <Route path='/' exact component={LandingPage} />
       <Route
         path={"/(.+)"}
+        
         render={() => ( 
           <>
             <NavBar />
             <Container style={{ marginTop: "7em" }}>
+              {(pathname === '/eventos' || pathname === '/noticias') && 
+                <Slide />
+              }
+
               <Switch>
                 <Route path='/info' exact component={HomePage} />
                 <Route path='/eventos' exact component={EventoDashboard} />

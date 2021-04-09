@@ -51,7 +51,7 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
                     { !evento.isGoing &&
                         (<Button disabled={evento.isCancelled} loading={loading} onClick={updateAsistencia} color='teal'>Asistir</Button>)
                     }
-                    </>
+                </>
                 }
                 
                 { userStore.user.roles && userStore.user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' )  &&
@@ -70,8 +70,6 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
                     <Button size='mini' disabled={evento.isCancelled} as={Link} to={`/editarEvento/${evento.url}`} color='orange' floated='right'>
                         Editar evento
                     </Button>
-                    
-                    
                     </>
                 }
             </Segment>
@@ -79,7 +77,7 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
                 {evento.isCancelled && 
                     <Label style={{position:'absolute', zIndex: 1000, left: -14, top:20}} ribbon color='red' content='Cancelado' />
                 }
-                <Segment id={'infoSegment'}  style={evento.description.length > 2000 ? {borderColor:'#fafafa',whiteSpace: 'pre-line',maxHeight:'332px', overflow:'hidden',textAlign:'justify'} : {borderColor:'#fafafa',whiteSpace: 'pre-line',overflow:'hidden'}} clearing>
+                <Segment id={'infoSegment'}  style={evento.description.length > 700 ? {borderColor:'#fafafa',whiteSpace: 'pre-line',maxHeight:'332px', overflow:'hidden',textAlign:'justify'} : {borderColor:'#fafafa',whiteSpace: 'pre-line',overflow:'hidden'}} clearing>
                 <Image src={evento.portraitUrl ? evento.portraitUrl : '/assets/calendar.png'} size='small' floated='left' style={{marginRight:'20px',maxWidth:'25%',marginTop:'20px'}} />
                 <h2>{evento.title}</h2>
                  {evento.startDate !=null && (<>Comienza :<b>{format(evento.startDate, 'd / M / yyyy')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>Finaliza :<b>{format(evento.startDate, 'd / M / yyyy')}</b></>)} 

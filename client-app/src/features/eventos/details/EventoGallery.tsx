@@ -19,7 +19,6 @@ export default observer(function EventoGallery({items, id, title} : Props) {
 
 function openPhotoSwipe(index: number) {
   var pswpElement = document.querySelectorAll('.pswp')[0];
-    console.log(index);
   // define options (if needed)
   var options = {
      // history & focus options are disabled on CodePen        

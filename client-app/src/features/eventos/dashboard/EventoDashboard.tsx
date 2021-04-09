@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
-import { Grid } from "semantic-ui-react";
+import { Grid, Segment } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { useStore } from "../../../app/stores/store";
 import EventoFilters from "./EventoFilters";
@@ -18,6 +18,7 @@ export default observer(function DashboardExtended() {
 
   
   return (
+    <Segment basic>
     <Grid>
       <Grid.Column width='10'>
         <EventoList />
@@ -26,5 +27,6 @@ export default observer(function DashboardExtended() {
         <EventoFilters />
       </Grid.Column>
     </Grid>
+    </Segment>
   );
 })

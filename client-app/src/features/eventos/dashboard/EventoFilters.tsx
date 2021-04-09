@@ -1,7 +1,9 @@
 import React, { Fragment, useState } from "react";
 import { Checkbox, Header, Label, Menu, Segment } from "semantic-ui-react";
-import 'react-modern-calendar-datepicker/lib/DatePicker.css';
-import { Calendar, DayValue } from 'react-modern-calendar-datepicker';
+//import 'react-modern-calendar-datepicker/lib/DatePicker.css';
+//import { Calendar, DayValue } from 'react-modern-calendar-datepicker';
+import '@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css';
+import {Calendar, DayValue} from '@hassanmojab/react-modern-calendar-datepicker';
 import * as locale from './locale';
 
 export default function EventoFilters() {
