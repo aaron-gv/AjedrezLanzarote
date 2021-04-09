@@ -9,19 +9,17 @@ export default observer(function Slide() {
     const [loaded, setLoaded] = useState(false);
     const [counter, setCounter] = useState(0);
     const {list, patrocinadores, patrocinadoresRegistry, grouped} = patrocinadorStore;
-
-
+    setTimeout(() => {
+        if (counter >= (Math.ceil(patrocinadoresRegistry.size/5)-1))
+            setCounter(0);
+        else
+            setCounter(counter+1);
+    }, 3500);
     useEffect(() => {
         if (!loaded) {
             list();
             setLoaded(true);
         }
-        setTimeout(() => {
-            if (counter >= (Math.ceil(patrocinadoresRegistry.size/5)-1))
-                setCounter(0);
-            else
-                setCounter(counter+1);
-        }, 3500);
     }, [list, setLoaded,  patrocinadores, patrocinadoresRegistry, counter, setCounter, loaded]);
 
     return (
