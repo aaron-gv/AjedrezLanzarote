@@ -22,7 +22,7 @@ export default class PatrocinadorStore {
             let patrocinadores = await agent.Patrocinadores.list();
             
             runInAction(() => {
-                patrocinadores.forEach(patrocinador => {
+                patrocinadores.sort(() => Math.random() - 0.5).forEach(patrocinador => {
                     this.setPatrocinador(patrocinador);
                 });
                 this.groups =  Math.ceil(patrocinadores.length/this.groupLength);

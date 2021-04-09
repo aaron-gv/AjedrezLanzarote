@@ -23,6 +23,7 @@ import NoticiaCreate from "../../features/noticias/form/NoticiaCreate";
 import NoticiaEdit from "../../features/noticias/form/NoticiaEdit";
 import CreateImages from "../../features/Galleries/CreateImages";
 import Slide from "../../features/patrocinadores/Slide";
+import HomeHeader from "../../features/home/HomeHeader";
 require('typeface-montserrat');
 
 export default observer(function App() {
@@ -52,7 +53,10 @@ export default observer(function App() {
           <>
             <NavBar />
             <Container style={{ marginTop: "7em" }}>
-              {(pathname === '/eventos' || pathname === '/noticias') && 
+              {(pathname === "/info") && 
+                <HomeHeader />
+              }
+              {(pathname === "/info" ||pathname === '/eventos' || pathname === '/noticias') && 
                 <Slide />
               }
 
