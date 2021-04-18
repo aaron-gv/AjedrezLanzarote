@@ -85,6 +85,9 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
+            if (User.FindFirstValue(ClaimTypes.Email) == null) {
+                return Ok("Session expired");
+            }
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
             var roles = await _userManager.GetRolesAsync(user);
             return CreateUserObject(user, roles);

@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <>
       
-      <Segment basic style={{ padding: 0 }}>
+      <Segment basic style={{ padding: 0,marginTop:'30px' }}>
         <Grid>
           <Grid.Column width={6}>
             <Image

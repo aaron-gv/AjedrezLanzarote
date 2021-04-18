@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import React, { ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button,  Image,  Item, Label, Segment } from "semantic-ui-react";
+import { Button, Image, Item, Label, Segment } from "semantic-ui-react";
 import { Evento } from "../../../app/models/evento";
 import EventoListItemAsistente from "./EventoListItemAsistente";
 import ReactTextFormat from 'react-text-format';
@@ -67,47 +67,36 @@ export default observer(function EventoListItem({
   return (
     <Segment.Group key={evento.id}>
       <PSGallery />
-      <Segment >
+      <Segment style={{paddingBottom:"0px"}}>
         {evento.isCancelled && 
           <Label attached='top' color='red' content='Cancelado' style={{textAlign: 'center'}} />
         }
-        <Item.Group >
-          <Item>
-            <Item.Image style={{marginBottom:3, cursor:'pointer'}} size='tiny' src={evento.portrait?.thumbnail ? evento.portrait.thumbnail : '/assets/calendar.png'} onClick={() => openPhotoSwipe()} />
-            <Item.Content as={Link} to={`/eventos/${evento.url}`}>
-              <Item.Header>{evento.title}</Item.Header>
-
-              <Item.Description>
-                evento <strong style={{color:'darkblue'}}>{evento.category}</strong>
-                <div style={{marginTop:'5px'}}>
-                   ¿ Cuando ? <span style={{marginLeft:'10px',marginRight:'10px',fontWeight:'bold'}}>{format(evento.startDate!, 'dd MMM yyyy H:mm')}</span> - hasta el - <span style={{marginLeft:'10px',fontWeight:'bold'}}>{format(evento.endDate!, 'dd MMM yyyy H:mm')}</span>
-                </div>
-                {evento.category==="presencial" && 
-                  <div style={{marginTop:'5px'}}>
-                      ¿ Donde ? <span style={{marginLeft:'10px',marginRight:'10px',fontWeight:'bold'}}>{evento.venue} &nbsp;&nbsp;, &nbsp;&nbsp; [{evento.city}]</span>
-                  </div>
-                }
+        <Item.Group style={{maxHeight:'200px', overflow:"hidden", whiteSpace:'pre-line', padding:'0'}}  >
+          <Item style={{padding:'0px'}}>
+            <Item.Content style={{color:'black',}} >
+            <Image src={evento.portraitUrl ? evento.portraitUrl : '/assets/calendar.png'} size='small' floated='left' style={{zIndex:40,marginRight:'20px',maxWidth:'15%', cursor:'pointer'}} onClick={() => openPhotoSwipe()}  />
+                <h2 style={{fontSize:"22px", marginTop:'0px'}}>{evento.title}</h2>
+                 {evento.startDate !=null && (<>Comienza <b>{format(evento.startDate, 'd / M / yyyy')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>Finaliza <b>{format(evento.startDate, 'd / M / yyyy')}</b></>)} 
+                <br /><br />
+                <ReactTextFormat
+                as={Link} to={`/eventos/${evento.url}`}
                 
-              </Item.Description>
-            
+          allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
+          imageDecorator={customImageDecorator}
+        >
+                {(evento.description.length>300 || hasInnerImages)  ? <>{evento.description} . . .<br /><Link to={`/eventos/${evento.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link></> : evento.description}
+        
+          
+        </ReactTextFormat>
             </Item.Content>
           </Item>
         </Item.Group>
       </Segment>
-      <Segment style={{whiteSpace: 'pre-line',maxHeight:'250px',overflow:'hidden'}}>
-       {(evento.description.length>300 || hasInnerImages) && <Link color='blue' to={`/eventos/${evento.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link>}
-        <ReactTextFormat
-          allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
-          imageDecorator={customImageDecorator}
-        >
-          {evento.description}
-        </ReactTextFormat>
       
-      </Segment>
       {evento.category === "online" && 
         <Segment secondary><EventoListItemAsistente asistentes={evento.asistentes!} /></Segment>
       }
-      {evento.category === "presencial" && evento.galleries && evento.galleries.length > 0 &&
+      {evento.galleries && evento.galleries.length > 0 &&
       <>
         <Segment secondary clearing >
           <h4 >Imágenes :</h4>

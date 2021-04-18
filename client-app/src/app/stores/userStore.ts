@@ -26,11 +26,11 @@ export default class UserStore {
             var result = this.parseJwt(token);
             return result['nameid'];
         }
-        console.log('nanai');
         return '';
     }
 
     get isLoggedIn() {
+        console.log(!!this.user);
         return !!this.user;
     }
 
@@ -57,7 +57,14 @@ export default class UserStore {
     getUser = async () => {
         try {
             const user = await agent.Account.current();
-            runInAction(() => this.user = user);
+            runInAction(() => {
+                if (typeof user === "string" && user === "Session expired") {
+                    this.user = null;
+                    window.localStorage.removeItem('jwt');
+                }
+                else
+                    this.user = user;
+            });
         } catch (error) {
             console.log(error);
         }
