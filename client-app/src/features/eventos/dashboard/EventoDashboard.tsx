@@ -17,7 +17,8 @@ export default observer(function DashboardExtended() {
 }
   const handleFiltersOpen = ( ) => {
     setFilters((!filters));
-    setActiveIndex(0);
+    if (activeIndex !== 0)
+      setActiveIndex(0);
   }
   useEffect(() => {
     if (eventosRegistry.size <= 1)  loadEventos();

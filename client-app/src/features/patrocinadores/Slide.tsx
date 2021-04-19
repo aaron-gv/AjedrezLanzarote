@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Image,  Label, Segment, Transition } from 'semantic-ui-react';
 import { useStore } from '../../app/stores/store';
 
@@ -39,8 +40,8 @@ export default observer(function Slide() {
             
             <div
              style={{width:'100%', height:'90px', overflow:'visible', display:'flex',alignItems:'center', justifyItems:'center', margin:'2px', position:'relative', }}>
-                <Label color='teal' content={`Patrocinadores`} style={{position:'absolute', top:'-10px', zIndex:11,}} />
-                <Label color='blue' basic content={`${counter+1} / ${(Math.ceil(patrocinadoresRegistry.size/5))}`} style={{position:'absolute',border:'none', top:'-10px',left:"105px", zIndex:11,}} />
+                <Label as={Link} to={'/patrocinadores'} color='teal' content={`Patrocinadores`} style={{position:'absolute', top:'-10px', zIndex:11,}} />
+                <Label as={Link} to={'/patrocinadores'} color='blue' basic content={`${counter+1} / ${(Math.ceil(patrocinadoresRegistry.size/5))}`} style={{position:'absolute',border:'none', top:'-10px',left:"105px", zIndex:11,}} />
 
                     {grouped(counter)!==null && grouped(counter)!.map((patrocinador, index) => (
                         <Transition visible={visible} directional animation={"fade"} duration={1000+(index*200)} key={index}>

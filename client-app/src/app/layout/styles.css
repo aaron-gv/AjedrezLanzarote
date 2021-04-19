@@ -158,3 +158,6 @@
   opacity: 0;
   transition: all 100ms;
 }
+.patrocinadorCard:hover{
+  transform: scale(1.1);
+}

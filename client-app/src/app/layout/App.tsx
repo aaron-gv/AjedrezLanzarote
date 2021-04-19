@@ -24,6 +24,7 @@ import NoticiaEdit from "../../features/noticias/form/NoticiaEdit";
 import CreateImages from "../../features/Galleries/CreateImages";
 import Slide from "../../features/patrocinadores/Slide";
 import HomeHeader from "../../features/home/HomeHeader";
+import Dashboard from "../../features/patrocinadores/Dashboard";
 require('typeface-montserrat');
 
 export default observer(function App() {
@@ -108,6 +109,7 @@ export default observer(function App() {
                 <Route path='/eventos/:url' component={EventoDetails} />
                 <Route path='/noticias/:url' component={NoticiaDetails} />
                 <Route path='/errors' component={TestErrors} />
+                <Route path='/patrocinadores' component={Dashboard} />
                 <Route path='/server-error' component={ServerError} />
                 <Route path='/login' component={LoginForm} />
                 <Route path='/register' component={RegisterForm} />
