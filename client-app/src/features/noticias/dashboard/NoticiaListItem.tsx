@@ -73,9 +73,10 @@ export default observer(function EventoListItem({
           <Item >
             <Item.Content >
               <Image src={noticia.portrait?.thumbnail ? noticia.portrait.thumbnail : '/assets/periodico.png'} size='small' floated='left' style={{zIndex:40,marginRight:'20px',maxWidth:'15%', cursor:'pointer'}} onClick={() => openPhotoSwipe()} />
-              <h2 style={{fontSize:"22px", marginTop:'0px'}}>{noticia.title}</h2>
-              {noticia.date !=null && (<b>{format(noticia.date, 'd / M / yyyy')}</b>)} 
-              <br /><br />
+              <h2 style={{fontSize:"22px", marginTop:'0px', marginBottom:'3px'}}>{noticia.title}</h2>
+              {noticia.date !=null && (<span style={{marginLeft:'20px'}}><b>{format(noticia.date, 'd / M / yyyy')}</b></span>)} 
+              <br />
+              <br />
               <ReactTextFormat
                 as={Link} 
                 to={`/noticias/${noticia.url}`}
@@ -83,7 +84,7 @@ export default observer(function EventoListItem({
                 imageDecorator={customImageDecorator}
               >
                 {(noticia.body.length>300 || hasInnerImages)  ? 
-                    <>{noticia.body} . . .<br /><Link to={`/eventos/${noticia.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link></> 
+                    <>{noticia.body} . . .<br /><Link to={`/noticias/${noticia.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link></> 
                   : noticia.body
                 }
       

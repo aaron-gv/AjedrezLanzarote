@@ -74,20 +74,23 @@ export default observer(function EventoListItem({
         <Item.Group style={{maxHeight:'200px', overflow:"hidden", whiteSpace:'pre-line', padding:'0'}}  >
           <Item style={{padding:'0px'}}>
             <Item.Content style={{color:'black',}} >
-            <Image src={evento.portraitUrl ? evento.portraitUrl : '/assets/calendar.png'} size='small' floated='left' style={{zIndex:40,marginRight:'20px',maxWidth:'15%', cursor:'pointer'}} onClick={() => openPhotoSwipe()}  />
-                <h2 style={{fontSize:"22px", marginTop:'0px'}}>{evento.title}</h2>
-                 {evento.startDate !=null && (<>Comienza <b>{format(evento.startDate, 'd / M / yyyy')}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>Finaliza <b>{format(evento.startDate, 'd / M / yyyy')}</b></>)} 
+              <Image src={evento.portraitUrl ? evento.portraitUrl : '/assets/calendar.png'} size='small' floated='left' style={{zIndex:40,marginRight:'20px',maxWidth:'15%', cursor:'pointer'}} onClick={() => openPhotoSwipe()}  />
+                <h2 style={{fontSize:"22px", marginTop:'0px', padding:'0px', marginBottom:'3px'}}>{evento.title}</h2>
+                 {evento.startDate !=null && (
+                  <>
+                    <span style={{marginLeft:'20px'}}>Comienza <b>{format(evento.startDate, 'd / M / yyyy')}</b></span>
+                    <br/>
+                    <span style={{marginLeft:'20px'}}>Finaliza <b>{format(evento.startDate, 'd / M / yyyy')}</b></span>
+                  </>
+                )} 
                 <br /><br />
                 <ReactTextFormat
-                as={Link} to={`/eventos/${evento.url}`}
-                
-          allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
-          imageDecorator={customImageDecorator}
-        >
-                {(evento.description.length>300 || hasInnerImages)  ? <>{evento.description} . . .<br /><Link to={`/eventos/${evento.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link></> : evento.description}
-        
-          
-        </ReactTextFormat>
+                  as={Link} to={`/eventos/${evento.url}`}
+                  allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
+                  imageDecorator={customImageDecorator}
+                >
+                  {(evento.description.length>300 || hasInnerImages)  ? <>{evento.description} . . .<br /><Link to={`/eventos/${evento.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link></> : evento.description}
+                </ReactTextFormat>
             </Item.Content>
           </Item>
         </Item.Group>
