@@ -41,7 +41,7 @@ export default observer (function EventoDetailedHeader({evento, setPopupStatus}:
     return (
         <Segment.Group>
             <Segment basic style={{padding: '0',borderColor:'#fafafa'}}>
-            {userStore.user && 
+            {userStore.user && (evento.category ==="online" || (userStore.user.roles && userStore.user?.roles?.some(x => x === 'Desarrollador' || x === 'Administrador' )) ) &&
             <Segment attached='top' secondary clearing style={{}} >
                 {evento.category === "online" && 
                 <>

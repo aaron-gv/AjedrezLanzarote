@@ -68,35 +68,30 @@ export default observer(function EventoListItem({
   return (
     <Segment.Group key={noticia.id}>
       <PSGallery />
-      <Segment >
-        
-        <Item.Group >
-          <Item>
-            <Item.Image style={{marginBottom:3, cursor:'pointer'}} size='tiny' src={noticia.portrait?.thumbnail ? noticia.portrait.thumbnail : '/assets/periodico.png'} onClick={() => openPhotoSwipe()} />
-            <Item.Content as={Link} to={`/noticias/${noticia.url}`}>
-              <Item.Header>{noticia.title}</Item.Header>
-
-              <Item.Description>
-                <div style={{marginTop:'5px'}}>
-                   <span style={{marginLeft:'10px',marginRight:'10px'}}>{format(noticia.date!, 'dd MMM yyyy ')}</span>
-                </div>
-              </Item.Description>
-            
+      <Segment>
+        <Item.Group style={{maxHeight:'300px', overflow:"hidden", whiteSpace:'pre-line', padding:'0'}}>
+          <Item >
+            <Item.Content >
+              <Image src={noticia.portrait?.thumbnail ? noticia.portrait.thumbnail : '/assets/periodico.png'} size='small' floated='left' style={{zIndex:40,marginRight:'20px',maxWidth:'15%', cursor:'pointer'}} onClick={() => openPhotoSwipe()} />
+              <h2 style={{fontSize:"22px", marginTop:'0px'}}>{noticia.title}</h2>
+              {noticia.date !=null && (<b>{format(noticia.date, 'd / M / yyyy')}</b>)} 
+              <br /><br />
+              <ReactTextFormat
+                as={Link} 
+                to={`/noticias/${noticia.url}`}
+                allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
+                imageDecorator={customImageDecorator}
+              >
+                {(noticia.body.length>300 || hasInnerImages)  ? 
+                    <>{noticia.body} . . .<br /><Link to={`/eventos/${noticia.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link></> 
+                  : noticia.body
+                }
+      
+              </ReactTextFormat>
             </Item.Content>
           </Item>
         </Item.Group>
       </Segment>
-      <Segment style={{whiteSpace: 'pre-line',maxHeight:'250px',overflow:'hidden'}}>
-       {(noticia.body.length>300 || hasInnerImages)  && <Link color='blue' to={`/noticias/${noticia.url}`}><div className='listItemDimmer'><div className='dimmerLink'>Ver información completa</div></div></Link>}
-        <ReactTextFormat
-          allowedFormats={['URL', 'Email', 'Image', 'Phone', 'CreditCard']}
-          imageDecorator={customImageDecorator}
-        >
-          {noticia.body}
-        </ReactTextFormat>
-      
-      </Segment>
-      
       { noticia.galleries && noticia.galleries.length > 0 &&
       <>
         <Segment secondary clearing >
@@ -107,9 +102,6 @@ export default observer(function EventoListItem({
         </Segment>
         </>
       }
-      
-      
-      
       <Segment clearing>
         <Button
           as={Link}
@@ -118,9 +110,7 @@ export default observer(function EventoListItem({
           floated='right'
           content='info'
         />
-        
       </Segment>
-      
     </Segment.Group>
   );
 });
